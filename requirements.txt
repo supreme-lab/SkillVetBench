@@ -1,0 +1,26 @@
+# Required
+anthropic>=0.30.0
+rich>=13.0.0
+
+# Optional — only needed for openai-compatible backends
+# openai>=1.0.0
+
+# Optional — Ollama is a local server, no pip package needed
+# Just run: ollama serve && ollama pull llama3.1:8b
+
+# Core evaluation
+reportlab>=4.0.0
+ 
+# Web server
+fastapi>=0.110.0
+uvicorn>=0.29.0
+python-multipart>=0.0.9
+httpx>=0.27.0          # for FastAPI test client
+ 
+# HuggingFace local inference
+# pip install transformers torch accelerate huggingface_hub
+# pip install bitsandbytes   # for --quantize 4bit/8bit (CUDA only)
+ 
+# OpenAI / Groq / Together AI
+# pip install openai>=1.0.0
+ 

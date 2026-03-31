@@ -1,0 +1,65 @@
+{
+  "filename": "SKILL4.md",
+  "skill_name": "gog",
+  "overall_risk": "MEDIUM",
+  "is_vulnerable": true,
+  "vulnerability_count": 3,
+  "cvss_base_score": 4.4,
+  "cvss_severity": "Medium",
+  "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+  "impact_score": 2.5,
+  "exploitability_score": 1.8,
+  "attack_vector": "Local",
+  "attack_complexity": "Low",
+  "privileges_required": "None",
+  "user_interaction": "Required",
+  "scope": "Unchanged",
+  "confidentiality_impact": "Low",
+  "integrity_impact": "Low",
+  "availability_impact": "None",
+  "executive_summary": "The 'gog' skill provides functionality for interacting with Google Workspace services. While useful, it introduces risks related to data exfiltration, prompt injection, and potential supply chain attacks. The skill requires careful configuration and input validation to mitigate these vulnerabilities.",
+  "skill_purpose_analysis": "The 'gog' skill is designed to simplify interactions with Google Workspace services. Its inherent design is not inherently risky, but the reliance on user-supplied arguments and external package managers introduces potential vulnerabilities.",
+  "dangerous_patterns": [
+    "User-supplied arguments in `gog` commands",
+    "Use of `brew` for package installation"
+  ],
+  "safe_patterns": [
+    "Encouragement to use `--json` output for scripting"
+  ],
+  "remediation_priority": "Prioritize input validation and sanitization for all user-supplied arguments. Verify the integrity of the `gog` installation source and consider alternative package managers.",
+  "vulnerabilities": [
+    {
+      "id": "SKV-001",
+      "category": "DATA EXFILTRATION",
+      "title": "Potential Sensitive Data Exposure via `gog` Output",
+      "severity": "MEDIUM",
+      "affected_content": "Sheets get: `gog sheets get <sheetId> \"Tab!A1:D10\" --json`",
+      "explanation": "The skill instructs the agent to retrieve data from Google Sheets and output it in JSON format. If the retrieved data contains sensitive information (e.g., personal data, financial records), it could be inadvertently exposed through the agent's output.",
+      "attack_scenario": "An attacker could craft a malicious query to retrieve sensitive data from a Google Sheet and then access the agent's output, potentially gaining unauthorized access to confidential information.",
+      "remediation": "Implement strict access controls on Google Sheets and limit the scope of data retrieved by the agent. Consider redacting sensitive information before outputting it."
+    },
+    {
+      "id": "SKV-002",
+      "category": "PROMPT INJECTION SUSCEPTIBILITY",
+      "title": "Potential for Prompt Injection via User-Supplied `gog` Arguments",
+      "severity": "HIGH",
+      "affected_content": "Common commands: - Gmail search: `gog gmail search 'newer_than:7d' --max 10",
+      "explanation": "The skill allows users to construct search queries and other commands using user-supplied arguments. An attacker could potentially inject malicious code or commands into these arguments, leading to unauthorized actions.",
+      "attack_scenario": "An attacker could provide a malicious search query to the `gog gmail search` command, potentially retrieving sensitive emails or executing unintended actions within the Gmail account.",
+      "remediation": "Sanitize and validate all user-supplied arguments before passing them to the `gog` CLI. Implement input validation and escaping mechanisms to prevent code injection."
+    },
+    {
+      "id": "SKV-003",
+      "category": "DEPENDENCY / SUPPLY CHAIN ATTACKS",
+      "title": "Potential for Malicious Package Installation via `brew`",
+      "severity": "MEDIUM",
+      "affected_content": "metadata: {\"clawdbot\":{\"emoji\":\"🎮\",\"requires\":{\"bins\":[\"gog\"]},\"install\":[{\"id\":\"brew\",\"kind\":\"brew\",\"formula\":\"steipete/tap/gogcli\",\"bins\":[\"gog\"],\"label\":\"Install gog (brew)\"}],",
+      "explanation": "The skill relies on the `brew` package manager to install the `gog` CLI. If the `steipete/tap/gogcli` formula is compromised or contains malicious code, it could lead to the installation of a backdoored or malicious version of `gog`.",
+      "attack_scenario": "An attacker could compromise the `steipete/tap/gogcli` formula on the `brew` repository. When the skill attempts to install `gog`, it would download and install the malicious version, potentially granting the attacker access to the agent's environment.",
+      "remediation": "Verify the integrity of the `steipete/tap/gogcli` formula before installation. Consider using a trusted package manager or source for installing `gog`."
+    }
+  ],
+  "error": "",
+  "model_name": "google/gemma-2-9b-it",
+  "evaluated_at": "2026-03-23T15:53:10.170463"
+}

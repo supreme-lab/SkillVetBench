@@ -1,0 +1,352 @@
+nohup: ignoring input
+16:12:35  INFO      Backend : LLMClient(type='hf_local', model='mistralai/Mixtral-8x7B-Instruct-v0.1' [4-bit, cuda])
+16:12:35  INFO      
+Found 6 skill file(s) in skills
+16:12:35  INFO      [1/6] SKILL1.md
+16:12:35  INFO        Evaluating: SKILL1.md
+2026-03-17 16:12:55.029177: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-17 16:12:55.050869: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1773785575.148158 2508907 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1773785575.234058 2508907 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+W0000 00:00:1773785575.329441 2508907 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773785575.329514 2508907 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773785575.329520 2508907 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773785575.329524 2508907 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2026-03-17 16:12:55.334687: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+16:13:05  INFO      Note: detected 128 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+16:13:05  INFO      Note: NumExpr detected 128 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+16:13:05  INFO      NumExpr defaulting to 8 threads.
+16:13:10  INFO        Loading: mistralai/Mixtral-8x7B-Instruct-v0.1
+16:13:11  INFO        Device forced: cuda (1 GPU(s): NVIDIA H100 NVL, 93.1 GB total VRAM)
+16:13:11  INFO        Quantization: 4-bit NF4  (bitsandbytes)
+16:13:11  INFO        model_kwargs: ['torch_dtype', 'quantization_config', 'device_map']
+`torch_dtype` is deprecated! Use `dtype` instead!
+`torch_dtype` is deprecated! Use `dtype` instead!
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files:   5%|▌         | 1/19 [05:53<1:46:02, 353.50s/it]Fetching 19 files:  42%|████▏     | 8/19 [05:55<05:55, 32.34s/it]   Fetching 19 files:  47%|████▋     | 9/19 [07:21<06:48, 40.82s/it]Fetching 19 files:  53%|█████▎    | 10/19 [12:02<12:42, 84.76s/it]Fetching 19 files:  58%|█████▊    | 11/19 [12:43<10:04, 75.58s/it]Fetching 19 files:  68%|██████▊   | 13/19 [12:46<04:48, 48.10s/it]Fetching 19 files:  89%|████████▉ | 17/19 [12:47<00:46, 23.47s/it]Fetching 19 files:  95%|█████████▍| 18/19 [13:54<00:30, 30.22s/it]Fetching 19 files: 100%|██████████| 19/19 [13:57<00:00, 25.22s/it]Fetching 19 files: 100%|██████████| 19/19 [13:57<00:00, 44.07s/it]
+16:27:12  INFO      We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/19 [00:00<?, ?it/s]Loading checkpoint shards:   5%|▌         | 1/19 [00:06<02:05,  6.99s/it]Loading checkpoint shards:  11%|█         | 2/19 [00:14<02:04,  7.35s/it]Loading checkpoint shards:  16%|█▌        | 3/19 [00:22<01:58,  7.41s/it]Loading checkpoint shards:  21%|██        | 4/19 [00:29<01:50,  7.37s/it]Loading checkpoint shards:  26%|██▋       | 5/19 [00:36<01:42,  7.32s/it]Loading checkpoint shards:  32%|███▏      | 6/19 [00:44<01:35,  7.34s/it]Loading checkpoint shards:  37%|███▋      | 7/19 [00:51<01:28,  7.40s/it]Loading checkpoint shards:  42%|████▏     | 8/19 [00:58<01:21,  7.40s/it]Loading checkpoint shards:  47%|████▋     | 9/19 [01:06<01:13,  7.33s/it]Loading checkpoint shards:  53%|█████▎    | 10/19 [01:13<01:05,  7.32s/it]Loading checkpoint shards:  58%|█████▊    | 11/19 [01:20<00:58,  7.29s/it]Loading checkpoint shards:  63%|██████▎   | 12/19 [01:27<00:50,  7.23s/it]Loading checkpoint shards:  68%|██████▊   | 13/19 [01:35<00:44,  7.43s/it]Loading checkpoint shards:  74%|███████▎  | 14/19 [01:43<00:37,  7.49s/it]Loading checkpoint shards:  79%|███████▉  | 15/19 [01:53<00:33,  8.33s/it]Loading checkpoint shards:  84%|████████▍ | 16/19 [02:00<00:24,  8.05s/it]Loading checkpoint shards:  89%|████████▉ | 17/19 [02:08<00:15,  7.79s/it]Loading checkpoint shards:  95%|█████████▍| 18/19 [02:15<00:07,  7.65s/it]Loading checkpoint shards: 100%|██████████| 19/19 [02:21<00:00,  7.21s/it]Loading checkpoint shards: 100%|██████████| 19/19 [02:21<00:00,  7.45s/it]
+Device set to use cuda:0
+16:29:40  INFO        VRAM used: 22.8 GB / 93.1 GB
+16:29:40  INFO        Model ready on CUDA
+16:31:17  INFO      [2/6] SKILL2.md
+16:31:17  INFO        Evaluating: SKILL2.md
+16:33:05  INFO      [3/6] SKILL3.md
+16:33:05  INFO        Evaluating: SKILL3.md
+16:33:50  INFO      [4/6] SKILL4.md
+16:33:50  INFO        Evaluating: SKILL4.md
+16:35:27  INFO      [5/6] SKILL5.md
+16:35:27  INFO        Evaluating: SKILL5.md
+16:35:50  INFO      [6/6] SKILL6.md
+16:35:50  INFO        Evaluating: SKILL6.md
+
+╭────────────────────────────────────────╮
+│ 🟡 A-Share Short-Term Decision  MEDIUM │
+│ SKILL1.md                              │
+╰────────────────────────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The A-Share Short-Term Decision skill is designed for A-share short-term    │
+│  trading decisions, using real-data market sentiment, sector rotation, and   │
+│  strong stock scanning. However, the skill introduces risks related to       │
+│  insecure file operations and potential data exfiltration. The overall       │
+│  security posture is medium-risk, with two identified vulnerabilities.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  6.4 Medium                                          │
+│  Vector               :  CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N        │
+│  Impact Score         :  ██░░░░░░░░  2.5/10                                  │
+│  Exploitability Score :  ████░░░░░░  3.9/10                                  │
+│                                                                              │
+│  Attack Vector        :  Network                                             │
+│  Attack Complexity    :  Low                                                 │
+│  Privileges Required  :  None                                                │
+│  User Interaction     :  None                                                │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  Low                                                 │
+│  Integrity            :  Low                                                 │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill's purpose is to provide A-share short-term trading decisions      │
+│  based on various factors. While the design is not inherently risky, the     │
+│  implementation introduces security concerns.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+🚨 2 Vulnerability(ies) Found
+
+╭────────────────────── SKV-001 — Insecure File Writing ───────────────────────╮
+│  Category         :  UNSAFE FILE OPERATIONS                                  │
+│  Severity         :  MEDIUM                                                  │
+│                                                                              │
+│  Affected Content :                                                          │
+│    Appends decision snapshot into `data/decision_log.jsonl`.                 │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     Writing files in a shared data directory may lead to unauthorized file   │
+│  access or data corruption.                                                  │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker with access to the agent system may manipulate the           │
+│  `data/decision_log.jsonl` file, affecting the integrity of the              │
+│  decision-making process.                                                    │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Write files to a secure, isolated location, and restrict access to       │
+│  authorized users and processes.                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────── SKV-002 — Potential Data Exfiltration ────────────────────╮
+│  Category         :  DATA EXFILTRATION                                       │
+│  Severity         :  LOW                                                     │
+│                                                                              │
+│  Affected Content :                                                          │
+│    `compare_prediction_with_market` function loads prediction from log and   │
+│  compares predicted candidates against real market closes.                   │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The implementation may inadvertently expose sensitive data during the    │
+│  comparison process, leading to data exfiltration.                           │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker may exploit this vulnerability to extract sensitive data     │
+│  from the agent system.                                                      │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Implement strict data access controls, and sanitize data before          │
+│  transmission to minimize the risk of data exfiltration.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────── 🚩 Dangerous Patterns Found ─────────────────────────╮
+│   • Appends decision snapshot into `data/decision_log.jsonl`.                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ Address the insecure file operations vulnerability first, followed by the    │
+│ potential data exfiltration issue.                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────╮
+│ 🟡 find-skills  MEDIUM │
+│ SKILL2.md              │
+╰────────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The find-skills skill helps users discover and install agent skills based   │
+│  on their queries. It introduces potential risks through data exfiltration   │
+│  via external links and prompt injection susceptibility.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  5.4 Medium                                          │
+│  Vector               :  CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N        │
+│  Impact Score         :  ██░░░░░░░░  2.5/10                                  │
+│  Exploitability Score :  ███░░░░░░░  2.8/10                                  │
+│                                                                              │
+│  Attack Vector        :  Network                                             │
+│  Attack Complexity    :  Low                                                 │
+│  Privileges Required  :  None                                                │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  Low                                                 │
+│  Integrity            :  Low                                                 │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The find-skills skill is designed to help users find and install relevant   │
+│  skills based on their queries. This design inherently involves processing   │
+│  user-supplied text and accessing external resources, which introduces       │
+│  potential security risks.                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+🚨 2 Vulnerability(ies) Found
+
+╭────────────────── SKV-001 — HTTP requests to external URLs ──────────────────╮
+│  Category         :  DATA EXFILTRATION                                       │
+│  Severity         :  MEDIUM                                                  │
+│                                                                              │
+│  Affected Content :                                                          │
+│    browse skills at: <https://skills.sh/>                                    │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill contains a link to an external website, which could            │
+│  potentially be used for data exfiltration or phishing attacks.              │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker modifies the skills.sh domain to redirect users to a         │
+│  malicious site, stealing their credentials or other sensitive information.  │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Replace external links with internal documentation or remove them        │
+│  entirely.                                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ SKV-002 — Instructions telling the agent to read external documents and act─╮
+│  Category         :  PROMPT INJECTION SUSCEPTIBILITY                         │
+│  Severity         :  LOW                                                     │
+│                                                                              │
+│  Affected Content :                                                          │
+│    When a user asks for help with something, identify: 1. The domain (e.g.,  │
+│  React, testing, design, deployment) 2. The specific task (e.g., writing     │
+│  tests, creating animations, reviewing PRs) 3. Whether this is a common      │
+│  enough task that a skill likely exists                                      │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill instructs the agent to process user-supplied text as           │
+│  instructions, which could potentially be used by an attacker to inject      │
+│  malicious commands.                                                         │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker plants instructions in the user's query, hijacking the       │
+│  agent's behavior and executing arbitrary commands.                          │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Implement strict input validation and sanitization before processing     │
+│  user-supplied text as instructions.                                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────── 🚩 Dangerous Patterns Found ─────────────────────────╮
+│   • external links                                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • user input validation                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ First, remove or replace external links to reduce the risk of data           │
+│ exfiltration. Then, implement strict input validation and sanitization to    │
+│ prevent prompt injection attacks.                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────╮
+│ 🟢 github  LOW │
+│ SKILL3.md      │
+╰────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The GitHub skill interacts with GitHub using the `gh` CLI, focusing on      │
+│  pull requests, workflow runs, and advanced queries. It does not introduce   │
+│  any significant security risks.                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  0.0 None                                            │
+│  Vector               :  CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N        │
+│  Impact Score         :  ░░░░░░░░░░  0.0/10                                  │
+│  Exploitability Score :  ░░░░░░░░░░  0.5/10                                  │
+│                                                                              │
+│  Attack Vector        :  Network                                             │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  High                                                │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  None                                                │
+│  Integrity            :  None                                                │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to interact with GitHub, which inherently involves    │
+│  accessing and manipulating data. However, the design is not risky as it     │
+│  uses the `gh` CLI and specifies repositories, limiting the blast radius of  │
+│  any compromise.                                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────── ✅ Clean Skill ───────────────────────────────╮
+│ No vulnerabilities detected in this skill file.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • Using `--repo owner/repo` to specify the repository                      │
+│   • Using URLs directly when not in a git directory                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ None required, as the skill demonstrates good security practices.            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── ❌ ERROR — SKILL4.md ────────────────────────────╮
+│ JSON parse failed: Expecting ',' delimiter: line 34 column 80 (char 1269)    │
+│ Raw: {                                                                       │
+│   "skill_name": "gog",                                                       │
+│   "overall_risk": "MEDIUM",                                                  │
+│   "is_vulnerable": true,                                                     │
+│   "vulnerability_count": 2,                                                  │
+│                                                                              │
+│   "cvss_metrics": {                                                          │
+│     "AV": "N",                                                               │
+│     "AC": "L",                                                               │
+│     "PR": "N",                                                               │
+│     "UI": "N",                                                               │
+│     "S": "U",                                                                │
+│     "C": "L",                                                                │
+│     "I": "L",                                                                │
+│     "A": "N"                                                                 │
+│   },                                                                         │
+│                                                                              │
+│   "vulnerabilities": [                                                       │
+│     {                                                                        │
+│       "id": "SKV-001",                                                       │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── ❌ ERROR — SKILL5.md ────────────────────────────╮
+│ No JSON in LLM response. Raw: I have evaluated the provided skill file named │
+│ SKILL5.md and found no vulnerabilities based on the categories you provided. │
+│ The skill file contains documentation and instructions for an AI agent to    │
+│ log learnings and errors for continuous improvement, but it does not contain │
+│ any code blocks or natura                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────╮
+│ 🟢 summarize  LOW │
+│ SKILL6.md         │
+╰───────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The summarize skill is designed to summarize URLs, local files, and         │
+│  YouTube links using the summarize CLI. It has no inherent security          │
+│  vulnerabilities, but users should be cautious with the handling of API      │
+│  keys and the processing of user-supplied URLs and files.                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  0.0 None                                            │
+│  Vector               :  CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:N/I:N/A:N        │
+│  Impact Score         :  ░░░░░░░░░░  0.0/10                                  │
+│  Exploitability Score :  █░░░░░░░░░  0.7/10                                  │
+│                                                                              │
+│  Attack Vector        :  Network                                             │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  High                                                │
+│  User Interaction     :  None                                                │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  None                                                │
+│  Integrity            :  None                                                │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The summarize skill's purpose is to summarize various types of content      │
+│  using a summarize CLI. Its design is not inherently risky, but there is     │
+│  potential for incidental risks due to the processing of user-supplied URLs  │
+│  and files.                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────── ✅ Clean Skill ───────────────────────────────╮
+│ No vulnerabilities detected in this skill file.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • The skill uses a specific CLI tool for summarization, which reduces the  │
+│ risk of command injection vulnerabilities.                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ None at this time.                                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────────────────────────────╮
+│ 🔐 SKILL SECURITY EVALUATION — BATCH SUMMARY │
+╰──────────────────────────────────────────────╯
+╭────────────────────────────────┬────────────┬──────────────┬────────┬─────────
+│ Skill File                     │    Risk    │  CVSS Score  │ Vulns  │ Top Find
+├────────────────────────────────┼────────────┼──────────────┼────────┼─────────
+│ SKILL1.md                      │ 🟡 MEDIUM  │     6.4      │   2    │ Insecure
+│ SKILL2.md                      │ 🟡 MEDIUM  │     5.4      │   2    │ HTTP req
+│ SKILL3.md                      │   🟢 LOW   │     0.0      │   0    │ —       
+│ SKILL4.md                      │  ❌ ERROR  │     0.0      │   0    │ —       
+│ SKILL5.md                      │  ❌ ERROR  │     0.0      │   0    │ —       
+│ SKILL6.md                      │   🟢 LOW   │     0.0      │   0    │ —       
+╰────────────────────────────────┴────────────┴──────────────┴────────┴─────────
+
+  Total: 6  |  Vulnerable: 2  |  MEDIUM: 2  LOW: 2
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL1_security_report_20260317_163637.pdf
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL2_security_report_20260317_163637.pdf
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL3_security_report_20260317_163637.pdf
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL4_security_report_20260317_163637.pdf
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL5_security_report_20260317_163637.pdf
+16:36:37  INFO      PDF report saved  → reports/pdfs/mistralai_Mixtral-8x7B-Instruct-v0.1/SKILL6_security_report_20260317_163637.pdf

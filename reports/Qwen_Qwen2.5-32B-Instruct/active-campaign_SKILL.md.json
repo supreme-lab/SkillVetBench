@@ -1,0 +1,56 @@
+{
+  "filename": "active-campaign_SKILL.md",
+  "skill_name": "active-campaign",
+  "overall_risk": "MEDIUM",
+  "is_vulnerable": true,
+  "vulnerability_count": 2,
+  "cvss_base_score": 5.5,
+  "cvss_severity": "Medium",
+  "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:L",
+  "impact_score": 3.4,
+  "exploitability_score": 2.1,
+  "attack_vector": "Network",
+  "attack_complexity": "Low",
+  "privileges_required": "Low",
+  "user_interaction": "Required",
+  "scope": "Unchanged",
+  "confidentiality_impact": "Low",
+  "integrity_impact": "Low",
+  "availability_impact": "Low",
+  "executive_summary": "The ActiveCampaign skill integrates with the ActiveCampaign API using OAuth authentication. It poses medium risk due to potential exposure of API keys and data exfiltration through API requests. Proper handling of secrets and monitoring of API usage are recommended to mitigate these risks.",
+  "skill_purpose_analysis": "The skill is designed to facilitate interaction with the ActiveCampaign API for managing contacts, deals, tags, lists, automations, and campaigns. Its design inherently involves handling sensitive data and credentials, making it inherently risky if not properly secured.",
+  "dangerous_patterns": [
+    "Hardcoded API key example",
+    "Sensitive data retrieval via API requests"
+  ],
+  "safe_patterns": [
+    "Use of environment variables for API key storage",
+    "Demonstration of secure API request handling"
+  ],
+  "remediation_priority": "Prioritize securing the storage and handling of API keys to prevent unauthorized access. Implement monitoring and logging for API requests to detect and respond to potential data exfiltration attempts.",
+  "vulnerabilities": [
+    {
+      "id": "SKV-001",
+      "category": "CREDENTIAL / SECRET EXPOSURE",
+      "title": "Hardcoded API Key Exposure",
+      "severity": "MEDIUM",
+      "affected_content": "bash\nexport MATON_API_KEY=\"YOUR_API_KEY\"\n",
+      "explanation": "The skill provides an example of setting the API key using an environment variable in plain text. This can lead to accidental exposure of the API key if the environment is misconfigured or logged.",
+      "attack_scenario": "An attacker with access to the environment where the skill is executed can retrieve the API key from the environment variables, leading to unauthorized access to ActiveCampaign resources.",
+      "remediation": "Ensure that the API key is securely stored and accessed through secure methods such as encrypted vaults or secure environment management systems."
+    },
+    {
+      "id": "SKV-002",
+      "category": "DATA EXFILTRATION",
+      "title": "Potential Data Exfiltration via API Requests",
+      "severity": "LOW",
+      "affected_content": "bash\npython <<'EOF'\nimport urllib.request, os, json\nreq = urllib.request.Request('https://gateway.maton.ai/active-campaign/api/3/contacts')\nreq.add_header('Authorization', f'Bearer {os.environ[\"MATON_API_KEY\"]}')\nprint(json.dumps(json.load(urllib.request.urlopen(req)), indent=2))\nEOF\n",
+      "explanation": "The skill demonstrates making API requests to ActiveCampaign, which could potentially exfiltrate sensitive data if the API responses contain confidential information.",
+      "attack_scenario": "An attacker could manipulate the API requests to retrieve sensitive data from ActiveCampaign and then exfiltrate this data outside the secure environment.",
+      "remediation": "Implement strict access controls and ensure that only necessary data is requested and returned by the API. Monitor API usage and implement logging to detect unusual activity."
+    }
+  ],
+  "error": "",
+  "model_name": "Qwen/Qwen2.5-32B-Instruct",
+  "evaluated_at": "2026-03-24T16:18:41.475948"
+}

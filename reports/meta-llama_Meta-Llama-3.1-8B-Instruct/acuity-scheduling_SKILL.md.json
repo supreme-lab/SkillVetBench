@@ -1,0 +1,79 @@
+{
+  "filename": "acuity-scheduling_SKILL.md",
+  "skill_name": "acuity-scheduling",
+  "overall_risk": "MEDIUM",
+  "is_vulnerable": true,
+  "vulnerability_count": 4,
+  "cvss_base_score": 6.3,
+  "cvss_severity": "Medium",
+  "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L",
+  "impact_score": 3.4,
+  "exploitability_score": 2.8,
+  "attack_vector": "Network",
+  "attack_complexity": "Low",
+  "privileges_required": "Low",
+  "user_interaction": "None",
+  "scope": "Unchanged",
+  "confidentiality_impact": "Low",
+  "integrity_impact": "Low",
+  "availability_impact": "Low",
+  "executive_summary": "This skill integrates with the Acuity Scheduling API to manage appointments, calendars, and clients. However, it contains several security vulnerabilities, including potential command injection, path traversal, remote code execution, and data exfiltration. To remediate these issues, the skill should use secure methods to store and retrieve API keys, sanitize and validate URL parameters and JSON data, and authenticate and authorize API requests.",
+  "skill_purpose_analysis": "The skill is designed to integrate with the Acuity Scheduling API to manage appointments, calendars, and clients. However, its design is incidentally risky due to the potential security vulnerabilities it contains.",
+  "dangerous_patterns": [
+    "os.environ['MATON_API_KEY']",
+    "req.add_header('Authorization', f'Bearer {os.environ['MATON_API_KEY']}')",
+    "req = urllib.request.Request('https://gateway.maton.ai/acuity-scheduling/api/v1/appointments?max=10')",
+    "data = json.dumps({'app': 'acuity-scheduling'}).encode()"
+  ],
+  "safe_patterns": [
+    "Using environment variables to store API keys",
+    "Sanitizing and validating URL parameters",
+    "Using secure methods to authenticate and authorize API requests"
+  ],
+  "remediation_priority": "The skill should prioritize remediation of the potential remote code execution vulnerability via JSON data, as it poses the highest risk to the system.",
+  "vulnerabilities": [
+    {
+      "id": "SKV-001",
+      "category": "COMMAND/SHELL INJECTION",
+      "title": "Potential Command Injection via Environment Variable",
+      "severity": "MEDIUM",
+      "affected_content": "req.add_header('Authorization', f'Bearer {os.environ['MATON_API_KEY']}')",
+      "explanation": "The skill uses environment variables to inject API keys into requests. An attacker could potentially manipulate the environment variable to inject malicious commands.",
+      "attack_scenario": "An attacker could set the `MATON_API_KEY` environment variable to a malicious command, which would be executed when the skill makes a request.",
+      "remediation": "Use a secure method to store and retrieve API keys, such as a secrets manager or a secure storage solution."
+    },
+    {
+      "id": "SKV-002",
+      "category": "UNSAFE FILE OPERATIONS",
+      "title": "Potential Path Traversal via URL Parameters",
+      "severity": "MEDIUM",
+      "affected_content": "req = urllib.request.Request('https://gateway.maton.ai/acuity-scheduling/api/v1/appointments?max=10')",
+      "explanation": "The skill uses URL parameters to construct requests, which could potentially lead to path traversal attacks if not properly sanitized.",
+      "attack_scenario": "An attacker could manipulate the `max` parameter to access sensitive data or execute malicious code.",
+      "remediation": "Use a secure method to sanitize and validate URL parameters, such as using a whitelist of allowed parameters."
+    },
+    {
+      "id": "SKV-003",
+      "category": "REMOTE CODE EXECUTION / DYNAMIC CODE",
+      "title": "Potential Remote Code Execution via JSON Data",
+      "severity": "HIGH",
+      "affected_content": "data = json.dumps({'app': 'acuity-scheduling'}).encode()",
+      "explanation": "The skill uses JSON data to construct requests, which could potentially lead to remote code execution attacks if not properly sanitized.",
+      "attack_scenario": "An attacker could manipulate the JSON data to execute malicious code on the server.",
+      "remediation": "Use a secure method to sanitize and validate JSON data, such as using a whitelist of allowed fields and values."
+    },
+    {
+      "id": "SKV-004",
+      "category": "DATA EXFILTRATION",
+      "title": "Potential Data Exfiltration via API Requests",
+      "severity": "MEDIUM",
+      "affected_content": "req = urllib.request.Request('https://gateway.maton.ai/acuity-scheduling/api/v1/appointments')",
+      "explanation": "The skill makes API requests to a third-party service, which could potentially lead to data exfiltration if not properly secured.",
+      "attack_scenario": "An attacker could intercept or manipulate the API requests to access sensitive data.",
+      "remediation": "Use a secure method to authenticate and authorize API requests, such as using OAuth or API keys."
+    }
+  ],
+  "error": "",
+  "model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+  "evaluated_at": "2026-03-23T17:26:40.840155"
+}

@@ -1,0 +1,14 @@
+## CVSS v4.0 calculation method
+1. FIRST CVSS v4.0 Specification Document (the standard itself)
+https://www.first.org/cvss/v4.0/specification-document
+https://www.first.org/cvss/v4-0/cvss-v40-specification.pdf
+
+2. Red Hat / FIRST JavaScript Reference Calculator (the lookup table source)
+https://github.com/RedHatProductSecurity/cvss-v4-calculator
+
+3. Red Hat CVSS Python Library (algorithm implementation reference + verification)
+https://github.com/RedHatProductSecurity/cvss
+https://pypi.org/project/cvss/
+
+4. FIRST CVSS v4.0 FAQ (test vectors + library list)
+https://www.first.org/cvss/v4.0/faq

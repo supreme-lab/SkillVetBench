@@ -1,0 +1,520 @@
+nohup: ignoring input
+15:59:36  INFO      Backend : LLMClient(type='hf_local', model='Qwen/Qwen2.5-14B-Instruct' [4-bit, cuda])
+15:59:36  INFO      
+Found 6 skill file(s) in skills
+15:59:36  INFO      [1/6] SKILL1.md
+15:59:36  INFO        Evaluating: SKILL1.md
+2026-03-17 15:59:47.253865: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-03-17 15:59:47.336949: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:467] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1773784787.373195 2491455 cuda_dnn.cc:8579] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1773784787.436651 2491455 cuda_blas.cc:1407] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+W0000 00:00:1773784787.467309 2491455 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773784787.467402 2491455 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773784787.467409 2491455 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+W0000 00:00:1773784787.467414 2491455 computation_placer.cc:177] computation placer already registered. Please check linkage and avoid linking the same target more than once.
+2026-03-17 15:59:47.534426: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX512_FP16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+AttributeError: 'MessageFactory' object has no attribute 'GetPrototype'
+15:59:52  INFO      Note: detected 128 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+15:59:52  INFO      Note: NumExpr detected 128 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+15:59:52  INFO      NumExpr defaulting to 8 threads.
+15:59:56  INFO        Loading: Qwen/Qwen2.5-14B-Instruct
+15:59:58  INFO        Device forced: cuda (1 GPU(s): NVIDIA H100 NVL, 93.1 GB total VRAM)
+15:59:58  INFO        Quantization: 4-bit NF4  (bitsandbytes)
+15:59:58  INFO        model_kwargs: ['torch_dtype', 'quantization_config', 'device_map']
+`torch_dtype` is deprecated! Use `dtype` instead!
+`torch_dtype` is deprecated! Use `dtype` instead!
+16:00:00  INFO      We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/8 [00:00<?, ?it/s]Loading checkpoint shards:  12%|█▎        | 1/8 [00:04<00:31,  4.51s/it]Loading checkpoint shards:  25%|██▌       | 2/8 [00:11<00:36,  6.09s/it]Loading checkpoint shards:  38%|███▊      | 3/8 [00:19<00:33,  6.68s/it]Loading checkpoint shards:  50%|█████     | 4/8 [00:25<00:26,  6.57s/it]Loading checkpoint shards:  62%|██████▎   | 5/8 [00:35<00:23,  7.92s/it]Loading checkpoint shards:  75%|███████▌  | 6/8 [00:47<00:18,  9.30s/it]Loading checkpoint shards:  88%|████████▊ | 7/8 [00:58<00:09,  9.71s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:59<00:00,  7.08s/it]Loading checkpoint shards: 100%|██████████| 8/8 [00:59<00:00,  7.47s/it]
+Device set to use cuda:0
+16:01:01  INFO        VRAM used: 9.3 GB / 93.1 GB
+16:01:01  INFO        Model ready on CUDA
+16:01:30  INFO      [2/6] SKILL2.md
+16:01:31  INFO        Evaluating: SKILL2.md
+16:02:47  INFO      [3/6] SKILL3.md
+16:02:47  INFO        Evaluating: SKILL3.md
+16:03:15  INFO      [4/6] SKILL4.md
+16:03:15  INFO        Evaluating: SKILL4.md
+16:04:26  INFO      [5/6] SKILL5.md
+16:04:26  INFO        Evaluating: SKILL5.md
+16:04:53  INFO      [6/6] SKILL6.md
+16:04:53  INFO        Evaluating: SKILL6.md
+
+╭─────────────────────────────────────╮
+│ 🟢 A-Share Short-Term Decision  LOW │
+│ SKILL1.md                           │
+╰─────────────────────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The A-Share Short-Term Decision skill performs financial analysis and       │
+│  generates reports based on market data. It uses Python scripts to execute   │
+│  commands but does not exhibit any significant security vulnerabilities.     │
+│  The skill does not handle external inputs that could lead to command        │
+│  injection or unsafe file operations. Overall, the security posture is       │
+│  low-risk.                                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  0.0 None                                            │
+│  Vector               :  CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N        │
+│  Impact Score         :  ░░░░░░░░░░  0.0/10                                  │
+│  Exploitability Score :  ░░░░░░░░░░  0.3/10                                  │
+│                                                                              │
+│  Attack Vector        :  Local                                               │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  High                                                │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  None                                                │
+│  Integrity            :  None                                                │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  This skill is designed to provide short-term trading decisions for Chinese  │
+│  A-shares. Its primary function involves running financial analysis scripts  │
+│  and generating reports. The inherent risk is low since it does not involve  │
+│  direct interaction with potentially malicious external inputs.              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────── ✅ Clean Skill ───────────────────────────────╮
+│ No vulnerabilities detected in this skill file.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • No shell commands or unsafe file operations found.                       │
+│   • No external input handling that could lead to command injection.         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ None needed as there are no identified vulnerabilities.                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────╮
+│ 🟡 find-skills  MEDIUM │
+│ SKILL2.md              │
+╰────────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The 'find-skills' skill helps users discover and install agent skills       │
+│  based on their queries. It introduces medium risk due to potential remote   │
+│  code execution through dynamic skill installation and data exfiltration     │
+│  via external HTTP requests. The overall security posture is moderately      │
+│  risky, requiring careful management of skill sources and secure handling    │
+│  of HTTP requests.                                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  4.6 Medium                                          │
+│  Vector               :  CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L        │
+│  Impact Score         :  ███░░░░░░░  3.4/10                                  │
+│  Exploitability Score :  █░░░░░░░░░  1.2/10                                  │
+│                                                                              │
+│  Attack Vector        :  Network                                             │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  Low                                                 │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  Low                                                 │
+│  Integrity            :  Low                                                 │
+│  Availability         :  Low                                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to assist users in finding and installing agent       │
+│  skills, which is inherently risky due to the potential for executing        │
+│  untrusted code. However, the risk can be mitigated by implementing strict   │
+│  validation of skill sources and securing HTTP requests.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+🚨 2 Vulnerability(ies) Found
+
+╭───────────── SKV-001 — Dynamic Installation of Untrusted Skills ─────────────╮
+│  Category         :  REMOTE CODE EXECUTION / DYNAMIC CODE                    │
+│  Severity         :  HIGH                                                    │
+│                                                                              │
+│  Affected Content :                                                          │
+│    npx skills add <owner/repo@skill> -g -y                                   │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill allows the installation of arbitrary skills from GitHub or     │
+│  other sources using the 'npx skills add' command. If an attacker can        │
+│  influence the owner/repo@skill parameter, they could potentially install    │
+│  malicious code.                                                             │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker could craft a query that includes a malicious skill URL.     │
+│  For example, if the user asks to install a skill named'malicious-skill',    │
+│  the agent would execute 'npx skills add malicious-skill'.                   │
+│  If'malicious-skill' contains harmful code, it could lead to remote code     │
+│  execution.                                                                  │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Implement strict validation of the skill source and ensure that only     │
+│  trusted repositories are allowed. Additionally, avoid installing skills     │
+│  globally or skipping confirmation prompts.                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────── SKV-002 — External HTTP Requests for Skill Discovery ────────────╮
+│  Category         :  DATA EXFILTRATION                                       │
+│  Severity         :  MEDIUM                                                  │
+│                                                                              │
+│  Affected Content :                                                          │
+│    npx skills find                                                           │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill uses the 'npx skills find' command to search for skills        │
+│  interactively or by keyword. This command makes HTTP requests to external   │
+│  services to fetch skill information, which could potentially include        │
+│  sensitive data.                                                             │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker could manipulate the query to include sensitive information  │
+│  in the HTTP request. If the skill sends this data to an external service,   │
+│  it could be intercepted or logged, leading to data exfiltration.            │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Ensure that all HTTP requests made by the skill are secured and do not   │
+│  transmit sensitive data. Consider caching responses locally to reduce the   │
+│  number of external requests.                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────── 🚩 Dangerous Patterns Found ─────────────────────────╮
+│   • npx skills add <owner/repo@skill> -g -y                                  │
+│   • npx skills find                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • npx skills check                                                         │
+│   • npx skills update                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ First, implement strict validation of skill sources to prevent the           │
+│ installation of untrusted skills. Then, ensure that all HTTP requests made   │
+│ by the skill are secured and do not transmit sensitive data.                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────╮
+│ 🟢 github  LOW │
+│ SKILL3.md      │
+╰────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  This skill uses the `gh` CLI to interact with GitHub, primarily for         │
+│  managing pull requests and running workflows. It does not introduce         │
+│  significant security risks as it does not execute arbitrary commands,       │
+│  handle unsafe file operations, or transmit sensitive data. The risk is low  │
+│  due to the limited scope of actions and the need for explicit repository    │
+│  specification.                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  0.0 None                                            │
+│  Vector               :  CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N        │
+│  Impact Score         :  ░░░░░░░░░░  0.0/10                                  │
+│  Exploitability Score :  ░░░░░░░░░░  0.3/10                                  │
+│                                                                              │
+│  Attack Vector        :  Local                                               │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  High                                                │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  None                                                │
+│  Integrity            :  None                                                │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to facilitate interactions with GitHub using the      │
+│  `gh` CLI. Its purpose is inherently safe as it focuses on specific,         │
+│  well-defined operations that do not involve executing arbitrary code or     │
+│  handling sensitive data.                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────── ✅ Clean Skill ───────────────────────────────╮
+│ No vulnerabilities detected in this skill file.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • Explicit repository specification (--repo owner/repo)                    │
+│   • Limited command scope                                                    │
+│   • No unsafe file operations                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ None needed as there are no identified vulnerabilities.                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────╮
+│ 🟡 gog  MEDIUM │
+│ SKILL4.md      │
+╰────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The gog skill provides a CLI interface for interacting with Google          │
+│  Workspace services. It introduces medium-level risks due to potential       │
+│  command injection and data exfiltration vulnerabilities. The setup          │
+│  instructions involve executing shell commands and handling OAuth            │
+│  credentials, both of which can be exploited if not properly secured.        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  4.2 Medium                                          │
+│  Vector               :  CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L        │
+│  Impact Score         :  ███░░░░░░░  3.4/10                                  │
+│  Exploitability Score :  █░░░░░░░░░  0.8/10                                  │
+│                                                                              │
+│  Attack Vector        :  Local                                               │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  Low                                                 │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  Low                                                 │
+│  Integrity            :  Low                                                 │
+│  Availability         :  Low                                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to facilitate interaction with Google Workspace       │
+│  services through a CLI. While its primary purpose is benign, the handling   │
+│  of OAuth credentials and shell commands introduces inherent risks that      │
+│  need to be mitigated.                                                       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+🚨 2 Vulnerability(ies) Found
+
+╭───────────────────── SKV-001 — Shell Command Execution ──────────────────────╮
+│  Category         :  COMMAND/SHELL INJECTION                                 │
+│  Severity         :  HIGH                                                    │
+│                                                                              │
+│  Affected Content :                                                          │
+│    The setup instructions include shell commands that could be executed by   │
+│  the agent.                                                                  │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The setup instructions involve running shell commands like `gog auth     │
+│  credentials /path/to/client_secret.json`. If an attacker can control the    │
+│  `/path/to/client_secret.json`, they might inject malicious commands.        │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker could modify the client_secret.json path to point to a       │
+│  different location where they have placed a malicious script. When the      │
+│  agent runs the command, it would execute the attacker's script instead of   │
+│  the intended one.                                                           │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Ensure that the path to the client_secret.json is securely managed and   │
+│  cannot be altered by unauthorized users.                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────── SKV-002 — Potential Data Exfiltration via OAuth Credentials ─────────╮
+│  Category         :  DATA EXFILTRATION                                       │
+│  Severity         :  MEDIUM                                                  │
+│                                                                              │
+│  Affected Content :                                                          │
+│    The setup involves storing OAuth credentials which could potentially be   │
+│  exfiltrated.                                                                │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     OAuth credentials stored in client_secret.json can be accessed by the    │
+│  agent. If the agent is compromised, these credentials could be              │
+│  exfiltrated, leading to potential data leakage.                             │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker gains access to the agent and retrieves the OAuth            │
+│  credentials stored in client_secret.json. They then use these credentials   │
+│  to gain access to the Google Workspace services associated with the agent.  │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Store OAuth credentials securely and limit access to them. Consider      │
+│  using environment variables or secure vaults for storing sensitive          │
+│  information.                                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────── 🚩 Dangerous Patterns Found ─────────────────────────╮
+│   • gog auth credentials /path/to/client_secret.json                         │
+│   • gog auth add you@gmail.com --services                                    │
+│ gmail,calendar,drive,contacts,sheets,docs                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • Setting GOG_ACCOUNT environment variable to avoid repetition of account  │
+│ details in commands                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ First address the storage and handling of OAuth credentials to prevent data  │
+│ exfiltration. Then ensure that paths and commands are securely managed to    │
+│ prevent command injection.                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────────╮
+│ 🟢 self-improvement  LOW │
+│ SKILL5.md                │
+╰──────────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The self-improvement skill captures learnings, errors, and feature          │
+│  requests in markdown files for continuous improvement. It poses minimal     │
+│  risk as it primarily involves logging and organizing information locally,   │
+│  with no direct command execution or data exfiltration.                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  0.0 None                                            │
+│  Vector               :  CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:N/I:N/A:N        │
+│  Impact Score         :  ░░░░░░░░░░  0.0/10                                  │
+│  Exploitability Score :  ░░░░░░░░░░  0.3/10                                  │
+│                                                                              │
+│  Attack Vector        :  Local                                               │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  High                                                │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  None                                                │
+│  Integrity            :  None                                                │
+│  Availability         :  None                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to enhance the agent's performance by capturing and   │
+│  reviewing learnings, errors, and feature requests. While it involves file   │
+│  operations, these are limited to safe, local markdown files and do not      │
+│  pose significant security risks.                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────── ✅ Clean Skill ───────────────────────────────╮
+│ No vulnerabilities detected in this skill file.                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • Logging to local markdown files                                          │
+│   • No command execution                                                     │
+│   • No data exfiltration                                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ None required as the skill is already secure.                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────╮
+│ 🟡 summarize  MEDIUM │
+│ SKILL6.md            │
+╰──────────────────────╯
+╭──────────────────────────── 📋 Executive Summary ────────────────────────────╮
+│  The'summarize' skill is designed to summarize URLs, files, and YouTube      │
+│  links using various models. It introduces medium to high risks due to       │
+│  potential data exfiltration, credential exposure, and indirect injection    │
+│  of malicious content. These vulnerabilities could allow attackers to leak   │
+│  sensitive data or gain unauthorized access to API keys.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────── 📊 CVSS v3.1 Metrics ────────────────────────────╮
+│  CVSS v3.1 Base Score :  4.2 Medium                                          │
+│  Vector               :  CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:L        │
+│  Impact Score         :  ███░░░░░░░  3.4/10                                  │
+│  Exploitability Score :  █░░░░░░░░░  0.8/10                                  │
+│                                                                              │
+│  Attack Vector        :  Local                                               │
+│  Attack Complexity    :  High                                                │
+│  Privileges Required  :  Low                                                 │
+│  User Interaction     :  Required                                            │
+│  Scope                :  Unchanged                                           │
+│  Confidentiality      :  Low                                                 │
+│  Integrity            :  Low                                                 │
+│  Availability         :  Low                                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── 🎯 Skill Purpose Analysis ──────────────────────────╮
+│  The skill is designed to provide a convenient way to summarize various      │
+│  types of content. However, its reliance on external URLs and files, along   │
+│  with the need for API keys, makes it inherently risky if not properly       │
+│  secured.                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+🚨 3 Vulnerability(ies) Found
+
+╭─────── SKV-001 — Summarization of URLs can lead to data exfiltration ────────╮
+│  Category         :  DATA EXFILTRATION                                       │
+│  Severity         :  HIGH                                                    │
+│                                                                              │
+│  Affected Content :                                                          │
+│    bash                                                                      │
+│  summarize "https://example.com" --model google/gemini-3-flash-preview       │
+│                                                                              │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill allows summarizing URLs, which can potentially include         │
+│  sensitive information. If the URL points to a resource containing           │
+│  confidential data, summarizing it could inadvertently transmit that data    │
+│  outside the secure environment.                                             │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker could provide a URL pointing to a document containing        │
+│  sensitive information. The agent would then fetch and summarize the         │
+│  content, potentially leaking sensitive data through the summarization       │
+│  service.                                                                    │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Restrict the URLs that can be summarized to trusted sources or ensure    │
+│  that only public, non-sensitive URLs are processed.                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────── SKV-002 — Hardcoded API keys in configuration ────────────────╮
+│  Category         :  CREDENTIAL / SECRET EXPOSURE                            │
+│  Severity         :  HIGH                                                    │
+│                                                                              │
+│  Affected Content :                                                          │
+│    - OpenAI: `OPENAI_API_KEY`                                                │
+│  - Anthropic: `ANTHROPIC_API_KEY`                                            │
+│  - xAI: `XAI_API_KEY`                                                        │
+│  - Google: `GEMINI_API_KEY` (aliases: `GOOGLE_GENERATIVE_AI_API_KEY`,        │
+│  `GOOGLE_API_KEY`)                                                           │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill requires setting API keys in the environment, which could be   │
+│  hardcoded or stored insecurely. This exposes the risk of credential         │
+│  leakage if the environment variables are not properly managed.              │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker gains access to the environment where the skill runs and     │
+│  retrieves the API keys, allowing them to make unauthorized API calls using  │
+│  the stolen credentials.                                                     │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Ensure that API keys are securely stored and never hardcoded in the      │
+│  skill or environment variables. Use secure vaults or secrets management     │
+│  solutions.                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────── SKV-003 — Processing of external content as input ──────────────╮
+│  Category         :  INDIRECT / EMBEDDED INJECTION                           │
+│  Severity         :  MEDIUM                                                  │
+│                                                                              │
+│  Affected Content :                                                          │
+│    bash                                                                      │
+│  summarize "/path/to/file.pdf" --model google/gemini-3-flash-preview         │
+│                                                                              │
+│                                                                              │
+│  ⚠  Why it is vulnerable:                                                    │
+│     The skill processes external files and URLs, which could contain         │
+│  malicious content. If an attacker can control the input, they might inject  │
+│  harmful content that gets processed by the summarization tool.              │
+│                                                                              │
+│  🎯 Attack Scenario:                                                         │
+│     An attacker provides a crafted PDF or URL that contains malicious        │
+│  content. When the agent summarizes the input, it could execute unintended   │
+│  actions or leak sensitive data.                                             │
+│                                                                              │
+│  🛡  Remediation:                                                             │
+│     Validate and sanitize all inputs before processing them with the         │
+│  summarization tool. Ensure that only trusted and sanitized inputs are       │
+│  allowed.                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────── 🚩 Dangerous Patterns Found ─────────────────────────╮
+│   • summarize "https://example.com"                                          │
+│   • OPENAI_API_KEY                                                           │
+│   • summarize "/path/to/file.pdf"                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────── ✅ Safe Practices Observed ─────────────────────────╮
+│   • --model google/gemini-3-flash-preview                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────── 🔧 Remediation Priority ───────────────────────────╮
+│ First address the credential exposure by ensuring secure storage of API      │
+│ keys. Then restrict the URLs and files that can be processed to prevent data │
+│ exfiltration and indirect injection attacks.                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭──────────────────────────────────────────────╮
+│ 🔐 SKILL SECURITY EVALUATION — BATCH SUMMARY │
+╰──────────────────────────────────────────────╯
+╭────────────────────────────────┬────────────┬──────────────┬────────┬─────────
+│ Skill File                     │    Risk    │  CVSS Score  │ Vulns  │ Top Find
+├────────────────────────────────┼────────────┼──────────────┼────────┼─────────
+│ SKILL2.md                      │ 🟡 MEDIUM  │     4.6      │   2    │ Dynamic 
+│                                │            │              │        │ Skills  
+│ SKILL4.md                      │ 🟡 MEDIUM  │     4.2      │   2    │ Shell Co
+│ SKILL6.md                      │ 🟡 MEDIUM  │     4.2      │   3    │ Summariz
+│                                │            │              │        │ data exf
+│ SKILL1.md                      │   🟢 LOW   │     0.0      │   0    │ —       
+│ SKILL3.md                      │   🟢 LOW   │     0.0      │   0    │ —       
+│ SKILL5.md                      │   🟢 LOW   │     0.0      │   0    │ —       
+╰────────────────────────────────┴────────────┴──────────────┴────────┴─────────
+
+  Total: 6  |  Vulnerable: 3  |  MEDIUM: 3  LOW: 3
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL1_security_report_20260317_160622.pdf
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL2_security_report_20260317_160622.pdf
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL3_security_report_20260317_160622.pdf
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL4_security_report_20260317_160622.pdf
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL5_security_report_20260317_160622.pdf
+16:06:23  INFO      PDF report saved  → reports/pdfs/Qwen_Qwen2.5-14B-Instruct/SKILL6_security_report_20260317_160622.pdf
