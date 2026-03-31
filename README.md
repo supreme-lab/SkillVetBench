@@ -1,8 +1,8 @@
 ---
 title: AgentAIBench Skill Security Evaluator
 emoji: 🔐
-colorFrom: blue
-colorTo: teal
+colorFrom: indigo
+colorTo: green
 sdk: docker
 app_port: 7860
 pinned: false
