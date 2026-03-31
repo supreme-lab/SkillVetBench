@@ -22,6 +22,7 @@ COPY metrics.json .
 COPY check_gpu.py .
 COPY clawhub_fetch.py .
 COPY templates.html .
+COPY metrics.json .
 
 # Copy reports and skills directories
 COPY reports/ ./reports/
