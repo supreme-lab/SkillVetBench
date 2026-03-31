@@ -21,6 +21,7 @@ COPY reporter.py .
 COPY metrics.json .
 COPY check_gpu.py .
 COPY clawhub_fetch.py .
+COPY templates.html .
 
 # Copy reports and skills directories
 COPY reports/ ./reports/
