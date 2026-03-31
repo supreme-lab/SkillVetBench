@@ -118,6 +118,27 @@ tr:hover td{background:#f8faff}
 .hf-size-badge{font-family:var(--mono);font-size:10px;font-weight:700;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:var(--teal);padding:1px 6px;border-radius:4px;flex-shrink:0}
 @keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 tr{animation:fadein .22s ease both}
+/* ── Per-column filters ── */
+.cf-row th{padding:4px 6px;background:#f8faff;border-bottom:1.5px solid var(--border)}
+.cf-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;
+          padding:4px 7px;font-family:var(--mono);font-size:10px;color:var(--text);
+          transition:border-color .15s;min-width:0}
+.cf-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
+.cf-input::placeholder{color:var(--text3)}
+.cf-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;
+           padding:4px 4px;font-family:var(--mono);font-size:10px;color:var(--text);
+           transition:border-color .15s;cursor:pointer;min-width:0}
+.cf-select:focus{outline:none;border-color:var(--accent)}
+.cf-active .cf-input,.cf-active .cf-select{border-color:var(--accent);background:rgba(37,99,235,.04);color:var(--accent);font-weight:700}
+.cf-clear{display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);
+          background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:2px;line-height:1}
+.cf-clear:hover{color:var(--c-crit)}
+.cf-wrap{position:relative;display:flex;align-items:center}
+.cf-wrap .cf-clear{display:block}
+.filters-active-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(37,99,235,.1);
+  border:1px solid rgba(37,99,235,.3);color:var(--accent);border-radius:100px;
+  padding:2px 8px;font-size:10px;font-family:var(--mono);font-weight:700;cursor:pointer}
+.filters-active-badge:hover{background:rgba(220,38,38,.1);border-color:var(--c-crit);color:var(--c-crit)}
 </style>
 </head>
 <body>
@@ -185,12 +206,14 @@ tr{animation:fadein .22s ease both}
     <option>CRITICAL</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option><option>NONE</option>
   </select>
   <span id="row-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto"></span>
+  <span id="filters-badge" style="display:none" class="filters-active-badge" onclick="clearAllFilters()" title="Click to clear all column filters">✕ Clear filters</span>
 </div>
 
 <!-- Leaderboard table -->
 <div class="lb-wrap">
 <table id="lb">
 <thead>
+  <!-- Sort row -->
   <tr>
     <th onclick="sortBy('rank')"># <span class="sa">↕</span></th>
     <th onclick="sortBy('skill_name')">Skill <span class="sa">↕</span></th>
@@ -205,6 +228,43 @@ tr{animation:fadein .22s ease both}
     <th onclick="sortBy('vulnerability_count')">Vulns <span class="sa">↕</span></th>
     <th onclick="sortBy('evaluated_at')">Evaluated <span class="sa">↕</span></th>
     <th style="width:38px"></th>
+  </tr>
+  <!-- Per-column filter row -->
+  <tr class="cf-row">
+    <th></th>
+    <th><div class="cf-wrap"><input id="cf-skill"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-skill')" /></div></th>
+    <th><div class="cf-wrap"><input id="cf-model"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-model')" /></div></th>
+    <th><select id="cf-risk" class="cf-select" onchange="onCfChange(this,'cf-risk')">
+          <option value="">All</option>
+          <option>CRITICAL</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option><option>NONE</option>
+        </select></th>
+    <th><div style="display:flex;gap:4px;align-items:center">
+          <input id="cf-score-min" class="cf-input" type="number" min="0" max="10" step="0.1" placeholder="Min" style="width:46px" oninput="onCfChange(this,'cf-score-min')">
+          <span style="font-size:9px;color:var(--text3)">–</span>
+          <input id="cf-score-max" class="cf-input" type="number" min="0" max="10" step="0.1" placeholder="Max" style="width:46px" oninput="onCfChange(this,'cf-score-max')">
+        </div></th>
+    <th><select id="cf-severity" class="cf-select" onchange="onCfChange(this,'cf-severity')">
+          <option value="">All</option>
+          <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>None</option>
+        </select></th>
+    <th><select id="cf-av" class="cf-select" onchange="onCfChange(this,'cf-av')">
+          <option value="">All</option>
+          <option>Network</option><option>Adjacent</option><option>Local</option><option>Physical</option>
+        </select></th>
+    <th><select id="cf-ac" class="cf-select" onchange="onCfChange(this,'cf-ac')">
+          <option value="">All</option>
+          <option>Low</option><option>High</option>
+        </select></th>
+    <th><select id="cf-pr" class="cf-select" onchange="onCfChange(this,'cf-pr')">
+          <option value="">All</option>
+          <option>None</option><option>Low</option><option>High</option>
+        </select></th>
+    <th><div class="cf-wrap"><input id="cf-cat" class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-cat')" /></div></th>
+    <th><div style="display:flex;gap:4px;align-items:center">
+          <input id="cf-vulns-min" class="cf-input" type="number" min="0" placeholder="≥" style="width:52px" oninput="onCfChange(this,'cf-vulns-min')">
+        </div></th>
+    <th></th>
+    <th></th>
   </tr>
 </thead>
 <tbody id="lb-body"></tbody>
@@ -284,6 +344,34 @@ function suppCls(metric,val){
   return 'supp-n';
 }
 
+// ── Column filter state ────────────────────────────────────────────────
+const CF_IDS = ['cf-skill','cf-model','cf-risk','cf-score-min','cf-score-max',
+                'cf-severity','cf-av','cf-ac','cf-pr','cf-cat','cf-vulns-min'];
+
+function cfVal(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+
+function onCfChange(el, id){
+  // Highlight the th cell when active
+  const th = el.closest('th');
+  if(th) th.classList.toggle('cf-active', el.value.trim()!=='');
+  updateFiltersBadge();
+  render();
+}
+
+function updateFiltersBadge(){
+  const any = CF_IDS.some(id=>cfVal(id)!=='');
+  document.getElementById('filters-badge').style.display = any ? 'inline-flex' : 'none';
+}
+
+function clearAllFilters(){
+  CF_IDS.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.value=''; el.closest('th')?.classList.remove('cf-active'); }
+  });
+  updateFiltersBadge();
+  render();
+}
+
 // Score → fill colour
 function scoreColor(score){
   if(score>=9.0) return 'var(--c-crit)';
@@ -294,13 +382,43 @@ function scoreColor(score){
 }
 
 function render(){
+  // ── Global search + top-bar filters ──────────────────────────────────
   const q =document.getElementById('search').value.toLowerCase();
   const fm=document.getElementById('filter-model').value;
   const fr=document.getElementById('filter-risk').value;
+  // ── Per-column filters ────────────────────────────────────────────────
+  const cfSkill    = cfVal('cf-skill').toLowerCase();
+  const cfModel    = cfVal('cf-model').toLowerCase();
+  const cfRisk     = cfVal('cf-risk');
+  const cfScoreMin = cfVal('cf-score-min')!=='' ? parseFloat(cfVal('cf-score-min')) : null;
+  const cfScoreMax = cfVal('cf-score-max')!=='' ? parseFloat(cfVal('cf-score-max')) : null;
+  const cfSeverity = cfVal('cf-severity').toLowerCase();
+  const cfAV       = cfVal('cf-av').toLowerCase();
+  const cfAC       = cfVal('cf-ac').toLowerCase();
+  const cfPR       = cfVal('cf-pr').toLowerCase();
+  const cfCat      = cfVal('cf-cat').toLowerCase();
+  const cfVulnsMin = cfVal('cf-vulns-min')!=='' ? parseInt(cfVal('cf-vulns-min')) : null;
+
   let data=[...rows];
+
+  // Global search
   if(q)  data=data.filter(r=>r.skill_name.toLowerCase().includes(q)||r.model_name.toLowerCase().includes(q));
   if(fm) data=data.filter(r=>r.model_name===fm);
   if(fr) data=data.filter(r=>r.overall_risk===fr);
+
+  // Column filters
+  if(cfSkill)    data=data.filter(r=>(r.skill_name||'').toLowerCase().includes(cfSkill)||(r.filename||'').toLowerCase().includes(cfSkill));
+  if(cfModel)    data=data.filter(r=>(r.model_name||'').toLowerCase().includes(cfModel));
+  if(cfRisk)     data=data.filter(r=>r.overall_risk===cfRisk);
+  if(cfScoreMin!==null) data=data.filter(r=>(r.cvss_base_score||0)>=cfScoreMin);
+  if(cfScoreMax!==null) data=data.filter(r=>(r.cvss_base_score||0)<=cfScoreMax);
+  if(cfSeverity) data=data.filter(r=>(r.cvss_severity||'').toLowerCase()===cfSeverity);
+  if(cfAV)       data=data.filter(r=>(r.attack_vector||'').toLowerCase()===cfAV);
+  if(cfAC)       data=data.filter(r=>(r.attack_complexity||'').toLowerCase()===cfAC);
+  if(cfPR)       data=data.filter(r=>(r.privileges_required||'').toLowerCase()===cfPR);
+  if(cfCat)      data=data.filter(r=>(r.top_finding_category||'').toLowerCase().includes(cfCat));
+  if(cfVulnsMin!==null) data=data.filter(r=>(r.vulnerability_count||0)>=cfVulnsMin);
+
   data.sort((a,b)=>{
     let av=a[sortKey]??'',bv=b[sortKey]??'';
     if(sortKey==='overall_risk'){av=RW[av]||0;bv=RW[bv]||0;}
@@ -311,7 +429,7 @@ function render(){
   document.getElementById('row-count').textContent=`${data.length} row${data.length!==1?'s':''}`;
   const body=document.getElementById('lb-body');
   if(!data.length){
-    body.innerHTML=`<tr><td colspan="13" class="no-data">No evaluations yet. Submit a skill above to get started.</td></tr>`;
+    body.innerHTML=`<tr><td colspan="13" class="no-data">No rows match the current filters. <a href="#" onclick="clearAllFilters();return false" style="color:var(--accent)">Clear filters</a></td></tr>`;
     return;
   }
 
