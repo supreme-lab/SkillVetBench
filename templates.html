@@ -629,6 +629,36 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .loading{text-align:center;padding:60px;color:var(--text3);font-family:var(--mono)}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .vcard{animation:fadein .25s ease both}
+
+/* ── Clickable metric cells ── */
+.mcell{cursor:pointer;transition:all .15s;position:relative}
+.mcell:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,.12);background:var(--surface)}
+.mcell::after{content:'i';font-style:italic;font-weight:700;font-size:9px;font-family:var(--mono);position:absolute;top:6px;right:8px;color:var(--border2);opacity:0;transition:opacity .15s;width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-align:center;line-height:14px}
+.mcell:hover::after{opacity:1;color:var(--accent);border-color:var(--accent)}
+/* ── Metric popup modal ── */
+.mm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);animation:fadein .15s ease}
+.mm-box{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;animation:mmin .2s ease}
+@keyframes mmin{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.mm-hdr{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.mm-abbr-badge{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:3px 10px;border-radius:6px;flex-shrink:0;margin-top:1px}
+.mm-title-col{flex:1}
+.mm-group-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:3px}
+.mm-metric-name{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.2px}
+.mm-x{background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:0 4px;flex-shrink:0;transition:color .15s}
+.mm-x:hover{color:var(--text)}
+.mm-desc{padding:14px 20px;font-size:13px;color:var(--text2);line-height:1.65;background:var(--card);border-bottom:1px solid var(--border)}
+.mm-vals{padding:16px 20px;max-height:340px;overflow-y:auto}
+.mm-sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);font-family:var(--mono);margin-bottom:10px}
+.mm-cur{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;border:2px solid var(--accent);background:rgba(37,99,235,.04);margin-bottom:12px}
+.mm-cur-badge{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--accent);color:#fff;padding:3px 10px;border-radius:6px;flex-shrink:0;margin-top:1px}
+.mm-cur-name{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.mm-cur-tip{font-size:12px;color:var(--text2);line-height:1.6}
+.mm-other{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);margin-top:6px;transition:all .12s}
+.mm-other:hover{background:var(--surface);border-color:var(--border2)}
+.mm-other-badge{font-family:var(--mono);font-size:10px;font-weight:700;background:var(--surface);border:1px solid var(--border2);color:var(--text2);padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.mm-other-name{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:2px}
+.mm-other-tip{font-size:11px;color:var(--text3);line-height:1.5}
+.mm-foot{padding:10px 20px 14px;text-align:center;font-size:10px;color:var(--text3);font-family:var(--mono);border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -705,19 +735,7 @@ function render(d){
     {k:'RE',lbl:'Response Effort',              abbr:'RE', v:d.vulnerability_response_effort},
   ];
 
-  function metricGroup(label,cls,items){
-    const cells=items.map(m=>
-      `<div class="mcell">
-        <div class="mcell-abbr">${m.abbr}</div>
-        <div class="mcell-k">${m.lbl}</div>
-        <div class="mcell-v">${esc(m.v||'Not Defined')}</div>
-      </div>`
-    ).join('');
-    return `<div class="mgroup">
-      <div class="mgroup-lbl ${cls}">${label}</div>
-      <div class="mgrid">${cells}</div>
-    </div>`;
-  }
+
 
   // ── Vulnerabilities ─────────────────────────────────────────────────
   let vulnsHtml='';
@@ -829,6 +847,120 @@ function render(d){
 
 function togV(vi){document.getElementById('v'+vi).classList.toggle('open')}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── Metric popup — reads from /api/metrics (metrics.json) ────────────────
+let METRICS_DEF = null;
+
+async function loadMetricsDef() {
+  try {
+    const r = await fetch('/api/metrics');
+    METRICS_DEF = await r.json();
+  } catch(e) {
+    console.warn('Could not load metrics.json:', e);
+  }
+}
+
+function findMetricDef(abbr) {
+  if (!METRICS_DEF) return null;
+  for (const section of Object.values(METRICS_DEF)) {
+    if (!section.metric_groups) continue;
+    for (const group of Object.values(section.metric_groups)) {
+      for (const [name, data] of Object.entries(group)) {
+        if (data.short === abbr) return { name, ...data };
+      }
+    }
+  }
+  return null;
+}
+
+function showMetricPopup(abbr, curVal) {
+  const def = findMetricDef(abbr);
+  if (!def) return;
+  const GC = {
+    'Base Metrics':'var(--accent)',
+    'Exploitability Metrics':'var(--accent)',
+    'Vulnerable System Impact Metrics':'var(--teal)',
+    'Subsequent System Impact Metrics':'var(--purple)',
+    'Threat Metrics':'var(--c-high)',
+    'Environmental (Modified Base Metrics)':'var(--text2)',
+    'Environmental (Security Requirements)':'var(--text2)',
+    'Supplemental Metrics':'var(--c-med)'
+  };
+  let gc = 'var(--accent)', gl = '';
+  if (METRICS_DEF) {
+    outer: for (const [sn, sec] of Object.entries(METRICS_DEF)) {
+      if (!sec.metric_groups) continue;
+      for (const grp of Object.values(sec.metric_groups)) {
+        for (const md of Object.values(grp)) {
+          if (md.short === abbr) { gl = sn; gc = GC[sn] || 'var(--accent)'; break outer; }
+        }
+      }
+    }
+  }
+  const curOpt = def.options
+    ? Object.entries(def.options).find(([k]) =>
+        k.toLowerCase().startsWith(curVal.toLowerCase()) ||
+        curVal.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()))
+    : null;
+  const others = def.options
+    ? Object.entries(def.options)
+        .filter(([k]) => k !== (curOpt ? curOpt[0] : ''))
+        .map(([k, v]) => `<div class="mm-other">
+          <div class="mm-other-badge">${esc(v.value || k)}</div>
+          <div><div class="mm-other-name">${esc(k)}</div>
+          <div class="mm-other-tip">${esc(v.tooltip || '')}</div></div></div>`).join('')
+    : '';
+  const cur = curOpt
+    ? `<div class="mm-sec-lbl">Currently selected value</div>
+       <div class="mm-cur">
+         <div class="mm-cur-badge">${esc(curOpt[1].value || curOpt[0])}</div>
+         <div><div class="mm-cur-name">${esc(curOpt[0])}</div>
+         <div class="mm-cur-tip">${esc(curOpt[1].tooltip || '')}</div></div>
+       </div>
+       ${others.length ? '<div class="mm-sec-lbl" style="margin-top:14px">Other possible values</div>' + others : ''}`
+    : `<div class="mm-sec-lbl">All possible values</div>${others}`;
+  const ex = document.getElementById('mm-modal');
+  if (ex) ex.remove();
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="mm-overlay" id="mm-modal" onclick="if(event.target.id==='mm-modal')this.remove()">
+      <div class="mm-box" onclick="event.stopPropagation()">
+        <div class="mm-hdr">
+          <div class="mm-abbr-badge" style="background:${gc}">${esc(abbr)}</div>
+          <div class="mm-title-col">
+            <div class="mm-group-lbl" style="color:${gc}">${esc(gl)}</div>
+            <div class="mm-metric-name">${esc(def.name)}</div>
+          </div>
+          <button class="mm-x" onclick="document.getElementById('mm-modal').remove()">&#x2715;</button>
+        </div>
+        <div class="mm-desc">${esc(def.tooltip || '')}</div>
+        <div class="mm-vals">${cur}</div>
+        <div class="mm-foot">Source: FIRST CVSS v4.0 Specification &middot; first.org/cvss/v4.0</div>
+      </div>
+    </div>`);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const m = document.getElementById('mm-modal'); if (m) m.remove(); }
+});
+
+// metricGroup defined at TOP LEVEL — outside render()
+function metricGroup(label,cls,items){
+  const cells=items.map(m=>{
+    const val=m.v||'Not Defined';
+    const sv=val.replace(/'/g,"\'");
+    return `<div class="mcell" onclick="showMetricPopup('${m.abbr}','${sv}')" title="Click to learn about this metric">
+      <div class="mcell-abbr">${m.abbr}</div>
+      <div class="mcell-k">${m.lbl}</div>
+      <div class="mcell-v">${esc(val)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="mgroup">
+    <div class="mgroup-lbl ${cls}">${label}</div>
+    <div class="mgrid">${cells}</div>
+  </div>`;
+}
+
+loadMetricsDef();
 load();
 </script>
 </body>

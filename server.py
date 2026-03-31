@@ -177,6 +177,17 @@ def api_job(job_id: str):
     return jobs[job_id]
 
 
+@app.get("/api/metrics")
+def api_metrics():
+    """Serve metrics.json for the metric popup definitions."""
+    import json
+    metrics_path = PROJECT_DIR / "metrics.json"
+    if not metrics_path.exists():
+        raise HTTPException(404, "metrics.json not found")
+    with open(metrics_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Background evaluation task
 # ─────────────────────────────────────────────────────────────────────────────
