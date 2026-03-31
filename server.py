@@ -1108,7 +1108,7 @@ def main():
     llm_config = {
         "api_type":    args.api,
         "model":       args.model,
-        "api_key":     args.key or os.getenv("HF_TOKEN") or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY"),
+        "api_key":     os.getenv("HF_TOKEN") or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY"),
         "base_url":    args.base_url,
         "load_in_4bit":args.quantize == "4bit",
         "load_in_8bit":args.quantize == "8bit",
