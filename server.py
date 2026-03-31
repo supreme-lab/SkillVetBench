@@ -215,11 +215,11 @@ def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
         "hf_local":  "HF_TOKEN",
         "ollama":    "",
     }
+    # Resolve key specifically for this backend — never cross-contaminate
     env_var = ENV_MAP.get(api_type or "anthropic", "")
     key = (
-        api_key
-        or llm_config.get("api_key", "")
-        or (os.getenv(env_var, "") if env_var else "")
+        api_key                                          # 1. passed in UI field
+        or (os.getenv(env_var, "") if env_var else "")   # 2. env var for this backend
     )
     if not key and api_type in ("anthropic", "openai"):
         raise ValueError(
@@ -1094,7 +1094,7 @@ def main():
     parser.add_argument("--port",  "-p", default=8000, type=int)
     parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
     parser.add_argument("--skills-dir",  default="skills",   metavar="DIR")
-    parser.add_argument("--api",         default="anthropic",
+    parser.add_argument("--api",         default="hf_api",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])
     parser.add_argument("--model",  default=None)
     parser.add_argument("--key",    default=None)
@@ -1108,10 +1108,10 @@ def main():
     llm_config = {
         "api_type":    args.api,
         "model":       args.model,
-        "api_key":     os.getenv("HF_TOKEN") or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY"),
+        "api_key":     args.key or "",   # only store if explicitly passed via --key
         "base_url":    args.base_url,
-        "load_in_4bit":args.quantize == "4bit",
-        "load_in_8bit":args.quantize == "8bit",
+        "load_in_4bit": args.quantize == "4bit",
+        "load_in_8bit": args.quantize == "8bit",
         "device":      args.device,
     }
 
