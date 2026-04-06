@@ -5,7 +5,6 @@
 <title>Skill Security Evaluator — Leaderboard</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
 :root{
   --bg:#f8f9fc;--surface:#ffffff;--card:#f1f5f9;--border:#e2e8f0;--border2:#cbd5e1;
   --text:#1e293b;--text2:#475569;--text3:#94a3b8;
@@ -16,7 +15,6 @@
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
   --shadow-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
 .wrap{position:relative;z-index:1;margin:0 auto;padding:32px 24px 80px}
@@ -31,8 +29,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
 .b-crit{color:var(--c-crit);border-color:var(--c-crit);background:var(--bg-crit)}
 .b-high{color:var(--c-high);border-color:var(--c-high);background:var(--bg-high)}
-.b-med {color:var(--c-med); border-color:var(--c-med); background:var(--bg-med)}
-.b-low {color:var(--c-low); border-color:var(--c-low); background:var(--bg-low)}
+.b-med{color:var(--c-med);border-color:var(--c-med);background:var(--bg-med)}
+.b-low{color:var(--c-low);border-color:var(--c-low);background:var(--bg-low)}
 .b-none{color:var(--c-none);border-color:var(--c-none);background:var(--bg-none)}
 .b-info{color:var(--text3);border-color:var(--border);background:var(--card)}
 .c-crit{color:var(--c-crit)}.c-high{color:var(--c-high)}.c-med{color:var(--c-med)}.c-low{color:var(--c-low)}.c-none{color:var(--c-none)}
@@ -42,7 +40,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .btn-primary:hover{opacity:.85}
 .btn-ghost{background:var(--surface);color:var(--text2);border-color:var(--border)}
 .btn-ghost:hover{color:var(--text);border-color:var(--border2)}
-
 .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
 .sc{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;min-width:120px;box-shadow:var(--shadow)}
 .sc-num{font-size:28px;font-weight:800;line-height:1;font-family:var(--mono)}
@@ -67,20 +64,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .js-done{background:var(--bg-low);color:var(--c-low)}
 .js-error{background:var(--bg-crit);color:var(--c-crit)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-/* ── Leaderboard table ── */
 .lb-wrap{overflow-x:auto;border:1.5px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
-table{width:100%;border-collapse:collapse;min-width:960px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;min-width:860px;background:var(--surface)}
 thead{background:#f1f5f9;border-bottom:1.5px solid var(--border)}
 th{padding:10px 12px;text-align:left;font-size:9px;font-weight:700;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:var(--text)} th.sorted{color:var(--accent)}
 th .sa{font-size:9px;margin-left:2px;opacity:.5}
-/* Group header row */
-.th-group{background:#e8edf5;font-size:8px;font-weight:800;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;text-align:center;padding:5px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
-.th-group.tg-base{color:var(--accent)}
-.th-group.tg-vuln{color:var(--teal)}
-.th-group.tg-subseq{color:var(--purple)}
-.th-group.tg-threat{color:var(--c-high)}
-.th-group.tg-supp{color:var(--c-med)}
 td{padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8faff}
@@ -93,22 +82,12 @@ tr:hover td{background:#f8faff}
 .score-big{font-family:var(--mono);font-weight:800;font-size:15px}
 .score-bar{height:3px;background:var(--border);border-radius:2px;margin-top:3px;overflow:hidden;min-width:48px}
 .score-fill{height:100%;border-radius:2px}
-.mv-badge{font-family:var(--mono);font-size:9px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:var(--purple);padding:2px 6px;border-radius:4px}
-.supp-cell{font-family:var(--mono);font-size:10px;color:var(--text3)}
-.supp-val{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--card);border:1px solid var(--border);color:var(--text2)}
-.supp-y{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.3);color:var(--c-low)}
-.supp-n{background:rgba(148,163,184,.1);border-color:var(--border2);color:var(--text3)}
-.supp-red{background:var(--bg-crit);border-color:var(--c-crit);color:var(--c-crit)}
-.supp-amber{background:#fffbeb;border-color:#b45309;color:#b45309}
-.supp-green{background:var(--bg-low);border-color:var(--c-low);color:var(--c-low)}
-.cat-cell{font-size:10px;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
 .cat-pill{display:inline-block;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
 .no-data{text-align:center;padding:56px;color:var(--text3);font-size:14px}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:4px 7px;border-radius:5px;transition:all .15s;opacity:.45}
 .del-btn:hover{background:var(--bg-crit);color:var(--c-crit);opacity:1}
 .row-deleting{animation:rowdel .28s ease forwards}
 @keyframes rowdel{to{opacity:0;transform:translateX(18px)}}
-/* HF picker */
 .hf-tab{padding:9px 14px;font-size:11px;font-weight:600;font-family:var(--sans);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;flex-shrink:0}
 .hf-tab:hover{color:var(--text)} .hf-tab-active{color:var(--teal);border-bottom-color:var(--teal)}
 .hf-model-row{display:flex;flex-direction:column;gap:3px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s}
@@ -118,27 +97,19 @@ tr:hover td{background:#f8faff}
 .hf-size-badge{font-family:var(--mono);font-size:10px;font-weight:700;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);color:var(--teal);padding:1px 6px;border-radius:4px;flex-shrink:0}
 @keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 tr{animation:fadein .22s ease both}
-/* ── Per-column filters ── */
 .cf-row th{padding:4px 6px;background:#f8faff;border-bottom:1.5px solid var(--border)}
-.cf-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;
-          padding:4px 7px;font-family:var(--mono);font-size:10px;color:var(--text);
-          transition:border-color .15s;min-width:0}
+.cf-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:4px 7px;font-family:var(--mono);font-size:10px;color:var(--text);transition:border-color .15s;min-width:0}
 .cf-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
 .cf-input::placeholder{color:var(--text3)}
-.cf-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;
-           padding:4px 4px;font-family:var(--mono);font-size:10px;color:var(--text);
-           transition:border-color .15s;cursor:pointer;min-width:0}
+.cf-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:4px 4px;font-family:var(--mono);font-size:10px;color:var(--text);transition:border-color .15s;cursor:pointer;min-width:0}
 .cf-select:focus{outline:none;border-color:var(--accent)}
 .cf-active .cf-input,.cf-active .cf-select{border-color:var(--accent);background:rgba(37,99,235,.04);color:var(--accent);font-weight:700}
-.cf-clear{display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);
-          background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;padding:2px;line-height:1}
-.cf-clear:hover{color:var(--c-crit)}
-.cf-wrap{position:relative;display:flex;align-items:center}
-.cf-wrap .cf-clear{display:block}
-.filters-active-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(37,99,235,.1);
-  border:1px solid rgba(37,99,235,.3);color:var(--accent);border-radius:100px;
-  padding:2px 8px;font-size:10px;font-family:var(--mono);font-weight:700;cursor:pointer}
+.filters-active-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.3);color:var(--accent);border-radius:100px;padding:2px 8px;font-size:10px;font-family:var(--mono);font-weight:700;cursor:pointer}
 .filters-active-badge:hover{background:rgba(220,38,38,.1);border-color:var(--c-crit);color:var(--c-crit)}
+/* SARS score cell in leaderboard */
+.sars-score-cell{display:flex;flex-direction:column;gap:2px}
+.sars-score-num{font-family:var(--mono);font-weight:800;font-size:14px}
+.sars-score-sev{font-family:var(--mono);font-size:9px;font-weight:700;opacity:.75}
 </style>
 </head>
 <body>
@@ -150,10 +121,7 @@ tr{animation:fadein .22s ease both}
   </div>
   <div class="nav"><a href="/">Leaderboard</a></div>
 </header>
-
 <div class="stats" id="stats"></div>
-
-<!-- Evaluate panel -->
 <div class="eval-panel">
   <h3>⚡ Evaluate a Skill</h3>
   <div class="eval-row">
@@ -196,8 +164,6 @@ tr{animation:fadein .22s ease both}
   <div id="key-hint" style="display:none;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text3)"></div>
   <div class="jobs-panel" id="jobs-panel"></div>
 </div>
-
-<!-- Filter controls -->
 <div class="controls">
   <input id="search" type="text" placeholder="Search skill or model…" oninput="render()">
   <select id="filter-model" onchange="render()"><option value="">All models</option></select>
@@ -208,32 +174,27 @@ tr{animation:fadein .22s ease both}
   <span id="row-count" style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto"></span>
   <span id="filters-badge" style="display:none" class="filters-active-badge" onclick="clearAllFilters()" title="Click to clear all column filters">✕ Clear filters</span>
 </div>
-
-<!-- Leaderboard table -->
 <div class="lb-wrap">
 <table id="lb">
 <thead>
-  <!-- Sort row -->
   <tr>
     <th onclick="sortBy('rank')"># <span class="sa">↕</span></th>
     <th onclick="sortBy('skill_name')">Skill <span class="sa">↕</span></th>
     <th onclick="sortBy('model_name')">Model <span class="sa">↕</span></th>
     <th onclick="sortBy('overall_risk')">Risk <span class="sa">↕</span></th>
-    <th onclick="sortBy('cvss_base_score')" title="CVSS v4.0 Base Score">Score <span class="sa">↕</span></th>
-    <th onclick="sortBy('cvss_severity')" title="Severity label">Severity <span class="sa">↕</span></th>
-    <th onclick="sortBy('attack_vector')" title="Attack Vector (AV)">Attack Vector <span class="sa">↕</span></th>
-    <th onclick="sortBy('attack_complexity')" title="Attack Complexity (AC)">Attack Complexity <span class="sa">↕</span></th>
+    <th onclick="sortBy('cvss_base_score')" title="CVSS v4.0 Base Score">CVSS Score <span class="sa">↕</span></th>
+    <th onclick="sortBy('cvss_severity')">CVSS Severity <span class="sa">↕</span></th>
+    <th onclick="sortBy('sars_score')" title="Skill Agentic Risk Score">SARS Score <span class="sa">↕</span></th>
     <th onclick="sortBy('privileges_required')" title="Privileges Required (PR)">Privileges Required <span class="sa">↕</span></th>
     <th onclick="sortBy('top_finding_category')">Attack Category <span class="sa">↕</span></th>
     <th onclick="sortBy('vulnerability_count')">Vulns <span class="sa">↕</span></th>
     <th onclick="sortBy('evaluated_at')">Evaluated <span class="sa">↕</span></th>
     <th style="width:38px"></th>
   </tr>
-  <!-- Per-column filter row -->
   <tr class="cf-row">
     <th></th>
-    <th><div class="cf-wrap"><input id="cf-skill"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-skill')" /></div></th>
-    <th><div class="cf-wrap"><input id="cf-model"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-model')" /></div></th>
+    <th><input id="cf-skill"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-skill')" /></th>
+    <th><input id="cf-model"    class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-model')" /></th>
     <th><select id="cf-risk" class="cf-select" onchange="onCfChange(this,'cf-risk')">
           <option value="">All</option>
           <option>CRITICAL</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option><option>NONE</option>
@@ -247,22 +208,13 @@ tr{animation:fadein .22s ease both}
           <option value="">All</option>
           <option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>None</option>
         </select></th>
-    <th><select id="cf-av" class="cf-select" onchange="onCfChange(this,'cf-av')">
-          <option value="">All</option>
-          <option>Network</option><option>Adjacent</option><option>Local</option><option>Physical</option>
-        </select></th>
-    <th><select id="cf-ac" class="cf-select" onchange="onCfChange(this,'cf-ac')">
-          <option value="">All</option>
-          <option>Low</option><option>High</option>
-        </select></th>
+    <th></th>
     <th><select id="cf-pr" class="cf-select" onchange="onCfChange(this,'cf-pr')">
           <option value="">All</option>
           <option>None</option><option>Low</option><option>High</option>
         </select></th>
-    <th><div class="cf-wrap"><input id="cf-cat" class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-cat')" /></div></th>
-    <th><div style="display:flex;gap:4px;align-items:center">
-          <input id="cf-vulns-min" class="cf-input" type="number" min="0" placeholder="≥" style="width:52px" oninput="onCfChange(this,'cf-vulns-min')">
-        </div></th>
+    <th><input id="cf-cat" class="cf-input" placeholder="Filter…" oninput="onCfChange(this,'cf-cat')" /></th>
+    <th><input id="cf-vulns-min" class="cf-input" type="number" min="0" placeholder="≥" style="width:52px" oninput="onCfChange(this,'cf-vulns-min')"></th>
     <th></th>
     <th></th>
   </tr>
@@ -278,16 +230,22 @@ const RW={CRITICAL:5,HIGH:4,MEDIUM:3,LOW:2,NONE:1,UNKNOWN:0};
 let rows=[],sortKey='cvss_base_score',sortDir=-1;
 
 async function load(){
-  const[lb,fs,ms]=await Promise.all([
-    fetch('/api/leaderboard').then(r=>r.json()),
-    fetch('/api/skill-files').then(r=>r.json()),
-    fetch('/api/models').then(r=>r.json()),
-  ]);
-  rows=lb;
-  buildStats(); buildModelFilter(ms);
-  const sel=document.getElementById('eval-file');
-  sel.innerHTML=fs.map(f=>`<option value="${f.filename}">${f.filename} (${f.size_kb}kb)</option>`).join('');
-  render();
+  try{
+    const[lb,fs,ms]=await Promise.all([
+      fetch('/api/leaderboard').then(r=>r.json()),
+      fetch('/api/skill-files').then(r=>r.json()),
+      fetch('/api/models').then(r=>r.json()),
+    ]);
+    rows=lb;
+    buildStats(); buildModelFilter(ms);
+    const sel=document.getElementById('eval-file');
+    sel.innerHTML=fs.map(f=>`<option value="${f.filename}">${f.filename} (${f.size_kb}kb)</option>`).join('');
+    render();
+  }catch(err){
+    console.error('Load error:',err);
+    const body=document.getElementById('lb-body');
+    if(body)body.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--c-crit);font-family:var(--mono);font-size:12px">Error loading data — check browser console (F12)</td></tr>`;
+  }
 }
 
 function buildStats(){
@@ -303,183 +261,106 @@ function buildStats(){
     `<div class="sc"><div class="sc-num" style="color:${c.color}">${c.num}</div><div class="sc-lbl">${c.lbl}</div></div>`
   ).join('');
 }
-
 function buildModelFilter(ms){
-  const sel=document.getElementById('filter-model');
-  sel.innerHTML='<option value="">All models</option>'+ms.map(m=>`<option>${m}</option>`).join('');
+  document.getElementById('filter-model').innerHTML='<option value="">All models</option>'+ms.map(m=>`<option>${m}</option>`).join('');
 }
-
 function sortBy(key){
   if(sortKey===key)sortDir*=-1; else{sortKey=key;sortDir=-1;}
   render();
 }
-
-// Abbreviate long metric values for compact table cells
-function abbrev(val){
-  const MAP={
-    'Network':'Net','Adjacent':'Adj','Local':'Loc','Physical':'Phy',
-    'None':'None','Present':'Pres','Low':'Low','High':'High',
-    'Passive':'Pass','Active':'Act',
-    'Automatic':'Auto','User':'User','Irrecoverable':'Irrecov',
-    'Diffuse':'Diff','Concentrated':'Conc',
-    'Not Defined':'—','Attacked':'Atk','Proof-of-Concept':'PoC','Unreported':'Unrep',
-    'Negligible':'Negl','Safety':'Safety',
-    'Yes':'Yes','No':'No',
-    'Clear':'Clear','Green':'Green','Amber':'Amber','Red':'Red',
-  };
-  return MAP[val]||val||'—';
-}
-
-// Style classes for supplemental metric values
-function suppCls(metric,val){
-  if(val==='Not Defined'||val==='—'||!val) return 'supp-n';
-  if(metric==='AU'&&val==='Yes') return 'supp-y';
-  if(metric==='U'){
-    if(val==='Red')   return 'supp-red';
-    if(val==='Amber') return 'supp-amber';
-    if(val==='Green') return 'supp-green';
-  }
-  if(metric==='S'&&val==='Present') return 'supp-red';
-  if(metric==='R'&&val==='Irrecoverable') return 'supp-red';
-  return 'supp-n';
-}
-
-// ── Column filter state ────────────────────────────────────────────────
-const CF_IDS = ['cf-skill','cf-model','cf-risk','cf-score-min','cf-score-max',
-                'cf-severity','cf-av','cf-ac','cf-pr','cf-cat','cf-vulns-min'];
-
-function cfVal(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
-
-function onCfChange(el, id){
-  // Highlight the th cell when active
-  const th = el.closest('th');
-  if(th) th.classList.toggle('cf-active', el.value.trim()!=='');
-  updateFiltersBadge();
-  render();
-}
-
-function updateFiltersBadge(){
-  const any = CF_IDS.some(id=>cfVal(id)!=='');
-  document.getElementById('filters-badge').style.display = any ? 'inline-flex' : 'none';
-}
-
-function clearAllFilters(){
-  CF_IDS.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){ el.value=''; el.closest('th')?.classList.remove('cf-active'); }
-  });
-  updateFiltersBadge();
-  render();
-}
-
-// Score → fill colour
 function scoreColor(score){
-  if(score>=9.0) return 'var(--c-crit)';
-  if(score>=7.0) return 'var(--c-high)';
-  if(score>=4.0) return 'var(--c-med)';
-  if(score>0)    return 'var(--c-low)';
-  return 'var(--c-none)';
+  if(score>=9.0)return 'var(--c-crit)';if(score>=7.0)return 'var(--c-high)';
+  if(score>=4.0)return 'var(--c-med)';if(score>0)return 'var(--c-low)';return 'var(--c-none)';
 }
-
+const CF_IDS=['cf-skill','cf-model','cf-risk','cf-score-min','cf-score-max','cf-severity','cf-pr','cf-cat','cf-vulns-min'];
+function cfVal(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function onCfChange(el,id){
+  const th=el.closest('th');
+  if(th)th.classList.toggle('cf-active',el.value.trim()!=='');
+  updateFiltersBadge();render();
+}
+function updateFiltersBadge(){
+  const any=CF_IDS.some(id=>cfVal(id)!=='');
+  document.getElementById('filters-badge').style.display=any?'inline-flex':'none';
+}
+function clearAllFilters(){
+  CF_IDS.forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.closest('th')?.classList.remove('cf-active');}});
+  updateFiltersBadge();render();
+}
 function render(){
-  // ── Global search + top-bar filters ──────────────────────────────────
-  const q =document.getElementById('search').value.toLowerCase();
+  const q=document.getElementById('search').value.toLowerCase();
   const fm=document.getElementById('filter-model').value;
   const fr=document.getElementById('filter-risk').value;
-  // ── Per-column filters ────────────────────────────────────────────────
-  const cfSkill    = cfVal('cf-skill').toLowerCase();
-  const cfModel    = cfVal('cf-model').toLowerCase();
-  const cfRisk     = cfVal('cf-risk');
-  const cfScoreMin = cfVal('cf-score-min')!=='' ? parseFloat(cfVal('cf-score-min')) : null;
-  const cfScoreMax = cfVal('cf-score-max')!=='' ? parseFloat(cfVal('cf-score-max')) : null;
-  const cfSeverity = cfVal('cf-severity').toLowerCase();
-  const cfAV       = cfVal('cf-av').toLowerCase();
-  const cfAC       = cfVal('cf-ac').toLowerCase();
-  const cfPR       = cfVal('cf-pr').toLowerCase();
-  const cfCat      = cfVal('cf-cat').toLowerCase();
-  const cfVulnsMin = cfVal('cf-vulns-min')!=='' ? parseInt(cfVal('cf-vulns-min')) : null;
-
+  const cfSkill=cfVal('cf-skill').toLowerCase();
+  const cfModel=cfVal('cf-model').toLowerCase();
+  const cfRisk=cfVal('cf-risk');
+  const cfScoreMin=cfVal('cf-score-min')!==''?parseFloat(cfVal('cf-score-min')):null;
+  const cfScoreMax=cfVal('cf-score-max')!==''?parseFloat(cfVal('cf-score-max')):null;
+  const cfSeverity=cfVal('cf-severity').toLowerCase();
+  const cfPR=cfVal('cf-pr').toLowerCase();
+  const cfCat=cfVal('cf-cat').toLowerCase();
+  const cfVulnsMin=cfVal('cf-vulns-min')!==''?parseInt(cfVal('cf-vulns-min')):null;
   let data=[...rows];
-
-  // Global search
-  if(q)  data=data.filter(r=>r.skill_name.toLowerCase().includes(q)||r.model_name.toLowerCase().includes(q));
-  if(fm) data=data.filter(r=>r.model_name===fm);
-  if(fr) data=data.filter(r=>r.overall_risk===fr);
-
-  // Column filters
-  if(cfSkill)    data=data.filter(r=>(r.skill_name||'').toLowerCase().includes(cfSkill)||(r.filename||'').toLowerCase().includes(cfSkill));
-  if(cfModel)    data=data.filter(r=>(r.model_name||'').toLowerCase().includes(cfModel));
-  if(cfRisk)     data=data.filter(r=>r.overall_risk===cfRisk);
-  if(cfScoreMin!==null) data=data.filter(r=>(r.cvss_base_score||0)>=cfScoreMin);
-  if(cfScoreMax!==null) data=data.filter(r=>(r.cvss_base_score||0)<=cfScoreMax);
-  if(cfSeverity) data=data.filter(r=>(r.cvss_severity||'').toLowerCase()===cfSeverity);
-  if(cfAV)       data=data.filter(r=>(r.attack_vector||'').toLowerCase()===cfAV);
-  if(cfAC)       data=data.filter(r=>(r.attack_complexity||'').toLowerCase()===cfAC);
-  if(cfPR)       data=data.filter(r=>(r.privileges_required||'').toLowerCase()===cfPR);
-  if(cfCat)      data=data.filter(r=>(r.top_finding_category||'').toLowerCase().includes(cfCat));
-  if(cfVulnsMin!==null) data=data.filter(r=>(r.vulnerability_count||0)>=cfVulnsMin);
-
+  if(q)data=data.filter(r=>r.skill_name.toLowerCase().includes(q)||r.model_name.toLowerCase().includes(q));
+  if(fm)data=data.filter(r=>r.model_name===fm);
+  if(fr)data=data.filter(r=>r.overall_risk===fr);
+  if(cfSkill)data=data.filter(r=>(r.skill_name||'').toLowerCase().includes(cfSkill)||(r.filename||'').toLowerCase().includes(cfSkill));
+  if(cfModel)data=data.filter(r=>(r.model_name||'').toLowerCase().includes(cfModel));
+  if(cfRisk)data=data.filter(r=>r.overall_risk===cfRisk);
+  if(cfScoreMin!==null)data=data.filter(r=>(r.cvss_base_score||0)>=cfScoreMin);
+  if(cfScoreMax!==null)data=data.filter(r=>(r.cvss_base_score||0)<=cfScoreMax);
+  if(cfSeverity)data=data.filter(r=>(r.cvss_severity||'').toLowerCase()===cfSeverity);
+  if(cfPR)data=data.filter(r=>(r.privileges_required||'').toLowerCase()===cfPR.toLowerCase());
+  if(cfCat)data=data.filter(r=>(r.top_finding_category||'').toLowerCase().includes(cfCat));
+  if(cfVulnsMin!==null)data=data.filter(r=>(r.vulnerability_count||0)>=cfVulnsMin);
   data.sort((a,b)=>{
     let av=a[sortKey]??'',bv=b[sortKey]??'';
     if(sortKey==='overall_risk'){av=RW[av]||0;bv=RW[bv]||0;}
-    if(typeof av==='number') return sortDir*(av-bv);
+    if(typeof av==='number')return sortDir*(av-bv);
     return sortDir*String(av).localeCompare(String(bv));
   });
   data.forEach((r,i)=>r._rank=i+1);
   document.getElementById('row-count').textContent=`${data.length} row${data.length!==1?'s':''}`;
   const body=document.getElementById('lb-body');
   if(!data.length){
-    body.innerHTML=`<tr><td colspan="13" class="no-data">No rows match the current filters. <a href="#" onclick="clearAllFilters();return false" style="color:var(--accent)">Clear filters</a></td></tr>`;
+    body.innerHTML=`<tr><td colspan="12" class="no-data">No evaluations yet. Submit a skill above to get started.</td></tr>`;
     return;
   }
-
-  // Assign a stable colour to each unique attack category value
-  const CAT_PALETTE=[
-    '#2563eb','#0d9488','#7c3aed','#b45309','#dc2626',
-    '#059669','#d97706','#6366f1','#db2777','#0891b2',
-    '#65a30d','#9333ea','#ea580c','#0284c7','#be185d',
-  ];
-  const catColorMap={};
-  let catIdx=0;
+  const CAT_PALETTE=['#2563eb','#0d9488','#7c3aed','#b45309','#dc2626','#059669','#d97706','#6366f1','#db2777','#0891b2','#65a30d','#9333ea','#ea580c','#0284c7','#be185d'];
+  const catColorMap={};let catIdx=0;
   function catColor(cat){
-    if(!cat||cat==='—') return 'var(--text3)';
-    if(!catColorMap[cat]) catColorMap[cat]=CAT_PALETTE[catIdx++%CAT_PALETTE.length];
+    if(!cat||cat==='—')return 'var(--text3)';
+    if(!catColorMap[cat])catColorMap[cat]=CAT_PALETTE[catIdx++%CAT_PALETTE.length];
     return catColorMap[cat];
   }
-  // Pre-scan all visible rows so colours are consistent across re-renders
   data.forEach(r=>catColor(r.top_finding_category||'—'));
-
   body.innerHTML=data.map(r=>{
     const sc=RC[r.overall_risk]||'info';
     const scorePct=((r.cvss_base_score/10)*100).toFixed(0);
     const scoreCol=scoreColor(r.cvss_base_score);
+    const sarsScore=(r.sars_score||0).toFixed(1);
+    const sarsCol=scoreColor(r.sars_score||0);
+    const sarsSev=r.sars_severity||'NONE';
     const dt=r.evaluated_at?new Date(r.evaluated_at).toLocaleString():'—';
     const detailUrl=`/skill/${r.skill_slug}/${r.model_slug}`;
     const cat=r.top_finding_category||'—';
     const catCol=catColor(cat);
-
     return `<tr>
       <td><span class="rank-num">${r._rank}</span></td>
-      <td>
-        <a class="skill-link" href="${detailUrl}">${esc(r.skill_name)}<span class="arrow">→</span></a>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px">${esc(r.filename)}</div>
-      </td>
+      <td><a class="skill-link" href="${detailUrl}">${esc(r.skill_name)}<span class="arrow">→</span></a>
+          <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px">${esc(r.filename)}</div></td>
       <td class="model-cell"><div class="model-name" title="${esc(r.model_name)}">${esc(r.model_name)}</div></td>
       <td><span class="badge b-${sc}"><span class="dot"></span>${r.overall_risk}</span></td>
-      <td>
-        <div class="score-big" style="color:${scoreCol}">${r.cvss_base_score.toFixed(1)}</div>
-        <div class="score-bar"><div class="score-fill" style="width:${scorePct}%;background:${scoreCol}"></div></div>
-      </td>
+      <td><div class="score-big" style="color:${scoreCol}">${r.cvss_base_score.toFixed(1)}</div>
+          <div class="score-bar"><div class="score-fill" style="width:${scorePct}%;background:${scoreCol}"></div></div></td>
       <td><span class="badge b-${sc}" style="font-size:9px">${r.cvss_severity||'—'}</span></td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${abbrev(r.attack_vector)||'—'}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${abbrev(r.attack_complexity)||'—'}</td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${abbrev(r.privileges_required)||'—'}</td>
-      <td>
-        <span class="cat-pill" title="${esc(cat)}"
-          style="background:${catCol}18;border:1px solid ${catCol}55;color:${catCol}">
-          ${esc(cat)}
-        </span>
-      </td>
+      <td><div class="sars-score-cell">
+            <span class="sars-score-num" style="color:${sarsCol}">${sarsScore}</span>
+            <span class="sars-score-sev" style="color:${sarsCol}">${sarsSev}</span>
+            <div class="score-bar"><div class="score-fill" style="width:${((r.sars_score||0)/10*100).toFixed(0)}%;background:${sarsCol}"></div></div>
+          </div></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${r.privileges_required||'—'}</td>
+      <td><span class="cat-pill" title="${esc(cat)}" style="background:${catCol}18;border:1px solid ${catCol}55;color:${catCol}">${esc(cat)}</span></td>
       <td style="text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;color:${r.vulnerability_count>0?'var(--c-crit)':'var(--c-low)'}">${r.vulnerability_count}</td>
       <td style="font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap">${dt}</td>
       <td><button class="del-btn" onclick="deleteRow(event,'${r.skill_slug}','${r.model_slug}')" title="Delete">✕</button></td>
@@ -487,99 +368,31 @@ function render(){
   }).join('');
 }
 
-async function deleteRow(e, skillSlug, modelSlug){
+async function deleteRow(e,skillSlug,modelSlug){
   e.stopPropagation();
   const tr=e.target.closest('tr');
-  if(!confirm('Delete evaluation for "'+skillSlug+'" ('+modelSlug+')?')) return;
+  if(!confirm('Delete evaluation for "'+skillSlug+'" ('+modelSlug+')?'))return;
   tr.classList.add('row-deleting');
   const r=await fetch('/api/report/'+skillSlug+'/'+modelSlug,{method:'DELETE'});
-  if(r.ok){
-    rows=rows.filter(x=>!(x.skill_slug===skillSlug&&x.model_slug===modelSlug));
-    buildStats();
-    setTimeout(()=>{tr.remove();render();},290);
-  } else {
-    tr.classList.remove('row-deleting');
-    const d=await r.json().catch(()=>({}));
-    alert('Delete failed: '+(d.detail||r.status));
-  }
+  if(r.ok){rows=rows.filter(x=>!(x.skill_slug===skillSlug&&x.model_slug===modelSlug));buildStats();setTimeout(()=>{tr.remove();render();},290);}
+  else{tr.classList.remove('row-deleting');const d=await r.json().catch(()=>({}));alert('Delete failed: '+(d.detail||r.status));}
 }
 
-// ── HuggingFace model catalogue ───────────────────────────────────────
-const HF_MODELS={
-  'Llama 3.1/3.2':[
-    {id:'meta-llama/Meta-Llama-3.1-8B-Instruct',  size:'8B',  note:'Best 8B instruction model'},
-    {id:'meta-llama/Meta-Llama-3.1-70B-Instruct', size:'70B', note:'Top-tier open-source reasoning'},
-    {id:'meta-llama/Llama-3.2-3B-Instruct',       size:'3B',  note:'Ultra-lightweight'},
-    {id:'meta-llama/Llama-3.2-11B-Vision-Instruct',size:'11B',note:'Multimodal'},
-  ],
-  'Qwen 2.5':[
-    {id:'Qwen/Qwen2.5-7B-Instruct',  size:'7B',  note:'Excellent JSON output'},
-    {id:'Qwen/Qwen2.5-14B-Instruct', size:'14B', note:'Strong security reasoning'},
-    {id:'Qwen/Qwen2.5-32B-Instruct', size:'32B', note:'Near-frontier quality'},
-    {id:'Qwen/Qwen2.5-72B-Instruct', size:'72B', note:'Best Qwen flagship'},
-    {id:'Qwen/QwQ-32B',              size:'32B', note:'Reasoning / chain-of-thought'},
-  ],
-  'Mistral':[
-    {id:'mistralai/Mistral-7B-Instruct-v0.3',   size:'7B',   note:'Fast, reliable JSON'},
-    {id:'mistralai/Mixtral-8x7B-Instruct-v0.1', size:'8×7B', note:'MoE strong reasoning'},
-    {id:'mistralai/Mistral-Large-Instruct-2407', size:'123B', note:'Frontier quality'},
-  ],
-  'Phi / Gemma':[
-    {id:'microsoft/Phi-3.5-mini-instruct', size:'3.8B',note:'CPU-friendly'},
-    {id:'microsoft/phi-4',                 size:'14B', note:'Latest Phi'},
-    {id:'google/gemma-2-9b-it',            size:'9B',  note:'Best Gemma 9B'},
-    {id:'google/gemma-2-27b-it',           size:'27B', note:'Google flagship open'},
-  ],
-  'DeepSeek':[
-    {id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B', size:'14B', note:'R1 reasoning distilled'},
-    {id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B', size:'32B', note:'Best R1 distill'},
-  ],
-  'Other':[
-    {id:'NousResearch/Hermes-3-Llama-3.1-8B', size:'8B', note:'Structured output & tool use'},
-    {id:'CohereForAI/c4ai-command-r-plus',    size:'104B',note:'Retrieval-optimised'},
-  ],
-};
+const HF_MODELS={'Llama 3.1/3.2':[{id:'meta-llama/Meta-Llama-3.1-8B-Instruct',size:'8B',note:'Best 8B instruction model'},{id:'meta-llama/Meta-Llama-3.1-70B-Instruct',size:'70B',note:'Top-tier open-source reasoning'},{id:'meta-llama/Llama-3.2-3B-Instruct',size:'3B',note:'Ultra-lightweight'},{id:'meta-llama/Llama-3.2-11B-Vision-Instruct',size:'11B',note:'Multimodal'}],'Qwen 2.5':[{id:'Qwen/Qwen2.5-7B-Instruct',size:'7B',note:'Excellent JSON output'},{id:'Qwen/Qwen2.5-14B-Instruct',size:'14B',note:'Strong security reasoning'},{id:'Qwen/Qwen2.5-32B-Instruct',size:'32B',note:'Near-frontier quality'},{id:'Qwen/Qwen2.5-72B-Instruct',size:'72B',note:'Best Qwen flagship'},{id:'Qwen/QwQ-32B',size:'32B',note:'Reasoning / chain-of-thought'}],'Mistral':[{id:'mistralai/Mistral-7B-Instruct-v0.3',size:'7B',note:'Fast, reliable JSON'},{id:'mistralai/Mixtral-8x7B-Instruct-v0.1',size:'8×7B',note:'MoE strong reasoning'},{id:'mistralai/Mistral-Large-Instruct-2407',size:'123B',note:'Frontier quality'}],'Phi / Gemma':[{id:'microsoft/Phi-3.5-mini-instruct',size:'3.8B',note:'CPU-friendly'},{id:'microsoft/phi-4',size:'14B',note:'Latest Phi'},{id:'google/gemma-2-9b-it',size:'9B',note:'Best Gemma 9B'},{id:'google/gemma-2-27b-it',size:'27B',note:'Google flagship open'}],'DeepSeek':[{id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B',size:'14B',note:'R1 reasoning distilled'},{id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',size:'32B',note:'Best R1 distill'}],'Other':[{id:'NousResearch/Hermes-3-Llama-3.1-8B',size:'8B',note:'Structured output & tool use'},{id:'CohereForAI/c4ai-command-r-plus',size:'104B',note:'Retrieval-optimised'}]};
 let hfActiveCat=Object.keys(HF_MODELS)[0],hfOpen=false;
 
 function onApiChange(val){
-  const wrap=document.getElementById('hf-pick-wrap');
-  const keyFld=document.getElementById('key-field');
-  const keyLbl=document.getElementById('key-label');
-  const keyHnt=document.getElementById('key-hint');
-  const modelInp=document.getElementById('eval-model');
+  const wrap=document.getElementById('hf-pick-wrap'),keyFld=document.getElementById('key-field'),keyLbl=document.getElementById('key-label'),keyHnt=document.getElementById('key-hint'),modelInp=document.getElementById('eval-model');
   wrap.style.display=(val==='hf_api'||val==='hf_local')?'block':'none';
-  if(val==='hf_api'||val==='hf_local'){buildHFTabs();buildHFList(hfActiveCat);}
-  else closeHFDropdown();
-  const META={
-    anthropic:{show:true, label:'Anthropic API Key',hint:'Get key: console.anthropic.com',ph:'sk-ant-...'},
-    openai:   {show:true, label:'OpenAI API Key',   hint:'Get key: platform.openai.com',  ph:'sk-...'},
-    hf_api:   {show:true, label:'HuggingFace Token',hint:'🤗 huggingface.co/settings/tokens — or set HF_TOKEN env var',ph:'hf_...'},
-    hf_local: {show:false,label:'',                 hint:'Gated models need HF_TOKEN env var',ph:''},
-    ollama:   {show:false,label:'',                 hint:'Ollama runs locally — no key needed',ph:''},
-  };
+  if(val==='hf_api'||val==='hf_local'){buildHFTabs();buildHFList(hfActiveCat);}else closeHFDropdown();
+  const META={anthropic:{show:true,label:'Anthropic API Key',hint:'Get key: console.anthropic.com',ph:'sk-ant-...'},openai:{show:true,label:'OpenAI API Key',hint:'Get key: platform.openai.com',ph:'sk-...'},hf_api:{show:true,label:'HuggingFace Token',hint:'🤗 huggingface.co/settings/tokens — or set HF_TOKEN env var',ph:'hf_...'},hf_local:{show:false,label:'',hint:'Gated models need HF_TOKEN env var',ph:''},ollama:{show:false,label:'',hint:'Ollama runs locally — no key needed',ph:''}};
   const m=META[val]||{show:false,hint:''};
-  keyFld.style.display=m.show?'flex':'none';
-  keyLbl.textContent=m.label;
-  document.getElementById('eval-key').placeholder=m.ph||'';
-  keyHnt.style.display=m.hint?'block':'none';
-  keyHnt.textContent=m.hint;
+  keyFld.style.display=m.show?'flex':'none';keyLbl.textContent=m.label;document.getElementById('eval-key').placeholder=m.ph||'';keyHnt.style.display=m.hint?'block':'none';keyHnt.textContent=m.hint;
   const PH={anthropic:'claude-sonnet-4-6',openai:'gpt-4o-mini',ollama:'llama3.1:8b',hf_api:'Pick from 🤗 Popular models →',hf_local:'Pick from 🤗 Popular models →'};
-  modelInp.placeholder=PH[val]||'Model ID';
-  if(!['hf_api','hf_local'].includes(val)) modelInp.value='';
+  modelInp.placeholder=PH[val]||'Model ID';if(!['hf_api','hf_local'].includes(val))modelInp.value='';
 }
-
-function buildHFTabs(){
-  document.getElementById('hf-tabs').innerHTML=Object.keys(HF_MODELS).map(cat=>
-    `<div class="hf-tab ${cat===hfActiveCat?'hf-tab-active':''}" onclick="switchHFCat('${cat}')">${cat}</div>`
-  ).join('');
-}
-function buildHFList(cat,q=''){
-  hfActiveCat=cat; buildHFTabs();
-  const items=q?Object.values(HF_MODELS).flat().filter(m=>m.id.toLowerCase().includes(q.toLowerCase())||m.note.toLowerCase().includes(q.toLowerCase())):(HF_MODELS[cat]||[]);
-  document.getElementById('hf-list').innerHTML=items.length
-    ?items.map(m=>`<div class="hf-model-row" onclick="selectHFModel('${m.id}')"><div style="display:flex;align-items:center;gap:8px"><span class="hf-size-badge">${m.size}</span><span class="hf-model-id">${esc(m.id)}</span></div><div class="hf-model-note">${esc(m.note)}</div></div>`).join('')
-    :'<div style="padding:20px;text-align:center;color:var(--text3);font-size:12px">No models match</div>';
-}
+function buildHFTabs(){document.getElementById('hf-tabs').innerHTML=Object.keys(HF_MODELS).map(cat=>`<div class="hf-tab ${cat===hfActiveCat?'hf-tab-active':''}" onclick="switchHFCat('${cat}')">${cat}</div>`).join('');}
+function buildHFList(cat,q=''){hfActiveCat=cat;buildHFTabs();const items=q?Object.values(HF_MODELS).flat().filter(m=>m.id.toLowerCase().includes(q.toLowerCase())||m.note.toLowerCase().includes(q.toLowerCase())):(HF_MODELS[cat]||[]);document.getElementById('hf-list').innerHTML=items.length?items.map(m=>`<div class="hf-model-row" onclick="selectHFModel('${m.id}')"><div style="display:flex;align-items:center;gap:8px"><span class="hf-size-badge">${m.size}</span><span class="hf-model-id">${esc(m.id)}</span></div><div class="hf-model-note">${esc(m.note)}</div></div>`).join(''):'<div style="padding:20px;text-align:center;color:var(--text3);font-size:12px">No models match</div>';}
 function switchHFCat(cat){document.getElementById('hf-search').value='';buildHFList(cat,'');}
 function filterHF(q){buildHFList(hfActiveCat,q);}
 function selectHFModel(id){document.getElementById('eval-model').value=id;closeHFDropdown();}
@@ -588,43 +401,33 @@ function closeHFDropdown(){hfOpen=false;const dd=document.getElementById('hf-dro
 document.addEventListener('click',e=>{const w=document.getElementById('hf-pick-wrap');if(w&&!w.contains(e.target))closeHFDropdown();});
 
 async function submitEval(){
-  const file=document.getElementById('eval-file').value;
-  const model=document.getElementById('eval-model').value.trim();
-  const api=document.getElementById('eval-api').value;
-  const key=document.getElementById('eval-key').value.trim();
+  const file=document.getElementById('eval-file').value,model=document.getElementById('eval-model').value.trim(),api=document.getElementById('eval-api').value,key=document.getElementById('eval-key').value.trim();
   if(!file){alert('Select a skill file first.');return;}
-  const body={filename:file,model,api_type:api};
-  if(key) body.api_key=key;
+  const body={filename:file,model,api_type:api};if(key)body.api_key=key;
   const r=await fetch('/api/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const data=await r.json();
-  if(r.ok&&data.job_id) pollJob(data.job_id);
-  else alert('Error: '+(data.detail||JSON.stringify(data)));
+  if(r.ok&&data.job_id)pollJob(data.job_id);else alert('Error: '+(data.detail||JSON.stringify(data)));
 }
-
 function pollJob(jid){
-  const panel=document.getElementById('jobs-panel');
-  const id=`job-${jid}`;
-  if(!document.getElementById(id)){
-    panel.insertAdjacentHTML('afterbegin',`<div class="job-row" id="${id}"><span class="job-status js-queued" id="${id}-st">QUEUED</span><span id="${id}-txt" style="flex:1;color:var(--text2)">Job ${jid}</span><span id="${id}-ts" style="color:var(--text3)"></span></div>`);
-  }
+  const panel=document.getElementById('jobs-panel'),id=`job-${jid}`;
+  if(!document.getElementById(id)){panel.insertAdjacentHTML('afterbegin',`<div class="job-row" id="${id}"><span class="job-status js-queued" id="${id}-st">QUEUED</span><span id="${id}-txt" style="flex:1;color:var(--text2)">Job ${jid}</span><span id="${id}-ts" style="color:var(--text3)"></span></div>`);}
   const iv=setInterval(async()=>{
     const j=await fetch(`/api/jobs/${jid}`).then(r=>r.json());
-    document.getElementById(`${id}-st`).className=`job-status js-${j.status}`;
-    document.getElementById(`${id}-st`).textContent=j.status.toUpperCase();
-    document.getElementById(`${id}-txt`).textContent=`${j.filename} → ${j.model||j.api_type}`;
-    document.getElementById(`${id}-ts`).textContent=j.done_at?new Date(j.done_at).toLocaleTimeString():'';
+    document.getElementById(`${id}-st`).className=`job-status js-${j.status}`;document.getElementById(`${id}-st`).textContent=j.status.toUpperCase();document.getElementById(`${id}-txt`).textContent=`${j.filename} → ${j.model||j.api_type}`;document.getElementById(`${id}-ts`).textContent=j.done_at?new Date(j.done_at).toLocaleTimeString():'';
     if(j.status==='done'){clearInterval(iv);setTimeout(()=>load(),500);}
     if(j.status==='error'){clearInterval(iv);document.getElementById(`${id}-txt`).textContent+=' ERROR: '+j.error;document.getElementById(`${id}-txt`).style.color='var(--c-crit)';}
   },1500);
 }
-
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-load();
-setInterval(load,15000);
+load();setInterval(load,15000);
 </script>
 </body>
 </html>
+
+
 <!-- ==================== DETAIL_PAGE ==================== -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -632,7 +435,6 @@ setInterval(load,15000);
 <title>Skill Detail — Security Evaluator</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
 :root{
   --bg:#f8f9fc;--surface:#ffffff;--card:#f1f5f9;--border:#e2e8f0;--border2:#cbd5e1;
   --text:#1e293b;--text2:#475569;--text3:#94a3b8;
@@ -641,12 +443,10 @@ setInterval(load,15000);
   --bg-crit:#fef2f2;--bg-high:#fff7ed;--bg-med:#fffbeb;--bg-low:#f0fdf4;--bg-none:#f0fdfa;
   --r:8px;--mono:'JetBrains Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
-.wrap{position:relative;z-index:1;margin:0 auto;padding:32px 24px 80px}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
 header{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:28px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:var(--r);display:grid;place-items:center;font-size:18px;flex-shrink:0}
@@ -658,23 +458,55 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
 .b-crit{color:var(--c-crit);border-color:var(--c-crit);background:var(--bg-crit)}
 .b-high{color:var(--c-high);border-color:var(--c-high);background:var(--bg-high)}
-.b-med {color:var(--c-med); border-color:var(--c-med); background:var(--bg-med)}
-.b-low {color:var(--c-low); border-color:var(--c-low); background:var(--bg-low)}
+.b-med{color:var(--c-med);border-color:var(--c-med);background:var(--bg-med)}
+.b-low{color:var(--c-low);border-color:var(--c-low);background:var(--bg-low)}
 .b-none{color:var(--c-none);border-color:var(--c-none);background:var(--bg-none)}
 .b-info{color:var(--text3);border-color:var(--border);background:var(--card)}
 .c-crit{color:var(--c-crit)}.c-high{color:var(--c-high)}.c-med{color:var(--c-med)}.c-low{color:var(--c-low)}.c-none{color:var(--c-none)}
 .tag{font-family:var(--mono);font-size:10px;background:var(--card);border:1px solid var(--border);padding:2px 8px;border-radius:4px;color:var(--text2)}
-.btn{padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:600;font-family:var(--mono);border:1px solid;cursor:pointer;transition:all .15s;white-space:nowrap}
-.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn-primary:hover{opacity:.85}
-.btn-ghost{background:var(--surface);color:var(--text2);border-color:var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
-
+/* ── Page header ── */
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--text3);text-decoration:none;font-size:12px;font-family:var(--mono);margin-bottom:24px;transition:color .15s}
 .back:hover{color:var(--accent)}
 .skill-title{font-size:28px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.4px}
-.skill-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-/* CVSS Hero */
+.skill-meta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px}
+.tab-btn{padding:12px 24px;font-size:13px;font-weight:700;font-family:var(--sans);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text3);transition:all .18s;display:flex;align-items:center;gap:8px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;border:1px solid}
+.tab-sars-badge{color:var(--teal);border-color:var(--teal);background:rgba(13,148,136,.08)}
+.tab-cvss-badge{color:var(--purple);border-color:var(--purple);background:rgba(124,58,237,.08)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+/* ── SARS Hero ── */
+.sars-hero{display:flex;align-items:center;gap:24px;background:linear-gradient(135deg,rgba(13,148,136,.06),rgba(37,99,235,.06));border:1.5px solid var(--teal);border-radius:16px;padding:24px 28px;margin-bottom:28px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.sars-num{font-size:64px;font-weight:800;line-height:1;font-family:var(--mono)}
+.sars-info{flex:1;min-width:180px}
+.sars-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.sars-severity{font-size:22px;font-weight:800;margin-bottom:6px}
+.sars-formula{font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.6}
+.sars-bars{display:flex;flex-direction:column;gap:10px;min-width:200px}
+.sars-bar-row{display:flex;align-items:center;gap:10px}
+.sars-bar-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);width:28px;flex-shrink:0}
+.sars-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.sars-bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.sars-bar-val{font-family:var(--mono);font-size:9px;color:var(--text2);width:22px;text-align:right;flex-shrink:0}
+/* ── SARS dimension grid ── */
+.sars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:28px}
+.sars-dim{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.sars-dim:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(13,148,136,.15);transform:translateY(-1px)}
+.sars-dim::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dim-color,var(--teal))}
+.sars-dim::after{content:'i';font-style:italic;font-weight:700;font-size:9px;font-family:var(--mono);position:absolute;top:10px;right:10px;color:var(--border2);opacity:0;transition:opacity .15s;width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-align:center;line-height:14px}
+.sars-dim:hover::after{opacity:1;color:var(--teal);border-color:var(--teal)}
+.sars-dim-abbr{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--dim-color,var(--teal));margin-bottom:4px;letter-spacing:.5px}
+.sars-dim-name{font-size:10px;color:var(--text3);margin-bottom:10px;line-height:1.4}
+.sars-dim-score{font-family:var(--mono);font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px}
+.sars-dim-max{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.sars-dim-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.sars-dim-fill{height:100%;border-radius:2px;background:var(--dim-color,var(--teal))}
+.sars-dim-label{font-size:10px;color:var(--text2);line-height:1.4}
+/* ── CVSS Hero ── */
 .cvss-hero{display:flex;align-items:center;gap:24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:24px;flex-wrap:wrap;box-shadow:var(--shadow)}
 .cvss-num{font-size:56px;font-weight:800;line-height:1;font-family:var(--mono)}
 .cvss-info h2{font-size:20px;font-weight:800;margin-bottom:4px}
@@ -685,26 +517,25 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .sbar-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .sbar-fill{height:100%;border-radius:3px}
 .sbar-val{font-size:11px;font-family:var(--mono);color:var(--text2);margin-top:3px}
-/* Metric sections */
+/* ── Metric sections ── */
 .stitle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-family:var(--mono);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
 .stitle::after{content:'';flex:1;height:1px;background:var(--border)}
-/* Metrics grid with group labels */
 .mgroup{margin-bottom:20px}
 .mgroup-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:8px;padding:4px 10px;border-radius:5px;display:inline-block}
 .mgl-base{color:var(--accent);background:rgba(37,99,235,.08)}
 .mgl-vuln{color:var(--teal);background:rgba(13,148,136,.08)}
 .mgl-subseq{color:var(--purple);background:rgba(124,58,237,.08)}
 .mgl-threat{color:var(--c-high);background:rgba(234,88,12,.08)}
-.mgl-env{color:var(--text2);background:var(--card)}
-.mgl-supp{color:var(--c-med);background:rgba(180,83,9,.08)}
 .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.mcell{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px}
+.mcell{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;cursor:pointer;transition:all .15s;position:relative}
+.mcell:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,.12);background:var(--surface)}
+.mcell::after{content:'i';font-style:italic;font-weight:700;font-size:9px;font-family:var(--mono);position:absolute;top:6px;right:8px;color:var(--border2);opacity:0;transition:opacity .15s;width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-align:center;line-height:14px}
+.mcell:hover::after{opacity:1;color:var(--accent);border-color:var(--accent)}
+.mcell-abbr{font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:2px}
 .mcell-k{font-size:9px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
 .mcell-v{font-size:13px;font-weight:600;color:var(--text)}
-.mcell-abbr{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px}
-/* Summary */
+/* ── Summary / vuln cards ── */
 .sumbox{font-size:13px;color:var(--text2);line-height:1.75;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;border-left:3px solid var(--accent);margin-bottom:16px}
-/* Vulnerability cards */
 .vlist{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
 .vcard{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .vcard-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;transition:background .15s}
@@ -725,7 +556,6 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .snum{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;min-width:18px}
 .stxt{font-size:12px;color:var(--text2);line-height:1.5}
 .rbox{background:var(--bg-low);border:1px solid var(--c-low);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--c-low);line-height:1.6}
-/* Patterns */
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 @media(max-width:600px){.pgrid{grid-template-columns:1fr}}
 .pbox{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
@@ -747,13 +577,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .loading{text-align:center;padding:60px;color:var(--text3);font-family:var(--mono)}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .vcard{animation:fadein .25s ease both}
-
-/* ── Clickable metric cells ── */
-.mcell{cursor:pointer;transition:all .15s;position:relative}
-.mcell:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(37,99,235,.12);background:var(--surface)}
-.mcell::after{content:'i';font-style:italic;font-weight:700;font-size:9px;font-family:var(--mono);position:absolute;top:6px;right:8px;color:var(--border2);opacity:0;transition:opacity .15s;width:14px;height:14px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-align:center;line-height:14px}
-.mcell:hover::after{opacity:1;color:var(--accent);border-color:var(--accent)}
-/* ── Metric popup modal ── */
+/* ── Shared popup modal ── */
 .mm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);animation:fadein .15s ease}
 .mm-box{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;animation:mmin .2s ease}
 @keyframes mmin{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
@@ -777,6 +601,42 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 .mm-other-name{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:2px}
 .mm-other-tip{font-size:11px;color:var(--text3);line-height:1.5}
 .mm-foot{padding:10px 20px 14px;text-align:center;font-size:10px;color:var(--text3);font-family:var(--mono);border-top:1px solid var(--border)}
+
+/* ── ClawHub Report ── */
+.ch-header{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:20px;box-shadow:var(--shadow);flex-wrap:wrap}
+.ch-skill-name{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.2px}
+.ch-verdict{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;font-family:var(--mono);border:1.5px solid}
+.ch-benign{color:#16a34a;border-color:#16a34a;background:#f0fdf4}
+.ch-suspicious{color:#b45309;border-color:#b45309;background:#fffbeb}
+.ch-malicious{color:#dc2626;border-color:#dc2626;background:#fef2f2}
+.ch-confidence{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px}
+.ch-summary{font-size:13px;color:var(--text2);line-height:1.75;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:20px}
+.ch-categories{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ch-cat{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.ch-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.ch-icon-pass{background:#dcfce7;color:#16a34a}
+.ch-icon-warn{background:#fef9c3;color:#b45309}
+.ch-icon-fail{background:#fee2e2;color:#dc2626}
+.ch-cat-body{flex:1}
+.ch-cat-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text);margin-bottom:5px;font-family:var(--mono)}
+.ch-cat-desc{font-size:13px;color:var(--text2);line-height:1.65}
+.ch-assessment{border-radius:12px;padding:18px 20px;font-size:13px;line-height:1.75;border-left:4px solid}
+.ch-assessment.benign{background:#f0fdf4;border-color:#16a34a;color:#15803d}
+.ch-assessment.suspicious{background:#fffbeb;border-color:#b45309;color:#92400e}
+.ch-assessment.malicious{background:#fef2f2;border-color:#dc2626;color:#991b1b}
+.ch-assessment-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:8px;opacity:.7}
+/* Official toggle */
+.ch-source-bar{display:flex;gap:0;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content}
+.ch-source-btn{padding:8px 18px;font-size:12px;font-weight:600;font-family:var(--sans);cursor:pointer;background:none;border:none;border-radius:7px;color:var(--text3);transition:all .18s;display:flex;align-items:center;gap:6px}
+.ch-source-btn:hover{color:var(--text)}
+.ch-source-btn.active{background:var(--surface);color:var(--accent);box-shadow:var(--shadow)}
+.ch-official-box{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:32px;text-align:center}
+.ch-loading{color:var(--text3);font-family:var(--mono);font-size:13px;padding:40px;text-align:center}
+.ch-fetch-btn{padding:10px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:opacity .15s;margin-top:12px}
+.ch-fetch-btn:hover{opacity:.85}
+.ch-slug-input{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:9px 14px;font-family:var(--mono);font-size:12px;color:var(--text);width:100%;max-width:360px;text-align:center}
+.ch-slug-input:focus{outline:none;border-color:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -797,65 +657,213 @@ const RC={CRITICAL:'crit',HIGH:'high',MEDIUM:'med',LOW:'low',NONE:'none',INFO:'i
 const parts=location.pathname.split('/');
 const skillSlug=parts[2],modelSlug=parts[3];
 
-async function load(){
-  const r=await fetch(`/api/report/${skillSlug}/${modelSlug}`);
-  if(!r.ok){document.getElementById('content').innerHTML='<div class="loading">Report not found.</div>';return;}
-  render(await r.json());
-}
+// ── SARS dimension definitions (colours + levels for popup) ───────────────
+const SARS_DIMS={
+  IFR:{name:'Instruction Fidelity Risk',color:'var(--accent)',
+    desc:'How easily can the skill be manipulated into acting outside its stated purpose through prompt injection or instruction override?',
+    levels:{0:'Rigid — no free-text input flows into tool behaviour',1:'Low — user text passes through but is clearly scoped to a fixed operation',2:'Medium — user-controlled text influences API parameters or tool selection',3:'High — skill instructions incorporate user text directly with no sanitization'}},
+  DG:{name:'Data Gravity',color:'var(--teal)',
+    desc:'How sensitive is the data the skill can read or write, based on its API schema and parameter names?',
+    levels:{0:'Public — only reads/writes publicly available or non-sensitive data',1:'Internal — company-internal data, non-sensitive',2:'Confidential — PII, credentials, session tokens, financial records',3:'Restricted — health records, private keys, payment instruments, auth secrets'}},
+  AI:{name:'Action Irreversibility',color:'var(--purple)',
+    desc:'Can the skill\'s actions be undone after execution? Based on HTTP methods and action verbs in the skill description.',
+    levels:{0:'Read-only — GET only, no state change possible',1:'Reversible — POST/PUT with a clear undo path (e.g. archive instead of delete)',2:'Difficult — modifies shared state, partial rollback possible with effort',3:'Irreversible — DELETE, sent messages, financial transactions, published posts'}},
+  BR:{name:'Blast Radius',color:'var(--c-high)',
+    desc:'How many users or downstream systems are affected by a single successful exploitation of this skill?',
+    levels:{0:'Self — only the requesting user\'s private resources are affected',1:'Team — a bounded group such as a workspace, project, or org unit',2:'Platform — all users of the integrated service could be affected',3:'Cross-platform — affects external systems, third parties, or the attack is wormable'}},
+  CA:{name:'Chain Amplification',color:'var(--c-crit)',
+    desc:'Does combining this skill with other skills multiply its danger significantly? Skills enabling read-then-exfiltrate or execute-then-persist chains score higher.',
+    levels:{0:'None — self-contained, no meaningful amplification when chained',1:'Low — chaining adds marginal capability',2:'Medium — chaining with a retrieval or execution skill creates a meaningful attack path',3:'High — force multiplier: enables exfiltration, lateral movement, or persistence when chained'}}
+};
 
 function scoreColor(s){
-  if(s>=9.0) return 'var(--c-crit)';
-  if(s>=7.0) return 'var(--c-high)';
-  if(s>=4.0) return 'var(--c-med)';
-  if(s>0)    return 'var(--c-low)';
-  return 'var(--c-none)';
+  if(s>=9.0)return 'var(--c-crit)';if(s>=7.0)return 'var(--c-high)';
+  if(s>=4.0)return 'var(--c-med)';if(s>0)return 'var(--c-low)';return 'var(--c-none)';
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));
+}
+
+// ── SARS popup ────────────────────────────────────────────────────────────
+function showSARSPopup(abbr, score){
+  const dim=SARS_DIMS[abbr];if(!dim)return;
+  const score_i=parseInt(score);
+  const curLabel=dim.levels[score_i]||'Not defined';
+  const others=Object.entries(dim.levels).filter(([k])=>parseInt(k)!==score_i).map(([k,v])=>
+    `<div class="mm-other">
+      <div class="mm-other-badge" style="background:${dim.color}22;border-color:${dim.color}55;color:${dim.color}">${k}/3</div>
+      <div><div class="mm-other-name">${esc(v.split('—')[0].trim())}</div>
+      <div class="mm-other-tip">${esc(v.includes('—')?v.split('—').slice(1).join('—').trim():v)}</div></div>
+    </div>`).join('');
+  const ex=document.getElementById('mm-modal');if(ex)ex.remove();
+  document.body.insertAdjacentHTML('beforeend',`
+    <div class="mm-overlay" id="mm-modal" onclick="if(event.target.id==='mm-modal')this.remove()">
+      <div class="mm-box" onclick="event.stopPropagation()">
+        <div class="mm-hdr">
+          <div class="mm-abbr-badge" style="background:${dim.color}">${esc(abbr)}</div>
+          <div class="mm-title-col">
+            <div class="mm-group-lbl" style="color:${dim.color}">SARS Dimension</div>
+            <div class="mm-metric-name">${esc(dim.name)}</div>
+          </div>
+          <button class="mm-x" onclick="document.getElementById('mm-modal').remove()">&#x2715;</button>
+        </div>
+        <div class="mm-desc">${esc(dim.desc)}</div>
+        <div class="mm-vals">
+          <div class="mm-sec-lbl">Current score</div>
+          <div class="mm-cur" style="border-color:${dim.color};background:${dim.color}0a">
+            <div class="mm-cur-badge" style="background:${dim.color}">${score_i}/3</div>
+            <div>
+              <div class="mm-cur-name" style="color:${dim.color}">${esc(curLabel.split('—')[0].trim())}</div>
+              <div class="mm-cur-tip">${esc(curLabel.includes('—')?curLabel.split('—').slice(1).join('—').trim():curLabel)}</div>
+            </div>
+          </div>
+          <div class="mm-sec-lbl" style="margin-top:14px">Other possible scores</div>
+          ${others}
+        </div>
+        <div class="mm-foot">Source: AgentAIBench SARS · UTEP SUPREME Lab</div>
+      </div>
+    </div>`);
+}
+
+// ── CVSS metric popup ─────────────────────────────────────────────────────
+let METRICS_DEF=null;
+async function loadMetricsDef(){
+  try{const r=await fetch('/api/metrics');METRICS_DEF=await r.json();}
+  catch(e){console.warn('metrics.json unavailable',e);}
+}
+function findMetricDef(abbr){
+  if(!METRICS_DEF)return null;
+  for(const section of Object.values(METRICS_DEF)){
+    if(!section.metric_groups)continue;
+    for(const group of Object.values(section.metric_groups)){
+      for(const[name,data]of Object.entries(group)){
+        if(data.short===abbr)return{name,...data};
+      }
+    }
+  }
+  return null;
+}
+function showMetricPopup(abbr,curVal){
+  const def=findMetricDef(abbr);if(!def)return;
+  const GC={'Base Metrics':'var(--accent)','Exploitability Metrics':'var(--accent)','Vulnerable System Impact Metrics':'var(--teal)','Subsequent System Impact Metrics':'var(--purple)','Threat Metrics':'var(--c-high)'};
+  let gc='var(--accent)',gl='';
+  if(METRICS_DEF){
+    outer:for(const[sn,sec]of Object.entries(METRICS_DEF)){
+      if(!sec.metric_groups)continue;
+      for(const grp of Object.values(sec.metric_groups)){
+        for(const md of Object.values(grp)){if(md.short===abbr){gl=sn;gc=GC[sn]||'var(--accent)';break outer;}}
+      }
+    }
+  }
+  const curOpt=def.options?Object.entries(def.options).find(([k])=>k.toLowerCase().startsWith(curVal.toLowerCase())||curVal.toLowerCase().startsWith(k.split(' ')[0].toLowerCase())):null;
+  const others=def.options?Object.entries(def.options).filter(([k])=>k!==(curOpt?curOpt[0]:'')).map(([k,v])=>`<div class="mm-other"><div class="mm-other-badge">${esc(v.value||k)}</div><div><div class="mm-other-name">${esc(k)}</div><div class="mm-other-tip">${esc(v.tooltip||'')}</div></div></div>`).join(''):'';
+  const cur=curOpt?`<div class="mm-sec-lbl">Currently selected value</div>
+    <div class="mm-cur"><div class="mm-cur-badge">${esc(curOpt[1].value||curOpt[0])}</div>
+      <div><div class="mm-cur-name">${esc(curOpt[0])}</div><div class="mm-cur-tip">${esc(curOpt[1].tooltip||'')}</div></div></div>
+    ${others.length?'<div class="mm-sec-lbl" style="margin-top:14px">Other possible values</div>'+others:''}`
+    :`<div class="mm-sec-lbl">All possible values</div>${others}`;
+  const ex=document.getElementById('mm-modal');if(ex)ex.remove();
+  document.body.insertAdjacentHTML('beforeend',`
+    <div class="mm-overlay" id="mm-modal" onclick="if(event.target.id==='mm-modal')this.remove()">
+      <div class="mm-box" onclick="event.stopPropagation()">
+        <div class="mm-hdr">
+          <div class="mm-abbr-badge" style="background:${gc}">${esc(abbr)}</div>
+          <div class="mm-title-col">
+            <div class="mm-group-lbl" style="color:${gc}">${esc(gl)}</div>
+            <div class="mm-metric-name">${esc(def.name)}</div>
+          </div>
+          <button class="mm-x" onclick="document.getElementById('mm-modal').remove()">&#x2715;</button>
+        </div>
+        <div class="mm-desc">${esc(def.tooltip||'')}</div>
+        <div class="mm-vals">${cur}</div>
+        <div class="mm-foot">Source: FIRST CVSS v4.0 Specification &middot; first.org/cvss/v4.0</div>
+      </div>
+    </div>`);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('mm-modal');if(m)m.remove();}});
+
+// ── metricGroup (CVSS cells with popup) ───────────────────────────────────
+function metricGroup(label,cls,items){
+  const cells=items.map(m=>{
+    const val=m.v||'Not Defined';
+    const sv=val.replace(/'/g,"\\'");
+    return `<div class="mcell" onclick="showMetricPopup('${m.abbr}','${sv}')" title="Click to learn about this metric">
+      <div class="mcell-abbr">${m.abbr}</div>
+      <div class="mcell-k">${m.lbl}</div>
+      <div class="mcell-v">${esc(val)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="mgroup"><div class="mgroup-lbl ${cls}">${label}</div><div class="mgrid">${cells}</div></div>`;
+}
+
+async function load(){
+  try{
+    const r=await fetch(`/api/report/${skillSlug}/${modelSlug}`);
+    if(!r.ok){document.getElementById('content').innerHTML='<div class="loading">Report not found.</div>';return;}
+    const data=await r.json();
+    render(data);
+  }catch(err){
+    console.error('Detail load error:',err);
+    document.getElementById('content').innerHTML=`<div class="loading" style="color:var(--c-crit)">Error: ${err.message}<br>Check browser console (F12)</div>`;
+  }
 }
 
 function render(d){
+  try{
   const rc=RC[d.overall_risk]||'info';
-  const cc=RC[(d.cvss_severity||'').toUpperCase()]||rc;
-  const scoreCol=scoreColor(d.cvss_base_score||0);
-  const scorePct=((d.cvss_base_score/10)*100).toFixed(0);
+  const cvssScore=d.cvss_base_score||0;
+  const cvssCol=scoreColor(cvssScore);
+  const cvssPct=((cvssScore/10)*100).toFixed(0);
+  const sarsScore=d.sars_score||0;
+  const sarsCol=scoreColor(sarsScore);
+  const sarsSev=d.sars_severity||'NONE';
   const dt=d.evaluated_at?new Date(d.evaluated_at).toLocaleString():'';
 
-  // ── CVSS v4.0 metric groups ─────────────────────────────────────────
+  // ── SARS dimension data ────────────────────────────────────────────────
+  const sarsDims=[
+    {abbr:'IFR',score:d.sars_ifr||0},
+    {abbr:'DG', score:d.sars_dg||0},
+    {abbr:'AI', score:d.sars_ai||0},
+    {abbr:'BR', score:d.sars_br||0},
+    {abbr:'CA', score:d.sars_ca||0},
+  ];
+
+  // ── CVSS metric groups (AV, AC, ENV, SUPP removed) ────────────────────
   const G_BASE=[
-    {k:'AV',lbl:'Attack Vector',        abbr:'AV', v:d.attack_vector},
-    {k:'AC',lbl:'Attack Complexity',    abbr:'AC', v:d.attack_complexity},
-    {k:'AT',lbl:'Attack Requirements',  abbr:'AT', v:d.attack_requirements},
-    {k:'PR',lbl:'Privileges Required',  abbr:'PR', v:d.privileges_required},
-    {k:'UI',lbl:'User Interaction',     abbr:'UI', v:d.user_interaction},
+    {abbr:'AT',lbl:'Attack Requirements',v:d.attack_requirements},
+    {abbr:'PR',lbl:'Privileges Required',v:d.privileges_required},
+    {abbr:'UI',lbl:'User Interaction',v:d.user_interaction},
   ];
   const G_VULN=[
-    {k:'VC',lbl:'Confidentiality Impact',abbr:'VC',v:d.confidentiality_vs},
-    {k:'VI',lbl:'Integrity Impact',      abbr:'VI',v:d.integrity_vs},
-    {k:'VA',lbl:'Availability Impact',   abbr:'VA',v:d.availability_vs},
+    {abbr:'VC',lbl:'Confidentiality Impact',v:d.confidentiality_vs},
+    {abbr:'VI',lbl:'Integrity Impact',v:d.integrity_vs},
+    {abbr:'VA',lbl:'Availability Impact',v:d.availability_vs},
   ];
   const G_SUBSEQ=[
-    {k:'SC',lbl:'Confidentiality Impact',abbr:'SC',v:d.confidentiality_ss},
-    {k:'SI',lbl:'Integrity Impact',      abbr:'SI',v:d.integrity_ss},
-    {k:'SA',lbl:'Availability Impact',   abbr:'SA',v:d.availability_ss},
+    {abbr:'SC',lbl:'Confidentiality Impact',v:d.confidentiality_ss},
+    {abbr:'SI',lbl:'Integrity Impact',v:d.integrity_ss},
+    {abbr:'SA',lbl:'Availability Impact',v:d.availability_ss},
   ];
-  const G_THREAT=[
-    {k:'E', lbl:'Exploit Maturity',      abbr:'E', v:d.exploit_maturity},
-  ];
-  const G_ENV=[
-    {k:'CR',lbl:'Conf. Requirement',     abbr:'CR',v:d.cr},
-    {k:'IR',lbl:'Integ. Requirement',    abbr:'IR',v:d.ir},
-    {k:'AR',lbl:'Avail. Requirement',    abbr:'AR',v:d.ar},
-  ];
-  const G_SUPP=[
-    {k:'S', lbl:'Safety',                      abbr:'S',  v:d.safety},
-    {k:'AU',lbl:'Automatable',                  abbr:'AU', v:d.automatable},
-    {k:'U', lbl:'Provider Urgency',             abbr:'U',  v:d.provider_urgency},
-    {k:'R', lbl:'Recovery',                     abbr:'R',  v:d.recovery},
-    {k:'V', lbl:'Value Density',                abbr:'V',  v:d.value_density},
-    {k:'RE',lbl:'Response Effort',              abbr:'RE', v:d.vulnerability_response_effort},
-  ];
+  const G_THREAT=[{abbr:'E',lbl:'Exploit Maturity',v:d.exploit_maturity}];
 
+  // ── SARS dimension cards ───────────────────────────────────────────────
+  const sarsDimCards=sarsDims.map(({abbr,score})=>{
+    const dim=SARS_DIMS[abbr];
+    const pct=((score/3)*100).toFixed(0);
+    const label=dim.levels[score]||'';
+    return `<div class="sars-dim" style="--dim-color:${dim.color}" onclick="showSARSPopup('${abbr}',${score})" title="Click to learn about ${dim.name}">
+      <div class="sars-dim-abbr">${abbr}</div>
+      <div class="sars-dim-name">${dim.name}</div>
+      <div class="sars-dim-score">${score}<span class="sars-dim-max">/3</span></div>
+      <div class="sars-dim-track"><div class="sars-dim-fill" style="width:${pct}%"></div></div>
+      <div class="sars-dim-label">${esc(label.split('—')[0].trim())}</div>
+    </div>`;
+  }).join('');
 
-
-  // ── Vulnerabilities ─────────────────────────────────────────────────
+  // ── Vulnerability cards ────────────────────────────────────────────────
   let vulnsHtml='';
   if(d.vulnerabilities&&d.vulnerabilities.length){
     vulnsHtml=d.vulnerabilities.map((v,vi)=>{
@@ -881,7 +889,7 @@ function render(d){
         </div>
       </div>`;
     }).join('');
-  } else {
+  }else{
     vulnsHtml=`<div class="clean"><div class="clean-ico">✅</div><h3>No Vulnerabilities Found</h3><p>This skill passed all 12 security checks.</p></div>`;
   }
 
@@ -898,7 +906,7 @@ function render(d){
   }
 
   document.getElementById('content').innerHTML=`
-    <div style="margin-bottom:28px">
+    <div style="margin-bottom:20px">
       <div class="skill-title">${esc(d.skill_name)}</div>
       <div class="skill-meta-row">
         <span class="badge b-${rc}"><span class="dot"></span>${d.overall_risk}</span>
@@ -908,176 +916,300 @@ function render(d){
       </div>
     </div>
 
-    <!-- CVSS v4.0 Hero -->
-    <div class="cvss-hero">
-      <div class="cvss-num" style="color:${scoreCol}">${(d.cvss_base_score||0).toFixed(1)}</div>
-      <div class="cvss-info">
-        <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">CVSS v4.0 Base Score</div>
-        <h2 style="color:${scoreCol}">${d.cvss_severity||'—'}</h2>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:4px">Nomenclature: ${d.cvss_nomenclature||'CVSS-B'}</div>
-        <div class="cvss-vec">${esc(d.cvss_vector||'')}</div>
-      </div>
-      <div class="sbars">
-        <div class="sbar">
-          <div class="sbar-lbl">Base Score</div>
-          <div class="sbar-track"><div class="sbar-fill" style="width:${scorePct}%;background:${scoreCol}"></div></div>
-          <div class="sbar-val">${(d.cvss_base_score||0).toFixed(1)} / 10</div>
-        </div>
-        <div class="sbar">
-          <div class="sbar-lbl">MacroVector Score</div>
-          <div class="sbar-track"><div class="sbar-fill" style="width:${(((d.macro_vector_score||0)/10)*100).toFixed(0)}%;background:var(--purple)"></div></div>
-          <div class="sbar-val">${(d.macro_vector_score||0).toFixed(1)} / 10</div>
-        </div>
-        <div class="sbar">
-          <div class="sbar-lbl">Vuln Count</div>
-          <div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(d.vulnerability_count||0)*10)}%;background:var(--c-high)"></div></div>
-          <div class="sbar-val">${d.vulnerability_count||0} findings</div>
-        </div>
-      </div>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="sars" onclick="switchTab('sars')">
+        🎯 SARS Report
+        <span class="tab-badge tab-sars-badge">${sarsScore.toFixed(1)} · ${sarsSev}</span>
+      </button>
+      <button class="tab-btn" data-tab="cvss" onclick="switchTab('cvss')">
+        🛡 CVSS Report
+        <span class="tab-badge tab-cvss-badge">${cvssScore.toFixed(1)} · ${d.cvss_severity||'—'}</span>
+      </button>
+      <button class="tab-btn" data-tab="clawhub" onclick="switchTab('clawhub')">
+        🦀 ClawHub Report
+        ${d.clawhub_verdict?`<span class="tab-badge" style="color:${chColor(d.clawhub_verdict)};border-color:${chColor(d.clawhub_verdict)};background:${chBg(d.clawhub_verdict)}">${d.clawhub_verdict}</span>`:'<span class="tab-badge b-info">—</span>'}
+      </button>
     </div>
 
-    <!-- CVSS v4.0 Metrics — grouped -->
-    <div class="stitle">CVSS v4.0 Metrics</div>
-    ${metricGroup('Exploitability','mgl-base',G_BASE)}
-    ${metricGroup('Vulnerable System Impact','mgl-vuln',G_VULN)}
-    ${metricGroup('Subsequent System Impact','mgl-subseq',G_SUBSEQ)}
-    ${metricGroup('Threat','mgl-threat',G_THREAT)}
-    ${metricGroup('Environmental Requirements','mgl-env',G_ENV)}
-    ${metricGroup('Supplemental (informational only)','mgl-supp',G_SUPP)}
+    <!-- ── SARS Tab ── -->
+    <div id="tab-sars" class="tab-content active">
+      <div class="sars-hero">
+        <div class="sars-num" style="color:${sarsCol}">${sarsScore.toFixed(1)}</div>
+        <div class="sars-info">
+          <div class="sars-lbl">Skill Agentic Risk Score</div>
+          <div class="sars-severity" style="color:${sarsCol}">${sarsSev}</div>
+          <div class="sars-formula">Formula: (2×IFR + 1.5×DG + 1.5×AI + 2×BR + 2×CA) / 2.7</div>
+        </div>
+        <div class="sars-bars">
+          ${sarsDims.map(({abbr,score})=>`
+            <div class="sars-bar-row">
+              <span class="sars-bar-lbl" style="color:${SARS_DIMS[abbr].color}">${abbr}</span>
+              <div class="sars-bar-track"><div class="sars-bar-fill" style="width:${((score/3)*100).toFixed(0)}%;background:${SARS_DIMS[abbr].color}"></div></div>
+              <span class="sars-bar-val">${score}/3</span>
+            </div>`).join('')}
+        </div>
+      </div>
 
-    <!-- Summary -->
-    <div class="stitle">Executive Summary</div>
-    <div class="sumbox">${esc(d.executive_summary||'')}</div>
-    ${d.skill_purpose_analysis?`<div class="stitle">Skill Purpose</div><div class="sumbox" style="border-left-color:var(--teal)">${esc(d.skill_purpose_analysis)}</div>`:''}
+      <div class="stitle">SARS Dimensions <span style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3)">&nbsp;— click any card to learn what it means</span></div>
+      <div class="sars-grid">${sarsDimCards}</div>
 
-    <!-- Findings -->
-    <div class="stitle">Vulnerability Findings (${d.vulnerability_count||0})</div>
-    <div class="vlist">${vulnsHtml}</div>
+      <div class="stitle">Executive Summary</div>
+      <div class="sumbox">${esc(d.executive_summary||'')}</div>
+      ${d.skill_purpose_analysis?`<div class="stitle">Skill Purpose</div><div class="sumbox" style="border-left-color:var(--teal)">${esc(d.skill_purpose_analysis)}</div>`:''}
 
-    <!-- Patterns -->
-    <div class="stitle">Security Patterns</div>
-    <div class="pgrid">
-      <div class="pbox dang"><h4>🚩 Dangerous Patterns</h4>${dang}</div>
-      <div class="pbox safe"><h4>✅ Safe Practices</h4>${safe}</div>
+      <div class="stitle">Vulnerability Findings (${d.vulnerability_count||0})</div>
+      <div class="vlist">${vulnsHtml}</div>
+
+      <div class="stitle">Security Patterns</div>
+      <div class="pgrid">
+        <div class="pbox dang"><h4>🚩 Dangerous Patterns</h4>${dang}</div>
+        <div class="pbox safe"><h4>✅ Safe Practices</h4>${safe}</div>
+      </div>
+      ${prioHtml}
     </div>
-    ${prioHtml}`;
+
+    <!-- ── CVSS Tab ── -->
+    <div id="tab-cvss" class="tab-content">
+      <div class="cvss-hero">
+        <div class="cvss-num" style="color:${cvssCol}">${cvssScore.toFixed(1)}</div>
+        <div class="cvss-info">
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">CVSS v4.0 Base Score</div>
+          <h2 style="color:${cvssCol}">${d.cvss_severity||'—'}</h2>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:4px">Nomenclature: ${d.cvss_nomenclature||'CVSS-B'}</div>
+          <div class="cvss-vec">${esc(d.cvss_vector||'')}</div>
+        </div>
+        <div class="sbars">
+          <div class="sbar">
+            <div class="sbar-lbl">Base Score</div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:${cvssPct}%;background:${cvssCol}"></div></div>
+            <div class="sbar-val">${cvssScore.toFixed(1)} / 10</div>
+          </div>
+          <div class="sbar">
+            <div class="sbar-lbl">Vuln Count</div>
+            <div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(d.vulnerability_count||0)*10)}%;background:var(--c-high)"></div></div>
+            <div class="sbar-val">${d.vulnerability_count||0} findings</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stitle">CVSS v4.0 Metrics <span style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text3)">&nbsp;— click any cell to learn what it means</span></div>
+      ${metricGroup('Exploitability (AT, PR, UI)','mgl-base',G_BASE)}
+      ${metricGroup('Vulnerable System Impact','mgl-vuln',G_VULN)}
+      ${metricGroup('Subsequent System Impact','mgl-subseq',G_SUBSEQ)}
+      ${metricGroup('Threat','mgl-threat',G_THREAT)}
+    </div>
+
+    <!-- ── ClawHub Tab ── -->
+    <div id="tab-clawhub" class="tab-content">
+      ${renderClawHubTab(d)}
+    </div>`;
+
+  // Attach source toggle handlers after DOM insert
+  window._chSource = 'llm';
+  }catch(err){
+    console.error('render() error:', err);
+    document.getElementById('content').innerHTML=`<div class="loading" style="color:var(--c-crit)">Render error: ${err.message}<br>Check browser console (F12)</div>`;
+  }
+}
+
+function chColor(v){
+  if(!v)return 'var(--text3)';
+  const vl=v.toLowerCase();
+  if(vl==='benign')return '#16a34a';
+  if(vl==='suspicious')return '#b45309';
+  if(vl==='malicious')return '#dc2626';
+  return 'var(--text3)';
+}
+function chBg(v){
+  if(!v)return 'var(--card)';
+  const vl=v.toLowerCase();
+  if(vl==='benign')return '#f0fdf4';
+  if(vl==='suspicious')return '#fffbeb';
+  if(vl==='malicious')return '#fef2f2';
+  return 'var(--card)';
+}
+function chIcon(status){
+  if(status==='pass')return '<div class="ch-icon ch-icon-pass">✓</div>';
+  if(status==='warn')return '<div class="ch-icon ch-icon-warn">⚠</div>';
+  if(status==='fail')return '<div class="ch-icon ch-icon-fail">✕</div>';
+  return '<div class="ch-icon ch-icon-warn">?</div>';
+}
+
+function renderClawHubReport(ch, source){
+  if(!ch || !ch.verdict){
+    return `<div class="ch-loading">No ClawHub ${source==='llm'?'LLM':'official'} report available.<br>
+      ${source==='official'?'<button class="ch-fetch-btn" onclick="fetchOfficial()">Fetch from ClawHub</button>':''}</div>`;
+  }
+  const vl=ch.verdict.toLowerCase();
+  const cats=[
+    {key:'purpose_capability',        title:'Purpose & Capability'},
+    {key:'instruction_scope',         title:'Instruction Scope'},
+    {key:'install_mechanism',         title:'Install Mechanism'},
+    {key:'credentials',               title:'Credentials'},
+    {key:'persistence_privilege',     title:'Persistence & Privilege'},
+  ];
+  const catHtml=cats.map(c=>{
+    const status=(ch['categories']?ch['categories'][c.key]?.status:ch[c.key])||'';
+    const desc  =(ch['categories']?ch['categories'][c.key]?.description:ch[c.key+'_desc'])||'';
+    return `<div class="ch-cat">
+      ${chIcon(status)}
+      <div class="ch-cat-body">
+        <div class="ch-cat-title">${c.title}</div>
+        <div class="ch-cat-desc">${esc(desc)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+    <div class="ch-header">
+      <div>
+        <div class="ch-skill-name">OpenClaw Safety Review</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px">${source==='official'?'Official ClawHub evaluation':'LLM-generated (mirrors OpenClaw format)'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="ch-verdict ch-${vl}">${esc(ch.verdict)}</span>
+        <span class="ch-confidence">${esc(ch.confidence||'')} CONFIDENCE</span>
+      </div>
+    </div>
+    ${ch.summary?`<div class="ch-summary">${esc(ch.summary)}</div>`:''}
+    <div class="ch-categories">${catHtml}</div>
+    ${ch.assessment?`<div class="ch-assessment ${vl}"><div class="ch-assessment-lbl">Assessment</div>${esc(ch.assessment)}</div>`:''}`;
+}
+
+// Global store for ClawHub data (avoids JSON.stringify-in-onclick HTML breakage)
+let _chLlmData = null;
+let _chSlug = '';
+
+function renderClawHubTab(d){
+  // Store LLM data globally so onclick handlers can reference it safely
+  _chLlmData = d.clawhub_verdict ? {
+    verdict:    d.clawhub_verdict,
+    confidence: d.clawhub_confidence,
+    summary:    d.clawhub_summary,
+    assessment: d.clawhub_assessment,
+    purpose_capability:         d.clawhub_purpose_capability,
+    purpose_capability_desc:    d.clawhub_purpose_capability_desc,
+    instruction_scope:          d.clawhub_instruction_scope,
+    instruction_scope_desc:     d.clawhub_instruction_scope_desc,
+    install_mechanism:          d.clawhub_install_mechanism,
+    install_mechanism_desc:     d.clawhub_install_mechanism_desc,
+    credentials:                d.clawhub_credentials,
+    credentials_desc:           d.clawhub_credentials_desc,
+    persistence_privilege:      d.clawhub_persistence_privilege,
+    persistence_privilege_desc: d.clawhub_persistence_privilege_desc,
+  } : null;
+
+  // Pass the raw filename so clawhub_fetch.py can match against the meta JSON
+  // e.g. "self-improving-agent.md" or "ontology-graph_SKILL.md"
+  _chSlug = d.filename || (d.filename||'').replace(/\.md$/i,'').split('/').pop();
+
+  return `
+    <div class="ch-source-bar">
+      <button class="ch-source-btn active" id="ch-btn-llm" onclick="switchChSource('llm')">
+        🤖 LLM Report
+      </button>
+      <button class="ch-source-btn" id="ch-btn-official" onclick="switchChSource('official')">
+        🏢 Official ClawHub
+      </button>
+    </div>
+    <div id="ch-content">${renderClawHubReport(_chLlmData, 'llm')}</div>`;
+}
+
+async function switchChSource(source){
+  // Uses globals _chLlmData and _chSlug set by renderClawHubTab
+  document.getElementById('ch-btn-llm').classList.toggle('active', source==='llm');
+  document.getElementById('ch-btn-official').classList.toggle('active', source==='official');
+  const box = document.getElementById('ch-content');
+  if(!box) return;
+  if(source==='llm'){
+    box.innerHTML = renderClawHubReport(_chLlmData, 'llm');
+    return;
+  }
+  // Official: fetch from ClawHub API
+  box.innerHTML = '<div class="ch-loading">Fetching official ClawHub evaluation…</div>';
+  if(!_chSlug){
+    box.innerHTML = officialSlugInput('');
+    return;
+  }
+  await loadOfficial(_chSlug, box);
+}
+
+async function loadOfficial(slug, box){
+  if(!box) box = document.getElementById('ch-content');
+  try {
+    const r = await fetch('/api/clawhub-official/'+encodeURIComponent(slug));
+    if(r.ok){
+      const result = await r.json();
+      // result is already normalised by clawhub_fetch.py
+      const ch = {
+        verdict:    result.verdict    || '',
+        confidence: result.confidence || '',
+        summary:    result.summary    || '',
+        assessment: result.assessment || '',
+        categories: result.categories || {},
+        source:     result.source     || 'official',
+      };
+      // Attach skill stats if present
+      const statsHtml = result.skill_stats ? renderSkillStats(result.skill_stats) : '';
+      box.innerHTML = statsHtml + renderClawHubReport(ch, 'official');
+    } else {
+      const err = await r.json().catch(()=>({}));
+      box.innerHTML = `<div class="ch-official-box">
+        <div style="font-size:32px;margin-bottom:12px">🦀</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">No official evaluation found</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:16px">${esc(err.detail||'This skill may not have an official ClawHub evaluation yet.')}</div>
+        ${officialSlugInput(slug)}
+      </div>`;
+    }
+  } catch(e){
+    box.innerHTML = `<div class="ch-official-box">
+      <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">Could not reach ClawHub</div>
+      <div style="font-size:12px;color:var(--text3)">${esc(String(e))}</div>
+    </div>`;
+  }
+}
+
+function officialSlugInput(currentSlug){
+  return `<div style="margin-top:8px">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:10px">Enter the ClawHub skill slug (e.g. <code>owner/skill-name</code>):</div>
+    <input class="ch-slug-input" id="ch-slug-field" type="text" value="${esc(currentSlug||'')}" placeholder="owner/skill-name">
+    <div style="margin-top:10px">
+      <button class="ch-fetch-btn" onclick="doFetchOfficial()">Fetch from ClawHub</button>
+    </div>
+  </div>`;
+}
+
+async function doFetchOfficial(){
+  const slug = (document.getElementById('ch-slug-field')?.value||'').trim();
+  if(!slug){alert('Please enter a skill slug.');return;}
+  const box = document.getElementById('ch-content');
+  box.innerHTML = '<div class="ch-loading">Fetching…</div>';
+  _chSlug = slug;
+  await loadOfficial(slug, box);
+}
+
+function renderSkillStats(s){
+  if(!s) return '';
+  const stats = s.stats || {};
+  const fmt = n => n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'k':String(Math.round(n||0));
+  const url = s.url || '#';
+  return `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:12px 16px;margin-bottom:14px;font-family:var(--mono);font-size:11px;color:var(--text2)">
+    <a href="${esc(url)}" target="_blank" rel="noopener"
+       style="font-weight:700;color:var(--accent);text-decoration:none;font-size:12px">
+      🔗 ${esc(s.display_name||s.slug||'')}
+    </a>
+    <span title="Stars">⭐ ${fmt(stats.stars)}</span>
+    <span title="Total downloads">⬇ ${fmt(stats.downloads)}</span>
+    <span title="Current installs">📦 ${fmt(stats.installsCurrent)} installed</span>
+    <span title="Version" style="margin-left:auto;color:var(--text3)">v${esc(s.version||'?')}</span>
+  </div>`;
 }
 
 function togV(vi){document.getElementById('v'+vi).classList.toggle('open')}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-// ── Metric popup — reads from /api/metrics (metrics.json) ────────────────
-let METRICS_DEF = null;
-
-async function loadMetricsDef() {
-  try {
-    const r = await fetch('/api/metrics');
-    METRICS_DEF = await r.json();
-  } catch(e) {
-    console.warn('Could not load metrics.json:', e);
-  }
-}
-
-function findMetricDef(abbr) {
-  if (!METRICS_DEF) return null;
-  for (const section of Object.values(METRICS_DEF)) {
-    if (!section.metric_groups) continue;
-    for (const group of Object.values(section.metric_groups)) {
-      for (const [name, data] of Object.entries(group)) {
-        if (data.short === abbr) return { name, ...data };
-      }
-    }
-  }
-  return null;
-}
-
-function showMetricPopup(abbr, curVal) {
-  const def = findMetricDef(abbr);
-  if (!def) return;
-  const GC = {
-    'Base Metrics':'var(--accent)',
-    'Exploitability Metrics':'var(--accent)',
-    'Vulnerable System Impact Metrics':'var(--teal)',
-    'Subsequent System Impact Metrics':'var(--purple)',
-    'Threat Metrics':'var(--c-high)',
-    'Environmental (Modified Base Metrics)':'var(--text2)',
-    'Environmental (Security Requirements)':'var(--text2)',
-    'Supplemental Metrics':'var(--c-med)'
-  };
-  let gc = 'var(--accent)', gl = '';
-  if (METRICS_DEF) {
-    outer: for (const [sn, sec] of Object.entries(METRICS_DEF)) {
-      if (!sec.metric_groups) continue;
-      for (const grp of Object.values(sec.metric_groups)) {
-        for (const md of Object.values(grp)) {
-          if (md.short === abbr) { gl = sn; gc = GC[sn] || 'var(--accent)'; break outer; }
-        }
-      }
-    }
-  }
-  const curOpt = def.options
-    ? Object.entries(def.options).find(([k]) =>
-        k.toLowerCase().startsWith(curVal.toLowerCase()) ||
-        curVal.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()))
-    : null;
-  const others = def.options
-    ? Object.entries(def.options)
-        .filter(([k]) => k !== (curOpt ? curOpt[0] : ''))
-        .map(([k, v]) => `<div class="mm-other">
-          <div class="mm-other-badge">${esc(v.value || k)}</div>
-          <div><div class="mm-other-name">${esc(k)}</div>
-          <div class="mm-other-tip">${esc(v.tooltip || '')}</div></div></div>`).join('')
-    : '';
-  const cur = curOpt
-    ? `<div class="mm-sec-lbl">Currently selected value</div>
-       <div class="mm-cur">
-         <div class="mm-cur-badge">${esc(curOpt[1].value || curOpt[0])}</div>
-         <div><div class="mm-cur-name">${esc(curOpt[0])}</div>
-         <div class="mm-cur-tip">${esc(curOpt[1].tooltip || '')}</div></div>
-       </div>
-       ${others.length ? '<div class="mm-sec-lbl" style="margin-top:14px">Other possible values</div>' + others : ''}`
-    : `<div class="mm-sec-lbl">All possible values</div>${others}`;
-  const ex = document.getElementById('mm-modal');
-  if (ex) ex.remove();
-  document.body.insertAdjacentHTML('beforeend', `
-    <div class="mm-overlay" id="mm-modal" onclick="if(event.target.id==='mm-modal')this.remove()">
-      <div class="mm-box" onclick="event.stopPropagation()">
-        <div class="mm-hdr">
-          <div class="mm-abbr-badge" style="background:${gc}">${esc(abbr)}</div>
-          <div class="mm-title-col">
-            <div class="mm-group-lbl" style="color:${gc}">${esc(gl)}</div>
-            <div class="mm-metric-name">${esc(def.name)}</div>
-          </div>
-          <button class="mm-x" onclick="document.getElementById('mm-modal').remove()">&#x2715;</button>
-        </div>
-        <div class="mm-desc">${esc(def.tooltip || '')}</div>
-        <div class="mm-vals">${cur}</div>
-        <div class="mm-foot">Source: FIRST CVSS v4.0 Specification &middot; first.org/cvss/v4.0</div>
-      </div>
-    </div>`);
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { const m = document.getElementById('mm-modal'); if (m) m.remove(); }
-});
-
-// metricGroup defined at TOP LEVEL — outside render()
-function metricGroup(label,cls,items){
-  const cells=items.map(m=>{
-    const val=m.v||'Not Defined';
-    const sv=val.replace(/'/g,"\'");
-    return `<div class="mcell" onclick="showMetricPopup('${m.abbr}','${sv}')" title="Click to learn about this metric">
-      <div class="mcell-abbr">${m.abbr}</div>
-      <div class="mcell-k">${m.lbl}</div>
-      <div class="mcell-v">${esc(val)}</div>
-    </div>`;
-  }).join('');
-  return `<div class="mgroup">
-    <div class="mgroup-lbl ${cls}">${label}</div>
-    <div class="mgrid">${cells}</div>
-  </div>`;
-}
-
 loadMetricsDef();
 load();
 </script>

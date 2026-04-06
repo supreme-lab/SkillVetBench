@@ -52,13 +52,40 @@ sys.path.insert(0, str(PROJECT_DIR))
 from storage import ReportStorage, _slug
 
 logging.basicConfig(
-    format  = "%(asctime)s  %(levelname)-7s  %(message)s",
+    format  = "%(asctime)s  %(levelname)-7s  %(name)s — %(message)s",
     datefmt = "%H:%M:%S",
-    level   = logging.INFO,
+    level   = logging.DEBUG,
 )
 logger = logging.getLogger("SkillEvalServer")
 
-app          = FastAPI(title="Skill Security Evaluator", version="2.0")
+# Silence noisy third-party loggers but keep our own detailed
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("anthropic").setLevel(logging.WARNING)
+logging.getLogger("openai").setLevel(logging.WARNING)
+logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app):
+    # ── Startup ──────────────────────────────────────────────────────
+    logger.info("━" * 60)
+    logger.info("  AgentSkillBench Skill Security Evaluator — READY")
+    logger.info("━" * 60)
+    logger.info(f"  Templates  : {_TEMPLATES_FILE}")
+    logger.info(f"  Reports    : {storage.root if storage else '(not initialised)'}")
+    logger.info(f"  Skills dir : {skills_dir}")
+    logger.info(f"  LLM backend: {llm_config.get('api_type','?')}  model={llm_config.get('model') or '(default)'}")
+    logger.info(f"  Leaderboard: {len(_LEADERBOARD_HTML):,} chars")
+    logger.info(f"  Detail page: {len(_DETAIL_HTML):,} chars")
+    logger.info("━" * 60)
+    logger.info("  Open in browser: http://localhost:8000")
+    logger.info("━" * 60)
+    yield
+    # ── Shutdown ─────────────────────────────────────────────────────
+    logger.info("Server stopped.")
+
+app          = FastAPI(title="Skill Security Evaluator", version="2.0", lifespan=lifespan)
 storage: ReportStorage = None    # type: ignore
 skills_dir:  Path      = None    # type: ignore
 llm_config:  dict      = {}
@@ -70,11 +97,39 @@ app.add_middleware(
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Request logging middleware
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    import time
+    start = time.monotonic()
+    try:
+        response = await call_next(request)
+        ms = (time.monotonic() - start) * 1000
+        level = logging.WARNING if response.status_code >= 400 else logging.DEBUG
+        logger.log(level, f"{request.method} {request.url.path}  →  {response.status_code}  ({ms:.0f}ms)")
+        return response
+    except Exception as exc:
+        ms = (time.monotonic() - start) * 1000
+        logger.error(f"{request.method} {request.url.path}  →  EXCEPTION ({ms:.0f}ms): {exc}", exc_info=True)
+        raise
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # API Routes
 # ─────────────────────────────────────────────────────────────────────────────
 
+@app.get("/ping")
+def ping():
+    """Quick health check — open http://localhost:8000/ping in browser to test."""
+    logger.info("PING received — server is alive")
+    return {"status": "ok", "message": "AgentSkillBench server is running"}
+
+
 @app.get("/api/leaderboard")
 def api_leaderboard(model: str = "", risk: str = "", sort: str = "cvss_base_score"):
+    logger.debug("api_leaderboard called")
     rows = storage.get_leaderboard()
     if model:
         rows = [r for r in rows if model.lower() in r["model_name"].lower()]
@@ -188,6 +243,63 @@ def api_metrics():
         return json.load(f)
 
 
+@app.get("/api/clawhub-official/{slug:path}")
+async def api_clawhub_official(slug: str):
+    """
+    Fetch the official ClawHub evaluation report for a skill slug or filename.
+    Uses clawhub_fetch.py which looks up skill_id from clawhub_skills_meta.json
+    and tries multiple API endpoints + HTML scraping as fallback.
+    """
+    import asyncio
+    from clawhub_fetch import fetch_official_evaluation, get_skill_stats
+
+    logger.info(f"ClawHub official evaluation requested: {slug}")
+
+    loop = asyncio.get_event_loop()
+    try:
+        # Run in executor since clawhub_fetch uses synchronous requests
+        result = await loop.run_in_executor(
+            None, lambda: fetch_official_evaluation(slug)
+        )
+    except Exception as exc:
+        logger.error(f"ClawHub fetch error for '{slug}': {exc}", exc_info=True)
+        raise HTTPException(500, f"Error fetching ClawHub evaluation: {exc}")
+
+    if not result:
+        # Return skill stats from metadata even if no evaluation available
+        stats = await loop.run_in_executor(None, lambda: get_skill_stats(slug))
+        raise HTTPException(
+            404,
+            f"No official ClawHub evaluation found for '{slug}'. "
+            + (f"Skill URL: https://clawhub.ai/{stats['owner_handle']}/{stats['slug']}" if stats else
+               "Check that clawhub_skills_meta.json contains this slug.")
+        )
+
+    # Also attach skill stats (stars, downloads, etc.) if available
+    stats = await loop.run_in_executor(None, lambda: get_skill_stats(slug))
+    if stats:
+        result["skill_stats"] = stats
+
+    logger.info(f"ClawHub official: {slug} → verdict={result.get('verdict')} source={result.get('source')}")
+    return result
+
+
+@app.get("/api/sars-metrics")
+def api_sars_metrics():
+    """Serve SARS dimension definitions for the popup feature."""
+    from sars import SARS_DIMENSIONS
+    return {
+        k: {
+            "name":        v["name"],
+            "short":       v["short"],
+            "description": v["description"],
+            "weight":      v["weight"],
+            "levels":      {str(lk): lv for lk, lv in v["levels"].items()},
+        }
+        for k, v in SARS_DIMENSIONS.items()
+    }
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Background evaluation task
 # ─────────────────────────────────────────────────────────────────────────────
@@ -196,7 +308,8 @@ async def _run_evaluation(job_id: str, path: Path, model: str, api_type: str, ap
     job = jobs[job_id]
     job["status"]     = "running"
     job["started_at"] = datetime.now().isoformat()
-    logger.info(f"[Job {job_id}] Evaluating: {path.name} with {model or api_type}")
+    logger.info(f"[Job {job_id}] ▶ Start  : {path.name}")
+    logger.info(f"[Job {job_id}]   Backend: {api_type}  model={model or '(default)'}")
     try:
         loop   = asyncio.get_event_loop()
         report = await loop.run_in_executor(
@@ -207,12 +320,12 @@ async def _run_evaluation(job_id: str, path: Path, model: str, api_type: str, ap
         job["status"]     = "done"
         job["done_at"]    = datetime.now().isoformat()
         job["result_key"] = f"{_slug(path.name)}::{_slug(effective_model)}"
-        logger.info(f"[Job {job_id}] Done → {save_path}")
+        logger.info(f"[Job {job_id}] ✅ Done  : {save_path.name}")
     except Exception as exc:
         job["status"]  = "error"
         job["error"]   = str(exc)
         job["done_at"] = datetime.now().isoformat()
-        logger.error(f"[Job {job_id}] Error: {exc}")
+        logger.error(f"[Job {job_id}] ❌ Error : {exc}", exc_info=True)
 
 
 def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
@@ -271,6 +384,7 @@ _TEMPLATES_FILE = PROJECT_DIR / "templates.html"
 _SEPARATOR      = "<!-- ==================== DETAIL_PAGE ==================== -->"
 
 def _load_templates():
+    logger.debug(f"Loading templates from: {_TEMPLATES_FILE}")
     if not _TEMPLATES_FILE.exists():
         raise FileNotFoundError(
             f"templates.html not found at {_TEMPLATES_FILE}\n"
@@ -280,7 +394,9 @@ def _load_templates():
     parts   = content.split(_SEPARATOR, 1)
     if len(parts) != 2:
         raise ValueError("templates.html is missing the DETAIL_PAGE separator comment")
-    return parts[0].strip(), parts[1].strip()
+    lb, det = parts[0].strip(), parts[1].strip()
+    logger.debug(f"Templates loaded — leaderboard: {len(lb):,} chars, detail: {len(det):,} chars")
+    return lb, det
 
 _LEADERBOARD_HTML, _DETAIL_HTML = _load_templates()
 
@@ -291,11 +407,13 @@ _LEADERBOARD_HTML, _DETAIL_HTML = _load_templates()
 
 @app.get("/", response_class=HTMLResponse)
 def page_leaderboard():
+    logger.info("📄 Serving leaderboard page (GET /)")
     return HTMLResponse(_LEADERBOARD_HTML)
 
 
 @app.get("/skill/{skill_slug}/{model_slug}", response_class=HTMLResponse)
 def page_detail(skill_slug: str, model_slug: str):
+    logger.info(f"📄 Serving detail page: {skill_slug} / {model_slug}")
     return HTMLResponse(_DETAIL_HTML)
 
 
@@ -310,7 +428,7 @@ def main():
     parser.add_argument("--host",        default="0.0.0.0")
     parser.add_argument("--port",  "-p", default=8000, type=int)
     parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
-    parser.add_argument("--skills-dir",  default="skills",   metavar="DIR")
+    parser.add_argument("--skills-dir",  default="byungkyu",   metavar="DIR")
     parser.add_argument("--api",         default="hf_api",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])
     parser.add_argument("--model",  default=None)
@@ -335,9 +453,10 @@ def main():
     logger.info(f"Skills dir  : {skills_dir}")
     logger.info(f"Reports dir : {args.reports_dir}")
     logger.info(f"LLM backend : {args.api}  model={args.model or '(default)'}")
-    logger.info(f"Web server  : http://{args.host}:{args.port}")
+    logger.info(f"Web server  : http://localhost:{args.port}")
+    logger.info(f"Open in browser → http://localhost:{args.port}")
 
-    uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
+    uvicorn.run(app, host=args.host, port=args.port, log_level="info")
 
 
 if __name__ == "__main__":

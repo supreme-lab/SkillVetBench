@@ -57,9 +57,22 @@ def _report_to_dict(report) -> dict:
         "privileges_required":    getattr(report, "privileges_required",    ""),
         "user_interaction":       getattr(report, "user_interaction",       ""),
         "scope":                  getattr(report, "scope",                  ""),
+        # CVSS v3 compat (kept for backward compatibility)
         "confidentiality_impact": getattr(report, "confidentiality_impact", ""),
         "integrity_impact":       getattr(report, "integrity_impact",       ""),
         "availability_impact":    getattr(report, "availability_impact",    ""),
+        # CVSS v4.0 named fields (Vulnerable System Impact)
+        "confidentiality_vs":     getattr(report, "confidentiality_impact", ""),
+        "integrity_vs":           getattr(report, "integrity_impact",       ""),
+        "availability_vs":        getattr(report, "availability_impact",    ""),
+        # CVSS v4.0 Subsequent System Impact
+        "confidentiality_ss":     getattr(report, "confidentiality_ss",     ""),
+        "integrity_ss":           getattr(report, "integrity_ss",           ""),
+        "availability_ss":        getattr(report, "availability_ss",        ""),
+        # CVSS v4.0 additional fields
+        "attack_requirements":    getattr(report, "attack_requirements",    ""),
+        "exploit_maturity":       getattr(report, "exploit_maturity",       ""),
+        "cvss_nomenclature":      getattr(report, "nomenclature",           "CVSS-B"),
         "executive_summary":      getattr(report, "executive_summary",      ""),
         "skill_purpose_analysis": getattr(report, "skill_purpose_analysis", ""),
         "dangerous_patterns":     getattr(report, "dangerous_patterns",     []),
@@ -67,6 +80,29 @@ def _report_to_dict(report) -> dict:
         "remediation_priority":   getattr(report, "remediation_priority",   ""),
         "vulnerabilities":        vulns,
         "error":                  getattr(report, "error",                  ""),
+        # ClawHub fields
+        "clawhub_verdict":                    getattr(report, "clawhub_verdict",                    ""),
+        "clawhub_confidence":                 getattr(report, "clawhub_confidence",                 ""),
+        "clawhub_summary":                    getattr(report, "clawhub_summary",                    ""),
+        "clawhub_assessment":                 getattr(report, "clawhub_assessment",                 ""),
+        "clawhub_purpose_capability":         getattr(report, "clawhub_purpose_capability",         ""),
+        "clawhub_purpose_capability_desc":    getattr(report, "clawhub_purpose_capability_desc",    ""),
+        "clawhub_instruction_scope":          getattr(report, "clawhub_instruction_scope",          ""),
+        "clawhub_instruction_scope_desc":     getattr(report, "clawhub_instruction_scope_desc",     ""),
+        "clawhub_install_mechanism":          getattr(report, "clawhub_install_mechanism",          ""),
+        "clawhub_install_mechanism_desc":     getattr(report, "clawhub_install_mechanism_desc",     ""),
+        "clawhub_credentials":                getattr(report, "clawhub_credentials",                ""),
+        "clawhub_credentials_desc":           getattr(report, "clawhub_credentials_desc",           ""),
+        "clawhub_persistence_privilege":      getattr(report, "clawhub_persistence_privilege",      ""),
+        "clawhub_persistence_privilege_desc": getattr(report, "clawhub_persistence_privilege_desc", ""),
+        # SARS fields
+        "sars_score":             getattr(report, "sars_score",             0.0),
+        "sars_severity":          getattr(report, "sars_severity",          "NONE"),
+        "sars_ifr":               getattr(report, "sars_ifr",               0),
+        "sars_dg":                getattr(report, "sars_dg",                0),
+        "sars_ai":                getattr(report, "sars_ai",                0),
+        "sars_br":                getattr(report, "sars_br",                0),
+        "sars_ca":                getattr(report, "sars_ca",                0),
     }
 
 
@@ -134,6 +170,14 @@ class ReportStorage:
             "top_finding_category": top_cat,
             "evaluated_at":       data["evaluated_at"],
             "report_path":        str(out_path),
+            # SARS
+            "sars_score":         data.get("sars_score",    0.0),
+            "sars_severity":      data.get("sars_severity", "NONE"),
+            "sars_ifr":           data.get("sars_ifr",      0),
+            "sars_dg":            data.get("sars_dg",       0),
+            "sars_ai":            data.get("sars_ai",       0),
+            "sars_br":            data.get("sars_br",       0),
+            "sars_ca":            data.get("sars_ca",       0),
         }
         self._write_index(index)
         return out_path

@@ -101,8 +101,10 @@ You MUST return ALL 11 mandatory base metrics. Use ONLY the exact abbreviations
 and values listed below — do not use v3.1 keys (S, C, I, A) as they are invalid.
 
 EXPLOITABILITY METRICS (how the attacker reaches the vulnerable component):
-  AV  (Attack Vector):        N=Network  A=Adjacent  L=Local  P=Physical
-  AC  (Attack Complexity):    L=Low      H=High
+  NOTE: AV (Attack Vector) and AC (Attack Complexity) are excluded — agentic skills
+  are almost always network-exposed (AV:N) and reliably exploitable (AC:L). These
+  values are assumed as constants and do not require scoring.
+
   AT  (Attack Requirements):  N=None     P=Present
   PR  (Privileges Required):  N=None     L=Low       H=High
   UI  (User Interaction):     N=None     P=Passive   A=Active
@@ -121,17 +123,73 @@ THREAT METRIC (optional — omit if unknown):
   E   (Exploit Maturity):     A=Attacked  P=Proof-of-Concept  U=Unreported  X=Not Defined
 
 SCORING GUIDANCE:
-- Command injection / RCE vulnerabilities → AV:N, AC:L, AT:N, PR:N, UI:N, VC:H, VI:H, VA:H, SC:H, SI:H, SA:H
+- Command injection / RCE vulnerabilities → AT:N, PR:N, UI:N, VC:H, VI:H, VA:H, SC:H, SI:H, SA:H
 - Data exfiltration → VC:H, VI:L, VA:N (high confidentiality, low integrity impact)
 - Privilege escalation → PR:L or PR:N with VI:H (integrity of system modified)
 - Prompt injection → AT:P (requires specific deployment condition), UI:P (passive user involvement)
-- If the skill has NO vulnerabilities → AV:L, AC:H, AT:P, PR:H, UI:A, VC:N, VI:N, VA:N, SC:N, SI:N, SA:N
+- If the skill has NO vulnerabilities → AT:P, PR:H, UI:A, VC:N, VI:N, VA:N, SC:N, SI:N, SA:N
 
 KEY DIFFERENCES FROM CVSS v3.1:
 - There is NO "S" (Scope) metric in v4.0 — remove it entirely
+- AV and AC are NOT scored — assumed constants (Network, Low) for all agentic skills
 - C/I/A are now split: VC/VI/VA (vulnerable system) and SC/SI/SA (subsequent system)
 - AT (Attack Requirements) is new — use N if no special conditions needed, P if conditions exist
 - UI now has three values: N (none), P (passive), A (active) — not just N/R
+
+
+════════════════════════════════════════════════════════════
+SARS — SKILL AGENTIC RISK SCORE (evaluate alongside CVSS)
+════════════════════════════════════════════════════════════
+
+In addition to CVSS, you must score the skill on five agentic-specific
+risk dimensions called SARS. Each dimension is an integer 0–3.
+
+IFR — Instruction Fidelity Risk
+  How easily can this skill be manipulated via prompt injection?
+  0 = No user-controlled text flows into tool parameters at all
+  1 = User text passes through but is scoped to a fixed, constrained operation
+  2 = User-controlled text influences API parameters or which tool is called
+  3 = User text is injected directly into tool calls or commands without sanitization
+
+DG — Data Gravity
+  How sensitive is the data this skill reads or writes?
+  0 = Only public or non-sensitive data (documentation, public APIs)
+  1 = Internal company data, non-sensitive (project metadata, task lists)
+  2 = Confidential data: PII, credentials, session tokens, financial records
+  3 = Restricted data: health records, private keys, payment instruments, auth secrets
+
+AI — Action Irreversibility
+  Can the skill's actions be undone after execution?
+  0 = Read-only (GET requests only, no state change whatsoever)
+  1 = Reversible writes (POST/PUT where a clear undo path exists, e.g. archive not delete)
+  2 = Difficult to reverse (modifies shared state, partial rollback possible with effort)
+  3 = Irreversible (DELETE, sent messages, financial transactions, published posts)
+
+BR — Blast Radius
+  How many users or systems are affected by a single exploitation?
+  0 = Self only — affects only the requesting user's own private resources
+  1 = Team — affects a bounded group (workspace, project, org unit)
+  2 = Platform — affects all users of the integrated service
+  3 = Cross-platform — affects external systems, third parties, or attack is wormable
+
+CA — Chain Amplification
+  Does combining this skill with others multiply its danger significantly?
+  0 = Self-contained — no meaningful amplification when chained with other skills
+  1 = Low — chaining adds marginal capability
+  2 = Medium — chaining with a retrieval or execution skill creates a meaningful attack path
+  3 = High — force multiplier: enables data exfiltration, lateral movement, or persistence
+
+SCORING EXAMPLES:
+  A Slack skill that posts messages with arbitrary user content:
+    IFR=3 (user text → Slack API), DG=1 (Slack messages, not credentials),
+    AI=3 (sent messages irreversible), BR=2 (all channel members), CA=2
+
+  A read-only documentation search skill:
+    IFR=1 (query scoped), DG=0 (public docs), AI=0 (read-only), BR=0 (self only), CA=1
+
+  A file deletion skill with admin access:
+    IFR=2 (filename from user), DG=2 (accesses any file), AI=3 (delete is irreversible),
+    BR=1 (team files), CA=3 (delete + exfil when chained)
 
 ════════════════════════════════════════════════════════════
 REQUIRED JSON OUTPUT FORMAT
@@ -146,8 +204,6 @@ Return ONLY a valid JSON object. No markdown fences, no preamble, no trailing te
   "vulnerability_count": <integer>,
 
   "cvss_metrics": {
-    "AV": "<N|A|L|P>",
-    "AC": "<L|H>",
     "AT": "<N|P>",
     "PR": "<N|L|H>",
     "UI": "<N|P|A>",
@@ -158,6 +214,14 @@ Return ONLY a valid JSON object. No markdown fences, no preamble, no trailing te
     "SI": "<H|L|N>",
     "SA": "<H|L|N>",
     "E":  "<A|P|U|X>"
+  },
+
+  "sars_metrics": {
+    "IFR": <0|1|2|3>,
+    "DG":  <0|1|2|3>,
+    "AI":  <0|1|2|3>,
+    "BR":  <0|1|2|3>,
+    "CA":  <0|1|2|3>
   },
 
   "vulnerabilities": [
@@ -194,6 +258,8 @@ def build_evaluation_prompt(skill_content: str, filename: str) -> str:
         f"{skill_content}\n"
         f"{'═' * 60}\n\n"
         f"Provide your complete security evaluation in the required JSON format. "
-        f"Remember: use CVSS v4.0 metrics only (AV, AC, AT, PR, UI, VC, VI, VA, SC, SI, SA, E). "
-        f"Do NOT use v3.1 keys S, C, I, or A."
+        f"Remember: use CVSS v4.0 metrics only (AT, PR, UI, VC, VI, VA, SC, SI, SA, E). "
+        f"Do NOT include AV or AC — they are assumed Network and Low for all agentic skills. "
+        f"Do NOT use v3.1 keys S, C, I, or A. "
+        f"Also score all 5 SARS dimensions (IFR, DG, AI, BR, CA) as integers 0-3 in sars_metrics."
     )

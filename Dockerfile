@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all source files (matching your exact filenames)
 COPY server.py .
+COPY sars.py .
 COPY storage.py .
 COPY evaluator.py .
 COPY llm_client.py .
@@ -16,10 +17,7 @@ COPY cvss4_0.py .
 COPY cvss3_5.py .
 COPY prompts_cvss4_0.py .
 COPY prompts_cvss3_5.py .
-COPY pdf_reporter.py .
-COPY reporter.py .
-COPY metrics.json .
-COPY check_gpu.py .
+COPY prompts_clawhub.py .
 COPY clawhub_fetch.py .
 COPY templates.html .
 COPY metrics.json .
