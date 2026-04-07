@@ -300,151 +300,276 @@ def _normalise_api_response(data: dict) -> Optional[dict]:
 
 def _scrape_clawhub_page(owner: str, slug: str, timeout: int) -> Optional[dict]:
     """
-    Scrape https://clawhub.ai/{owner}/{slug} and parse the safety evaluation
-    from the rendered HTML.
+    Fetch the ClawHub skill page and extract the official LLM safety evaluation.
 
-    The page renders a React app, so the evaluation data is typically
-    embedded as a __NEXT_DATA__ JSON script tag or similar.
+    ClawHub is a React SPA. The full skill data is embedded in an inline
+    <script class="$tsr"> tag using a custom $R[N] = serialization:
+
+        $_TSR.router = ($R => $R[0] = {
+            ...
+            llmAnalysis: $R[21] = {
+                verdict: "benign",
+                confidence: "high",
+                summary: "...",
+                guidance: "...",
+                dimensions: $R[22] = [
+                    $R[23] = { name: "purpose_capability",
+                               label: "Purpose & Capability",
+                               rating: "ok", detail: "..." },
+                    ...
+                ]
+            }
+        })($R["tsr"]);
+
+    We strip the $R[N] = references and extract llmAnalysis fields with regex.
     """
     url = f"{CLAWHUB_WEB}/{owner}/{slug}"
+    logger.info(f"  Fetching: {url}")
     try:
         resp = requests.get(
             url,
             timeout=timeout,
-            headers={"User-Agent": "Mozilla/5.0 (compatible; AgentSkillBench/1.0)"},
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (X11; Linux x86_64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/120.0.0.0 Safari/537.36"
+                ),
+                "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
+            allow_redirects=True,
         )
-        if resp.status_code != 200:
-            logger.debug(f"  Scrape {url} → HTTP {resp.status_code}")
-            return None
+        resp.raise_for_status()
         html = resp.text
+        logger.info(f"  HTTP {resp.status_code}, {len(html):,} chars")
     except Exception as e:
-        logger.debug(f"  Scrape {url} → {e}")
+        logger.error(f"  Fetch error: {e}")
         return None
 
-    # ── Try __NEXT_DATA__ JSON (Next.js apps embed full page data here) ───
-    m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', html, re.DOTALL)
-    if m:
-        try:
-            next_data = json.loads(m.group(1))
-            # Walk the Next.js data structure for evaluation fields
-            # Common paths: props.pageProps.skill.evaluation / .safety / .review
-            skill_data = (
-                next_data.get("props", {}).get("pageProps", {}).get("skill")
-                or next_data.get("props", {}).get("pageProps", {}).get("data")
-                or {}
-            )
-            result = _normalise_api_response(skill_data)
-            if result:
-                result["source"] = "scraped_nextjs"
-                return result
-        except Exception as e:
-            logger.debug(f"  __NEXT_DATA__ parse error: {e}")
-
-    # ── Try inline JSON patterns ──────────────────────────────────────────
-    for pattern in [
-        r'"verdict"\s*:\s*"(Benign|Suspicious|Malicious)"',
-        r'"safetyVerdict"\s*:\s*"([^"]+)"',
-    ]:
-        m = re.search(pattern, html, re.IGNORECASE)
-        if m:
-            # Found a verdict — try to extract the surrounding JSON object
-            verdict_pos = m.start()
-            # Find the enclosing { ... }
-            start = html.rfind('{', 0, verdict_pos)
-            if start >= 0:
-                depth = 0
-                for i, ch in enumerate(html[start:start+5000], start):
-                    if ch == '{': depth += 1
-                    elif ch == '}':
-                        depth -= 1
-                        if depth == 0:
-                            try:
-                                obj = json.loads(html[start:i+1])
-                                result = _normalise_api_response(obj)
-                                if result:
-                                    result["source"] = "scraped_html"
-                                    return result
-                            except Exception:
-                                pass
-                            break
-
-    # ── Parse structured HTML directly ───────────────────────────────────
     return _parse_clawhub_html(html, owner, slug)
 
 
-def _parse_clawhub_html(html: str, owner: str, slug: str) -> Optional[dict]:
+def _parse_clawhub_html(html: str, owner: str = "", slug: str = "") -> Optional[dict]:
     """
-    Last-resort HTML parser for the ClawHub skill page.
-    Extracts verdict, categories, and assessment from the rendered DOM.
+    Parse the ClawHub skill page HTML and extract the llmAnalysis evaluation.
+
+    Key facts about the actual ClawHub HTML:
+    - Data is in an inline script tag (NOT __NEXT_DATA__)
+    - Uses $R[N] = value references throughout the JavaScript
+    - llmAnalysis.verdict is lowercase: "benign" / "suspicious" / "malicious"
+    - llmAnalysis.dimensions[i].rating is "ok" / "warn" / "fail"
+    - "environment_proportionality" dimension name = Credentials category
+    - "guidance" field = the assessment text shown to users
+
+    Returns a normalised dict or None.
     """
-    # Verdict
-    verdict = None
-    for word in ["Benign", "Suspicious", "Malicious"]:
-        if word in html:
-            verdict = word
+
+    # ── Step 1: Find the llmAnalysis block ───────────────────────────────
+    # Try both quoted and unquoted key forms
+    la_pos = -1
+    for needle in ('"llmAnalysis"', 'llmAnalysis:'):
+        la_pos = html.find(needle)
+        if la_pos >= 0:
             break
 
+    if la_pos < 0:
+        logger.debug("  llmAnalysis not found in HTML — falling back")
+        return _parse_clawhub_html_fallback(html)
+
+    # Extract enough HTML to cover all 5 dimensions (each ~400 chars)
+    window = html[la_pos: la_pos + 6000]
+
+    # Strip $R[N] = references so the text becomes easier to regex
+    window_clean = re.sub(r'\$R\[\d+\]\s*=\s*', '', window)
+
+    # ── Step 2: Extract simple string fields ─────────────────────────────
+    def get_str(key):
+        """Extract first "value" for key: "value" in the window."""
+        pat = re.compile(
+            r'["\']?' + re.escape(key) + r'["\']?' + r'\s*:\s*"((?:[^"\\]|\\.)*)"',
+            re.DOTALL
+        )
+        m = pat.search(window)
+        return m.group(1) if m else ""
+
+    verdict    = get_str("verdict").lower()
+    confidence = get_str("confidence").upper()
+    summary    = get_str("summary")
+    guidance   = get_str("guidance")
+
+    if not verdict:
+        # Fallback: check vtAnalysis verdict
+        vt_pos = html.find("vtAnalysis")
+        if vt_pos >= 0:
+            m = re.search(r'verdict\s*:\s*"([^"]+)"', html[vt_pos:vt_pos+300])
+            if m:
+                verdict = m.group(1).lower()
+
+    if not verdict:
+        logger.debug("  No verdict in llmAnalysis — falling back")
+        return _parse_clawhub_html_fallback(html)
+
+    # Normalise verdict
+    VERDICT_MAP = {
+        "benign": "Benign", "clean": "Benign", "safe": "Benign",
+        "suspicious": "Suspicious", "warn": "Suspicious",
+        "malicious": "Malicious", "unsafe": "Malicious",
+    }
+    verdict_str = VERDICT_MAP.get(verdict, "Suspicious")
+
+    if confidence not in ("HIGH", "MEDIUM", "LOW"):
+        confidence = "MEDIUM"
+
+    # ── Step 3: Extract dimensions ────────────────────────────────────────
+    # Each dimension in the actual HTML:
+    #   $R[23] = { detail: "...", label: "...", name: "...", rating: "ok" }
+    # After stripping $R[N]= we get plain objects.
+    #
+    # Use a pattern that handles any field order.
+    dim_re = re.compile(
+        r'\{[^{}]{0,2000}?'
+        r'detail\s*:\s*"((?:[^"\\]|\\.)*)"'
+        r'.{0,600}?'
+        r'label\s*:\s*"((?:[^"\\]|\\.)*)"'
+        r'.{0,200}?'
+        r'name\s*:\s*"((?:[^"\\]|\\.)*)"'
+        r'.{0,200}?'
+        r'rating\s*:\s*"((?:[^"\\]|\\.)*)"'
+        r'[^{}]{0,200}?\}',
+        re.DOTALL,
+    )
+    dims_found = dim_re.findall(window_clean)
+
+    # Dimension name/label → our standard key
+    # "environment_proportionality" is ClawHub's internal name for Credentials
+    NAME_KEY = {
+        "purpose_capability":          "purpose_capability",
+        "instruction_scope":           "instruction_scope",
+        "install_mechanism":           "install_mechanism",
+        "environment_proportionality": "credentials",
+        "credentials":                 "credentials",
+        "persistence_privilege":       "persistence_privilege",
+    }
+    LABEL_KEY = {
+        "purpose & capability":    "purpose_capability",
+        "purpose and capability":  "purpose_capability",
+        "instruction scope":       "instruction_scope",
+        "install mechanism":       "install_mechanism",
+        "credentials":             "credentials",
+        "persistence & privilege": "persistence_privilege",
+        "persistence and privilege":"persistence_privilege",
+    }
+    # ClawHub uses "ok" where we use "pass"
+    RATING_NORM = {"ok": "pass", "pass": "pass", "warn": "warn", "fail": "fail"}
+
+    categories = {}
+    for detail, label, name, rating in dims_found:
+        std_key = NAME_KEY.get(name.lower()) or LABEL_KEY.get(label.lower())
+        if std_key:
+            categories[std_key] = {
+                "status":      RATING_NORM.get(rating.lower(), "pass"),
+                "description": detail,
+            }
+
+    logger.info(
+        f"  Parsed: verdict={verdict_str} confidence={confidence} "
+        f"dims={len(categories)}/5"
+    )
+
+    return {
+        "verdict":    verdict_str,
+        "confidence": confidence,
+        "summary":    summary,
+        "assessment": guidance,
+        "categories": categories,
+        "source":     "scraped_tsr",
+    }
+
+
+def _parse_clawhub_html_fallback(html: str) -> Optional[dict]:
+    """
+    Last-resort parser when llmAnalysis block is missing.
+    Reads plain-text verdict/confidence from the rendered HTML.
+    """
+    # Strip tags for plain text search
+    text = re.sub(r'<[^>]+>', ' ', html)
+    text = re.sub(r'&amp;', '&', text)
+    text = re.sub(r'&lt;', '<', text)
+    text = re.sub(r'&gt;', '>', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    # Verdict
+    verdict = None
+    for word in ("Malicious", "Suspicious", "Benign"):
+        if word in text:
+            verdict = word
+            break
+    if not verdict:
+        m = re.search(r'verdict["\']?\s*:\s*"(\w+)"', html, re.IGNORECASE)
+        if m:
+            v = m.group(1).lower()
+            verdict = {"benign":"Benign","clean":"Benign",
+                       "suspicious":"Suspicious",
+                       "malicious":"Malicious","unsafe":"Malicious"}.get(v)
     if not verdict:
         return None
 
     # Confidence
     confidence = "MEDIUM"
-    for level in ["HIGH CONFIDENCE", "MEDIUM CONFIDENCE", "LOW CONFIDENCE"]:
-        if level in html.upper():
-            confidence = level.split()[0]
-            break
+    m = re.search(r'(high|medium|low)\s+confidence', html, re.IGNORECASE)
+    if m:
+        confidence = m.group(1).upper()
 
-    # Categories — look for known titles
-    CATEGORY_TITLES = {
-        "purpose_capability":   ["PURPOSE & CAPABILITY", "PURPOSE AND CAPABILITY"],
-        "instruction_scope":    ["INSTRUCTION SCOPE"],
-        "install_mechanism":    ["INSTALL MECHANISM"],
-        "credentials":          ["CREDENTIALS"],
-        "persistence_privilege":["PERSISTENCE & PRIVILEGE", "PERSISTENCE AND PRIVILEGE"],
+    # Category statuses from check-mark classes in rendered HTML
+    LABEL_KEY = {
+        "purpose & capability":    "purpose_capability",
+        "purpose and capability":  "purpose_capability",
+        "instruction scope":       "instruction_scope",
+        "install mechanism":       "install_mechanism",
+        "credentials":             "credentials",
+        "persistence & privilege": "persistence_privilege",
+        "persistence and privilege":"persistence_privilege",
     }
-
     categories = {}
-    html_upper = html.upper()
-    for key, titles in CATEGORY_TITLES.items():
-        for title in titles:
-            pos = html_upper.find(title)
-            if pos >= 0:
-                # Look for pass/warn/fail signal near the title
-                nearby = html[max(0, pos-200):pos+500]
-                status = "pass"
-                nearby_lower = nearby.lower()
-                if "fail" in nearby_lower or "✕" in nearby or "×" in nearby:
-                    status = "fail"
-                elif "warn" in nearby_lower or "⚠" in nearby:
-                    status = "warn"
+    text_upper = text.upper()
+    for label, key in LABEL_KEY.items():
+        pos = text_upper.find(label.upper())
+        if pos >= 0:
+            nearby = text[max(0, pos - 100):pos + 400]
+            status = "pass"
+            if re.search(r'\bfail\b', nearby, re.IGNORECASE):
+                status = "fail"
+            elif re.search(r'\bwarn\b', nearby, re.IGNORECASE):
+                status = "warn"
+            desc = re.sub(r'\s+', ' ', nearby.replace(label, '', 1)).strip()[:250]
+            categories[key] = {"status": status, "description": desc}
 
-                # Extract description text (strip HTML tags)
-                desc = re.sub(r'<[^>]+>', ' ', nearby)
-                desc = re.sub(r'\s+', ' ', desc).strip()
-                desc = desc.replace(title, "").strip()[:300]
+    # Summary from analysis-summary-text span
+    summary = ""
+    m = re.search(r'analysis-summary-text[^>]*>([^<]{20,400})', html)
+    if m:
+        summary = re.sub(r'\s+', ' ', m.group(1)).strip()
 
-                categories[key] = {"status": status, "description": desc}
-                break
-
-    # Summary / assessment — paragraphs near the verdict
-    verdict_pos = html.find(verdict)
-    nearby_text = re.sub(r'<[^>]+>', ' ', html[verdict_pos:verdict_pos+2000])
-    nearby_text = re.sub(r'\s+', ' ', nearby_text).strip()
-    summary = nearby_text[:300] if nearby_text else ""
+    # Assessment from analysis-guidance div
+    assessment = ""
+    m = re.search(
+        r'class="analysis-guidance[^"]*"[^>]*>.*?<div[^>]*>([^<]{20,600})',
+        html, re.DOTALL
+    )
+    if m:
+        assessment = re.sub(r'\s+', ' ', m.group(1)).strip()
 
     return {
         "verdict":    verdict,
         "confidence": confidence,
         "summary":    summary,
-        "assessment": "",
+        "assessment": assessment,
         "categories": categories,
-        "source":     "scraped_html_parsed",
+        "source":     "scraped_html_fallback",
     }
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Helper: get ClawHub web URL for a skill
-# ─────────────────────────────────────────────────────────────────────────────
 
 def get_skill_url(slug_or_filename: str) -> Optional[str]:
     """Return the ClawHub web URL for a skill, e.g. https://clawhub.ai/pskoett/self-improving-agent"""
