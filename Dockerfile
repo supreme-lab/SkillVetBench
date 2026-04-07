@@ -23,6 +23,7 @@ COPY templates.html .
 COPY metrics.json .
 
 # Copy reports and skills directories
+COPY data/ ./data/
 COPY reports/ ./reports/
 COPY skills/ ./skills/
 
