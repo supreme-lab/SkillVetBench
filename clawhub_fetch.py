@@ -155,6 +155,13 @@ def fetch_official_evaluation(
 
     logger.info(f"Fetching official ClawHub evaluation: slug={slug} skill_id={skill_id}")
 
+    # ── Strategy 3: HTML scraping ─────────────────────────────────────────
+    if owner:
+        result = _scrape_clawhub_page(owner, slug, timeout)
+        if result:
+            logger.info(f"  ✅ Got evaluation via web scraping clawhub.ai/{owner}/{slug}")
+            return result
+
     # ── Strategy 1: by skill_id via API ──────────────────────────────────
     if skill_id:
         result = _try_api_endpoint(f"{BASE_URL}/skills/{skill_id}", timeout)
@@ -178,12 +185,6 @@ def fetch_official_evaluation(
         logger.info(f"  ✅ Got evaluation via /api/v1/skills/{slug}")
         return result
 
-    # ── Strategy 3: HTML scraping ─────────────────────────────────────────
-    if owner:
-        result = _scrape_clawhub_page(owner, slug, timeout)
-        if result:
-            logger.info(f"  ✅ Got evaluation via web scraping clawhub.ai/{owner}/{slug}")
-            return result
 
     logger.info(f"  ℹ️  No official evaluation found for '{slug}'")
     return None
@@ -475,6 +476,178 @@ def get_skill_stats(slug_or_filename: str) -> Optional[dict]:
         "url":               get_skill_url(slug_or_filename),
         "summary":           info.get("summary"),
     }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Download API — fetch skill zip and extract SKILL.md in memory
+# ─────────────────────────────────────────────────────────────────────────────
+
+DOWNLOAD_API = "https://wry-manatee-359.convex.site/api/v1/download"
+SLUGS_TXT    = "data/slugs.txt"   # one slug name per line, written on first page hit
+
+
+def _slugs_txt_path() -> Path:
+    return Path(__file__).resolve().parent / SLUGS_TXT
+
+
+def _write_slugs_txt(meta: dict) -> None:
+    """Write all slug names from meta dict to data/slugs.txt, one per line."""
+    path = _slugs_txt_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    slugs = sorted(meta.keys(), key=str.lower)
+    path.write_text("\n".join(slugs), encoding="utf-8")
+    logger.info(f"Wrote {len(slugs)} slugs to {path}")
+
+
+def _read_slugs_txt() -> Optional[list]:
+    """
+    Read slug names from data/slugs.txt.
+    Returns a sorted list of slug name strings, or None if the file does not exist.
+    """
+    path = _slugs_txt_path()
+    if not path.exists():
+        return None
+    slugs = [s.strip() for s in path.read_text(encoding="utf-8").splitlines() if s.strip()]
+    logger.debug(f"Read {len(slugs)} slugs from {path}")
+    return slugs
+
+
+def list_slugs_from_meta() -> list:
+    """
+    Return all skill slugs for the leaderboard dropdown.
+
+    Fast path — if data/slugs.txt exists, reads slug names from it without
+    opening the JSON file at all. On first call (txt absent), parses
+    clawhub_skills_meta.json and writes slugs.txt as a side-effect so every
+    subsequent server start is instant.
+
+    Returns a list of dicts compatible with /api/skill-files:
+      { slug, filename, display_name, source="clawhub_meta", size_kb=0, ... }
+    """
+    slugs = _read_slugs_txt()
+
+    if slugs is not None:
+        # Fast path — txt exists, build minimal entries from slug names only
+        return [
+            {
+                "slug":         s,
+                "filename":     f"{s}.md",
+                "display_name": s,
+                "owner_handle": "",
+                "version":      "",
+                "summary":      "",
+                "stats":        {},
+                "tags":         [],
+                "url":          "",
+                "size_kb":      0,
+                "models_done":  [],
+                "source":       "clawhub_meta",
+            }
+            for s in slugs
+        ]
+
+    # Slow path — txt missing, parse JSON, write txt, return full entries
+    logger.info("slugs.txt not found — reading clawhub_skills_meta.json")
+    meta = load_skills_meta()
+    if not meta:
+        return []
+
+    try:
+        _write_slugs_txt(meta)
+    except Exception as e:
+        logger.warning(f"Could not write slugs.txt: {e}")
+
+    result = []
+    for slug, info in meta.items():
+        owner = info.get("owner_handle", "")
+        result.append({
+            "slug":         slug,
+            "filename":     f"{slug}.md",
+            "display_name": info.get("display_name", slug),
+            "owner_handle": owner,
+            "version":      info.get("version", ""),
+            "summary":      (info.get("summary") or "")[:120],
+            "stats":        info.get("stats") or {},
+            "tags":         info.get("tags", []),
+            "url":          f"{CLAWHUB_WEB}/{owner}/{slug}" if owner else "",
+            "size_kb":      0,
+            "models_done":  [],
+            "source":       "clawhub_meta",
+        })
+    result.sort(key=lambda x: x["slug"].lower())
+    return result
+
+
+def fetch_skill_from_zip(slug: str, timeout: int = 30) -> Optional[str]:
+    """
+    Download the skill zip from the ClawHub download API and extract
+    SKILL.md entirely in memory — nothing is written to disk.
+
+    API: GET https://wry-manatee-359.convex.site/api/v1/download?slug={slug}
+
+    Returns the SKILL.md content as a string, or None on failure.
+    """
+    import io
+    import zipfile
+
+    url = f"{DOWNLOAD_API}?slug={slug}"
+    logger.info(f"Downloading skill zip: {url}")
+
+    try:
+        resp = requests.get(
+            url,
+            timeout=timeout,
+            headers={"Accept": "application/zip, application/octet-stream, */*"},
+            stream=True,
+        )
+        resp.raise_for_status()
+    except requests.HTTPError as e:
+        logger.error(f"  Download failed HTTP {resp.status_code}: {e}")
+        return None
+    except requests.RequestException as e:
+        logger.error(f"  Download request error: {e}")
+        return None
+
+    content = resp.content
+    logger.info(f"  Downloaded {len(content):,} bytes")
+
+    # ── Try to open as zip ────────────────────────────────────────────────
+    try:
+        z = zipfile.ZipFile(io.BytesIO(content))
+    except zipfile.BadZipFile:
+        # Not a zip — accept plain-text markdown directly
+        try:
+            text = content.decode("utf-8", errors="replace")
+            if text.strip().startswith("#") or "---" in text[:200]:
+                logger.info("  Response is plain-text SKILL.md (not zipped)")
+                return text
+        except Exception:
+            pass
+        logger.error("  Response is neither a valid zip nor plain-text markdown")
+        return None
+
+    names = z.namelist()
+    logger.info(f"  Zip contents: {names}")
+
+    # ── Locate SKILL.md (case-insensitive, any directory depth) ───────────
+    candidates = [n for n in names if n.split("/")[-1].upper() == "SKILL.MD"]
+    if not candidates:
+        candidates = [n for n in names if n.lower().endswith(".md")]
+    if not candidates:
+        logger.error(f"  No SKILL.md found in zip. Contents: {names}")
+        return None
+
+    # Prefer root-level file; among ties take shortest path
+    candidates.sort(key=lambda n: (n.count("/"), n.upper() != "SKILL.MD", n))
+    target = candidates[0]
+
+    try:
+        skill_md = z.read(target).decode("utf-8", errors="replace")
+        logger.info(f"  Extracted '{target}': {len(skill_md):,} chars")
+        return skill_md
+    except Exception as e:
+        logger.error(f"  Could not read '{target}' from zip: {e}")
+        return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────

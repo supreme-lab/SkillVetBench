@@ -239,7 +239,15 @@ async function load(){
     rows=lb;
     buildStats(); buildModelFilter(ms);
     const sel=document.getElementById('eval-file');
-    sel.innerHTML=fs.map(f=>`<option value="${f.filename}">${f.filename} (${f.size_kb}kb)</option>`).join('');
+    sel.innerHTML=fs.map(f=>{
+    const isCloud=f.source==='clawhub_meta';
+    const stars=f.stats&&f.stats.stars?(' ⭐'+((f.stats.stars/1000).toFixed(1))+'k'):'';
+    const label=isCloud?`${f.slug||f.filename} (${f.owner_handle||''}${stars})`:
+                        `${f.filename} (${f.size_kb}kb)`;
+    const val=isCloud?(f.slug||f.filename):f.filename;
+    return `<option value="${val}" data-source="${f.source||'local'}" data-slug="${f.slug||''}">${label}</option>`;
+  }).join('');
+  window._skillFiles=fs;
     render();
   }catch(err){
     console.error('Load error:',err);
@@ -413,7 +421,7 @@ function pollJob(jid){
   if(!document.getElementById(id)){panel.insertAdjacentHTML('afterbegin',`<div class="job-row" id="${id}"><span class="job-status js-queued" id="${id}-st">QUEUED</span><span id="${id}-txt" style="flex:1;color:var(--text2)">Job ${jid}</span><span id="${id}-ts" style="color:var(--text3)"></span></div>`);}
   const iv=setInterval(async()=>{
     const j=await fetch(`/api/jobs/${jid}`).then(r=>r.json());
-    document.getElementById(`${id}-st`).className=`job-status js-${j.status}`;document.getElementById(`${id}-st`).textContent=j.status.toUpperCase();document.getElementById(`${id}-txt`).textContent=`${j.filename} → ${j.model||j.api_type}`;document.getElementById(`${id}-ts`).textContent=j.done_at?new Date(j.done_at).toLocaleTimeString():'';
+    document.getElementById(`${id}-st`).className=`job-status js-${j.status}`;document.getElementById(`${id}-st`).textContent=j.status.toUpperCase();document.getElementById(`${id}-txt`).textContent=j.source==='clawhub_download'?`📦 ${j.slug||j.filename} → ${j.model||j.api_type}`:`${j.filename} → ${j.model||j.api_type}`;document.getElementById(`${id}-ts`).textContent=j.done_at?new Date(j.done_at).toLocaleTimeString():'';
     if(j.status==='done'){clearInterval(iv);setTimeout(()=>load(),500);}
     if(j.status==='error'){clearInterval(iv);document.getElementById(`${id}-txt`).textContent+=' ERROR: '+j.error;document.getElementById(`${id}-txt`).style.color='var(--c-crit)';}
   },1500);
@@ -425,7 +433,11 @@ load();setInterval(load,15000);
 </html>
 
 
+
+
 <!-- ==================== DETAIL_PAGE ==================== -->
+
+
 
 
 <!DOCTYPE html>

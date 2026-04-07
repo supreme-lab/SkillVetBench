@@ -163,50 +163,81 @@ def api_models():
 
 @app.get("/api/skill-files")
 def api_skill_files():
-    if not skills_dir or not skills_dir.exists():
-        return []
-    files = sorted(skills_dir.glob("**/*.md"))
-    result = []
-    for f in files:
-        models_done = []
-        for m in storage.list_models():
-            if storage.already_evaluated(f.name, m):
-                models_done.append(m)
-        result.append({
-            "filename":    f.name,
-            "path":        str(f.relative_to(skills_dir)),
-            "size_kb":     round(f.stat().st_size / 1024, 1),
-            "models_done": models_done,
-        })
-    return result
+    from clawhub_fetch import list_slugs_from_meta
+
+    logger.info("skills_dir: " + (str(skills_dir) if skills_dir else "None"))
+
+    # ── Case 1: skills directory exists and has .md files → use directory ─
+    if skills_dir !="remote" and skills_dir.exists():
+        files = sorted(skills_dir.glob("**/*.md"))
+        if files:
+            result = []
+            for f in files:
+                models_done = [
+                    m for m in storage.list_models()
+                    if storage.already_evaluated(f.name, m)
+                ]
+                result.append({
+                    "filename":    f.name,
+                    "path":        str(f.relative_to(skills_dir)),
+                    "size_kb":     round(f.stat().st_size / 1024, 1),
+                    "models_done": models_done,
+                    "source":      "local",
+                })
+            return result
+
+    # ── Case 2: no skills directory (or empty) → load from clawhub_skills_meta.json ─
+    logger.info("skills_dir empty or missing — loading skill list from clawhub_skills_meta.json")
+    slugs = list_slugs_from_meta()
+    for entry in slugs:
+        entry["models_done"] = [
+            m for m in storage.list_models()
+            if storage.already_evaluated(entry["filename"], m)
+        ]
+        entry["source"] = "clawhub_meta"
+    return slugs[:20]
 
 
 @app.post("/api/evaluate")
 async def api_evaluate(body: dict, background_tasks: BackgroundTasks):
     filename = body.get("filename", "")
+    slug     = body.get("slug", "")          # passed when source is clawhub_meta
     model    = body.get("model", llm_config.get("model", ""))
     api_type = body.get("api_type", llm_config.get("api_type", "anthropic"))
     api_key  = (body.get("api_key") or body.get("hf_token")
                 or llm_config.get("api_key", ""))
 
-    if not filename:
-        raise HTTPException(400, "filename is required")
+    if not filename and not slug:
+        raise HTTPException(400, "filename or slug is required")
 
-    candidate = skills_dir / filename if skills_dir else Path(filename)
-    if not candidate.exists():
-        if skills_dir:
+    # Normalise: if slug given without filename, derive filename
+    if slug and not filename:
+        filename = f"{slug}.md"
+    if not slug:
+        slug = Path(filename).stem.replace("_SKILL", "")
+
+    # ── Try to find the file on disk first ────────────────────────────────
+    candidate = None
+    if skills_dir and skills_dir.exists():
+        candidate = skills_dir / filename
+        if not candidate.exists():
             matches = list(skills_dir.glob(f"**/{filename}"))
-            if matches:
-                candidate = matches[0]
-            else:
-                raise HTTPException(404, f"Skill file not found: {filename}")
-        else:
-            raise HTTPException(404, f"Skill file not found: {filename}")
+            candidate = matches[0] if matches else None
+
+    if candidate and candidate.exists():
+        # File found on disk — evaluate from disk (original path)
+        source = "local"
+    else:
+        # File not on disk — download from ClawHub zip API
+        source = "clawhub_download"
+        logger.info(f"File '{filename}' not on disk — will download from ClawHub (slug={slug})")
+        candidate = None  # signals _run_evaluation to use zip download
 
     job_id = str(uuid.uuid4())[:8]
     jobs[job_id] = {
         "id":         job_id,
         "filename":   filename,
+        "slug":       slug,
         "model":      model,
         "api_type":   api_type,
         "status":     "queued",
@@ -215,9 +246,12 @@ async def api_evaluate(body: dict, background_tasks: BackgroundTasks):
         "done_at":    None,
         "error":      None,
         "result_key": None,
+        "source":     source,
     }
-    background_tasks.add_task(_run_evaluation, job_id, candidate, model, api_type, api_key)
-    return {"job_id": job_id, "status": "queued"}
+    background_tasks.add_task(
+        _run_evaluation, job_id, candidate, model, api_type, api_key, filename, slug
+    )
+    return {"job_id": job_id, "status": "queued", "source": source}
 
 
 @app.get("/api/jobs")
@@ -304,28 +338,96 @@ def api_sars_metrics():
 # Background evaluation task
 # ─────────────────────────────────────────────────────────────────────────────
 
-async def _run_evaluation(job_id: str, path: Path, model: str, api_type: str, api_key: str):
+async def _run_evaluation(
+    job_id: str,
+    path: Optional[Path],
+    model: str,
+    api_type: str,
+    api_key: str,
+    filename: str = "",
+    slug: str = "",
+):
     job = jobs[job_id]
     job["status"]     = "running"
     job["started_at"] = datetime.now().isoformat()
-    logger.info(f"[Job {job_id}] ▶ Start  : {path.name}")
+
+    display_name = (path.name if path else filename) or slug
+    logger.info(f"[Job {job_id}] ▶ Start  : {display_name}")
+    logger.info(f"[Job {job_id}]   Source : {'disk' if path else 'ClawHub download ('+slug+')'}")
     logger.info(f"[Job {job_id}]   Backend: {api_type}  model={model or '(default)'}")
+
     try:
-        loop   = asyncio.get_event_loop()
-        report = await loop.run_in_executor(
-            None, lambda: _do_evaluate(path, model, api_type, api_key)
-        )
+        loop = asyncio.get_event_loop()
+
+        if path and path.exists():
+            # ── Evaluate from disk ────────────────────────────────────────
+            report = await loop.run_in_executor(
+                None, lambda: _do_evaluate(path, model, api_type, api_key)
+            )
+            report_filename = path.name
+        else:
+            # ── Download zip from ClawHub, evaluate in memory ─────────────
+            logger.info(f"[Job {job_id}]   Downloading zip for slug='{slug}'")
+            from clawhub_fetch import fetch_skill_from_zip
+            content = await loop.run_in_executor(
+                None, lambda: fetch_skill_from_zip(slug)
+            )
+            if not content:
+                raise ValueError(
+                    f"Could not download SKILL.md for slug '{slug}'. "
+                    "Check the slug spelling and your internet connection."
+                )
+            logger.info(f"[Job {job_id}]   SKILL.md: {len(content):,} chars")
+            report = await loop.run_in_executor(
+                None, lambda: _do_evaluate_content(content, filename or f"{slug}.md", model, api_type, api_key)
+            )
+            report_filename = filename or f"{slug}.md"
+
         effective_model = model or _default_model(api_type)
         save_path = storage.save(report, model_name=effective_model)
         job["status"]     = "done"
         job["done_at"]    = datetime.now().isoformat()
-        job["result_key"] = f"{_slug(path.name)}::{_slug(effective_model)}"
+        job["result_key"] = f"{_slug(report_filename)}::{_slug(effective_model)}"
         logger.info(f"[Job {job_id}] ✅ Done  : {save_path.name}")
+
     except Exception as exc:
         job["status"]  = "error"
         job["error"]   = str(exc)
         job["done_at"] = datetime.now().isoformat()
         logger.error(f"[Job {job_id}] ❌ Error : {exc}", exc_info=True)
+
+
+def _do_evaluate_content(content: str, filename: str, model: str, api_type: str, api_key: str):
+    """Evaluate skill content passed as a string (no file on disk needed)."""
+    from llm_client import LLMClient
+    from evaluator  import SkillEvaluator
+
+    ENV_MAP = {
+        "anthropic": "ANTHROPIC_API_KEY",
+        "openai":    "OPENAI_API_KEY",
+        "hf_api":    "HF_TOKEN",
+        "hf_local":  "HF_TOKEN",
+        "ollama":    "",
+    }
+    env_var = ENV_MAP.get(api_type or "anthropic", "")
+    key = (
+        api_key
+        or (os.getenv(env_var, "") if env_var else "")
+    )
+    if not key and api_type in ("anthropic", "openai"):
+        raise ValueError(f"No API key for backend '{api_type}'. Set {env_var}.")
+    if not key and api_type in ("hf_api", "hf_local"):
+        raise ValueError(f"No HuggingFace token. Export HF_TOKEN.")
+
+    llm = LLMClient(
+        api_type=api_type or "anthropic",
+        api_key=key,
+        model=model or None,
+        **{k: v for k, v in llm_config.items()
+           if k in ("base_url", "load_in_4bit", "load_in_8bit", "device", "hf_cache_dir")},
+    )
+    ev = SkillEvaluator(llm)
+    return ev.evaluate_content(content, filename)
 
 
 def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
@@ -428,7 +530,7 @@ def main():
     parser.add_argument("--host",        default="0.0.0.0")
     parser.add_argument("--port",  "-p", default=8000, type=int)
     parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
-    parser.add_argument("--skills-dir",  default="byungkyu",   metavar="DIR")
+    parser.add_argument("--skills-dir",  default="remote",   metavar="DIR")
     parser.add_argument("--api",         default="hf_api",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])
     parser.add_argument("--model",  default=None)
