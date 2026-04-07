@@ -35,5 +35,5 @@ EXPOSE 7860
 CMD ["python", "server.py", \
      "--port", "7860", \
      "--reports-dir", "reports", \
-     "--skills-dir", "skills"]
+     "--skills-dir", "remote"]
      
