@@ -124,16 +124,21 @@ class SkillEvaluator:
 
     def evaluate_content(self, content: str, filename: str) -> SkillReport:
         """Evaluate raw skill markdown content."""
+        logger.info(f"  Calling LLM for '{filename}' ...")
         try:
             raw = self.llm.complete(
                 system_prompt = SKILL_SECURITY_EVAL_SYSTEM_PROMPT,
                 user_message  = build_evaluation_prompt(content, filename),
             )
-            report = self._parse(raw, filename)
+            logger.info(f"  LLM responded: {len(raw)} chars")
         except Exception as e:
-            return self._error_report(filename, f"LLM call failed: {e}")
+            # Re-raise: surfaces as job "error" status with full message in the UI
+            logger.error(f"  ❌ LLM call failed for '{filename}': {e}", exc_info=True)
+            raise RuntimeError(f"LLM call failed: {e}") from e
 
-        # ── ClawHub LLM evaluation (second call, same content) ────────────
+        report = self._parse(raw, filename)
+
+        # ── ClawHub LLM evaluation (second call, optional/non-fatal) ──────
         try:
             ch_raw = self.llm.complete(
                 system_prompt = CLAWHUB_EVAL_SYSTEM_PROMPT,
@@ -141,7 +146,7 @@ class SkillEvaluator:
             )
             report = self._parse_clawhub(ch_raw, report)
         except Exception as e:
-            logger.warning(f"  ClawHub LLM evaluation failed: {e}")
+            logger.warning(f"  ClawHub LLM evaluation failed (non-fatal): {e}")
 
         return report
 
@@ -169,6 +174,9 @@ class SkillEvaluator:
     # ── JSON parsing ─────────────────────────────────────────────────
 
     def _parse(self, raw: str, filename: str) -> SkillReport:
+        # Log the raw response at DEBUG so it's always visible in the server log
+        logger.debug(f"  Raw LLM response ({len(raw)} chars):\n{raw[:1000]}")
+
         # Strip markdown fences if present
         clean = re.sub(r"```(?:json)?\s*", "", raw).strip().strip("`").strip()
 
@@ -181,9 +189,31 @@ class SkillEvaluator:
                 try:
                     data = json.loads(raw[s:e])
                 except json.JSONDecodeError as exc:
-                    return self._error_report(filename, f"JSON parse failed: {exc}\nRaw: {raw[:300]}")
+                    # Detect likely truncation: JSON ends abruptly without closing }
+                    truncated = not raw.rstrip().endswith("}")
+                    reason = (
+                        "Output was truncated (hit max_tokens limit). "
+                        "Use a larger --max-tokens value or a smaller model."
+                        if truncated else f"JSON parse failed: {exc}"
+                    )
+                    logger.error(
+                        f"  ❌ Parse error for '{filename}': {reason}\n"
+                        f"  Raw response tail: ...{raw[-300:]}"
+                    )
+                    return self._error_report(filename, f"{reason}\nRaw tail: {raw[-200:]}")
             else:
-                return self._error_report(filename, f"No JSON in LLM response. Raw: {raw[:300]}")
+                logger.error(
+                    f"  ❌ No JSON found in LLM response for '{filename}'.\n"
+                    f"  This usually means the model did not follow the prompt format.\n"
+                    f"  Full response: {raw[:500]}"
+                )
+                return self._error_report(
+                    filename,
+                    f"No JSON in LLM response. "
+                    f"Model may not support the instruction format. "
+                    f"Try a larger model (>=13B) or claude/gpt backend.\n"
+                    f"Raw: {raw[:300]}"
+                )
 
         # Build CVSS v3.5
         # try:
@@ -352,6 +382,7 @@ class SkillEvaluator:
         return report
 
     def _error_report(self, filename: str, error: str) -> SkillReport:
+        logger.error(f"  ❌ _error_report called for '{filename}': {error[:200]}")
         cvss_obj  = CVSSv4(AV="N", AC="L", AT="N", PR="N", UI="N",
                         VC="N", VI="N", VA="N", SC="N", SI="N", SA="N")
         cvss_data = cvss_obj.as_dict()
@@ -382,3 +413,4 @@ class SkillEvaluator:
             sars_ifr=0, sars_dg=0, sars_ai=0, sars_br=0, sars_ca=0,
             error=error,
         )
+    

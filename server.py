@@ -51,18 +51,38 @@ sys.path.insert(0, str(PROJECT_DIR))
 
 from storage import ReportStorage, _slug
 
-logging.basicConfig(
-    format  = "%(asctime)s  %(levelname)-7s  %(name)s — %(message)s",
-    datefmt = "%H:%M:%S",
-    level   = logging.DEBUG,
-)
 logger = logging.getLogger("SkillEvalServer")
 
-# Silence noisy third-party loggers but keep our own detailed
-logging.getLogger("httpx").setLevel(logging.WARNING)
-logging.getLogger("anthropic").setLevel(logging.WARNING)
-logging.getLogger("openai").setLevel(logging.WARNING)
-logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+
+def _setup_logging(log_file: str = "logs/server.log") -> None:
+    """Write logs to both terminal (INFO+) and a rotating file (DEBUG+)."""
+    from logging.handlers import RotatingFileHandler
+    log_path = Path(log_file)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fmt = "%(asctime)s  %(levelname)-7s  %(name)s — %(message)s"
+    formatter = logging.Formatter(fmt, datefmt="%Y-%m-%d %H:%M:%S")
+
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+
+    console = logging.StreamHandler(sys.stdout)
+    console.setLevel(logging.INFO)
+    console.setFormatter(formatter)
+
+    fh = RotatingFileHandler(log_path, maxBytes=10*1024*1024,
+                             backupCount=5, encoding="utf-8")
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(formatter)
+
+    root.addHandler(console)
+    root.addHandler(fh)
+
+    for name in ("httpx", "anthropic", "openai", "huggingface_hub",
+                 "uvicorn.access", "transformers"):
+        logging.getLogger(name).setLevel(logging.WARNING)
+
+    logger.info(f"Logging to file: {log_path.resolve()}")
 
 from contextlib import asynccontextmanager
 
@@ -90,6 +110,38 @@ storage: ReportStorage = None    # type: ignore
 skills_dir:  Path      = None    # type: ignore
 llm_config:  dict      = {}
 jobs:        dict      = {}
+
+# ── LLM instance cache (keyed by api_type + model) ───────────────────────
+# For hf_local the transformers pipeline is expensive to load (~minutes).
+# We cache the LLMClient after first creation so the model is loaded only
+# once and reused across all subsequent evaluate-all jobs.
+_llm_cache:  dict      = {}
+
+
+def _get_or_create_llm(api_type: str, model: str, api_key: str) -> "LLMClient":
+    """
+    Return a cached LLMClient if one already exists for this (api_type, model).
+    Creates and caches a new one on first call.
+
+    For hf_local this means the model weights are loaded into GPU memory exactly
+    once — not once per skill evaluation job.
+    """
+    from llm_client import LLMClient
+    cache_key = f"{api_type}::{model or 'default'}"
+    if cache_key not in _llm_cache:
+        logger.info(f"Creating new LLMClient for {cache_key} ...")
+        _llm_cache[cache_key] = LLMClient(
+            api_type = api_type or "anthropic",
+            api_key  = api_key,
+            model    = model or None,
+            **{k: v for k, v in llm_config.items()
+               if k in ("base_url", "load_in_4bit", "load_in_8bit",
+                        "device", "hf_cache_dir", "max_tokens")},
+        )
+        logger.info(f"LLMClient ready: {cache_key}")
+    else:
+        logger.debug(f"Reusing cached LLMClient: {cache_key}")
+    return _llm_cache[cache_key]
 
 app.add_middleware(
     CORSMiddleware,
@@ -159,6 +211,185 @@ def api_delete_report(skill_slug: str, model_slug: str):
 @app.get("/api/models")
 def api_models():
     return storage.list_models()
+
+
+@app.get("/api/leaderboard/csv")
+def api_leaderboard_csv():
+    """Download the full leaderboard as a CSV file."""
+    import csv, io
+    rows = storage.get_leaderboard()
+
+    # Use the exact keys present in the index entry (from storage.save)
+    columns = [
+        "rank", "skill_name", "filename", "skill_slug",
+        "model_name", "model_slug",
+        "overall_risk", "is_vulnerable", "vulnerability_count",
+        "cvss_base_score", "cvss_severity", "cvss_vector",
+        "attack_vector", "attack_complexity", "privileges_required", "user_interaction",
+        "sars_score", "sars_severity", "sars_ifr", "sars_dg", "sars_ai", "sars_br", "sars_ca",
+        "top_finding_category", "evaluated_at", "error",
+    ]
+
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=columns, extrasaction="ignore")
+    writer.writeheader()
+    for i, row in enumerate(rows, 1):
+        row["rank"] = i
+        writer.writerow(row)
+
+    from fastapi.responses import Response
+    csv_bytes = buf.getvalue().encode("utf-8")
+    logger.info(f"CSV download: {len(rows)} rows, {len(csv_bytes):,} bytes")
+    return Response(
+        content    = csv_bytes,
+        media_type = "text/csv",
+        headers    = {"Content-Disposition":
+                      "attachment; filename=agentskillbench_leaderboard.csv"},
+    )
+
+
+@app.post("/api/evaluate-all")
+async def api_evaluate_all(body: dict, background_tasks: BackgroundTasks):
+    """
+    Queue all top-100 skills (sorted by stars from clawhub_skills_meta.json)
+    for evaluation with the selected model and backend.
+    Skips any skill already evaluated with the same model.
+    The hf_local model is loaded once and reused across all jobs (via _llm_cache).
+    """
+    from clawhub_fetch import list_slugs_from_meta
+
+    model    = body.get("model",    llm_config.get("model", ""))
+    api_type = body.get("api_type", llm_config.get("api_type", "anthropic"))
+    api_key  = (body.get("api_key") or body.get("hf_token")
+                or llm_config.get("api_key", ""))
+
+    skills = list_slugs_from_meta()
+    if not skills:
+        raise HTTPException(400, "No skills found in clawhub_skills_meta.json")
+
+    effective_model = model or _default_model(api_type)
+    batch_id    = str(uuid.uuid4())[:8]
+    queued_jobs = []
+    skipped     = []
+
+    for skill in skills:
+        slug     = skill["slug"]
+        filename = skill["filename"]
+
+        if storage.already_evaluated(filename, effective_model):
+            skipped.append(slug)
+            continue
+
+        job_id = str(uuid.uuid4())[:8]
+        jobs[job_id] = {
+            "id":         job_id,
+            "batch_id":   batch_id,
+            "filename":   filename,
+            "slug":       slug,
+            "model":      model,
+            "api_type":   api_type,
+            "status":     "queued",
+            "queued_at":  datetime.now().isoformat(),
+            "started_at": None,
+            "done_at":    None,
+            "error":      None,
+            "result_key": None,
+            "source":     "clawhub_download",
+        }
+        background_tasks.add_task(
+            _run_evaluation, job_id, None, model, api_type, api_key, filename, slug
+        )
+        queued_jobs.append(job_id)
+
+    logger.info(
+        f"[Batch {batch_id}] Queued {len(queued_jobs)} jobs, "
+        f"skipped {len(skipped)} already-evaluated"
+    )
+    return {
+        "batch_id":     batch_id,
+        "queued":       len(queued_jobs),
+        "skipped":      len(skipped),
+        "job_ids":      queued_jobs,
+        "total_skills": len(skills),
+    }
+
+
+@app.post("/api/hf-validate")
+async def api_hf_validate(body: dict):
+    """Validate a HuggingFace token + model before running evaluation."""
+    import asyncio
+    api_key = (body.get("api_key") or body.get("hf_token")
+               or llm_config.get("api_key") or os.getenv("HF_TOKEN", ""))
+    model   = body.get("model") or llm_config.get("model") or ""
+
+    logger.info(f"HF validate: model={model!r} token={'set' if api_key else 'MISSING'}")
+
+    if not api_key:
+        return {"ok": False, "status": "no_token",
+                "detail": "No HuggingFace token provided. Add it in the API Key field.",
+                "model": model}
+    if not api_key.startswith("hf_"):
+        return {"ok": False, "status": "bad_token_format",
+                "detail": f"Token should start with 'hf_'. Got: '{api_key[:6]}...'",
+                "model": model}
+    if not model:
+        return {"ok": False, "status": "no_model",
+                "detail": "No model selected.", "model": model}
+
+    loop = asyncio.get_event_loop()
+    try:
+        result = await asyncio.wait_for(
+            loop.run_in_executor(None, lambda: _hf_test_call(api_key, model)),
+            timeout=45,
+        )
+        return result
+    except asyncio.TimeoutError:
+        return {"ok": False, "status": "timeout",
+                "detail": "No response in 45 s — model may be loading. Retry in ~60 s.",
+                "model": model}
+    except Exception as exc:
+        return {"ok": False, "status": "error", "detail": str(exc), "model": model}
+
+
+def _hf_test_call(api_key: str, model: str) -> dict:
+    try:
+        from huggingface_hub import InferenceClient
+    except ImportError:
+        return {"ok": False, "status": "missing_package",
+                "detail": "Run: pip install huggingface_hub>=0.24", "model": model}
+
+    client = InferenceClient(token=api_key)
+    try:
+        resp  = client.chat_completion(
+            model=model,
+            messages=[{"role": "user", "content": "Reply with one word: OK"}],
+            max_tokens=8, temperature=0.01,
+        )
+        reply = resp.choices[0].message.content.strip()
+        logger.info(f"  HF test OK: {reply!r}")
+        return {"ok": True, "status": "ok",
+                "detail": f"Token and model working. Response: '{reply}'", "model": model}
+    except Exception as e:
+        err = str(e)
+        logger.error(f"  HF test failed: {err}")
+        if "401" in err or "authorization" in err.lower():
+            return {"ok": False, "status": "invalid_token",
+                    "detail": "Token rejected (401). Check huggingface.co/settings/tokens.",
+                    "model": model}
+        if "403" in err or "forbidden" in err.lower():
+            return {"ok": False, "status": "no_access",
+                    "detail": f"Access denied (403) for '{model}'. Accept license or upgrade to PRO.",
+                    "model": model}
+        if "404" in err or "not found" in err.lower():
+            return {"ok": False, "status": "model_not_found",
+                    "detail": f"Model '{model}' not found. Check the model ID.", "model": model}
+        if "429" in err or "rate" in err.lower():
+            return {"ok": False, "status": "rate_limited",
+                    "detail": "Rate limited. Upgrade to HF PRO or wait.", "model": model}
+        if "503" in err or "loading" in err.lower():
+            return {"ok": False, "status": "model_loading",
+                    "detail": "Model loading (cold start ~30-60s). Retry shortly.", "model": model}
+        return {"ok": False, "status": "api_error", "detail": f"HF error: {err}", "model": model}
 
 
 @app.get("/api/skill-files")
@@ -399,8 +630,7 @@ async def _run_evaluation(
 
 def _do_evaluate_content(content: str, filename: str, model: str, api_type: str, api_key: str):
     """Evaluate skill content passed as a string (no file on disk needed)."""
-    from llm_client import LLMClient
-    from evaluator  import SkillEvaluator
+    from evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -415,24 +645,26 @@ def _do_evaluate_content(content: str, filename: str, model: str, api_type: str,
         or (os.getenv(env_var, "") if env_var else "")
     )
     if not key and api_type in ("anthropic", "openai"):
-        raise ValueError(f"No API key for backend '{api_type}'. Set {env_var}.")
+        raise ValueError(
+            f"No API key for backend '{api_type}'. "
+            f"Set the {env_var} environment variable or enter it in the API Key field."
+        )
     if not key and api_type in ("hf_api", "hf_local"):
-        raise ValueError(f"No HuggingFace token. Export HF_TOKEN.")
-
-    llm = LLMClient(
-        api_type=api_type or "anthropic",
-        api_key=key,
-        model=model or None,
-        **{k: v for k, v in llm_config.items()
-           if k in ("base_url", "load_in_4bit", "load_in_8bit", "device", "hf_cache_dir")},
+        raise ValueError(
+            "No HuggingFace token found. "
+            "Set HF_TOKEN=hf_... in your environment or enter it in the API Key field."
+        )
+    logger.info(
+        f"  Backend={api_type}  model={model or '(default)'}  "
+        f"key={'set ('+api_key[:8]+'...)' if api_key else 'from env'}"
     )
-    ev = SkillEvaluator(llm)
+    llm = _get_or_create_llm(api_type or "anthropic", model or "", key)
+    ev  = SkillEvaluator(llm)
     return ev.evaluate_content(content, filename)
 
 
 def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
-    from llm_client import LLMClient
-    from evaluator  import SkillEvaluator
+    from evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -441,34 +673,23 @@ def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
         "hf_local":  "HF_TOKEN",
         "ollama":    "",
     }
-    # Resolve key specifically for this backend — never cross-contaminate
     env_var = ENV_MAP.get(api_type or "anthropic", "")
     key = (
-        api_key                                          # 1. passed in UI field
-        or (os.getenv(env_var, "") if env_var else "")   # 2. env var for this backend
+        api_key
+        or (os.getenv(env_var, "") if env_var else "")
     )
     if not key and api_type in ("anthropic", "openai"):
         raise ValueError(
-            f"No API key for backend '{api_type}'.\n"
-            f"  Option 1: Start server with --key YOUR_KEY\n"
-            f"  Option 2: Set {env_var} environment variable\n"
-            f"  Option 3: Pass api_key in the evaluate request body"
+            f"No API key for backend '{api_type}'. "
+            f"Set {env_var} or pass --key YOUR_KEY when starting the server."
         )
     if not key and api_type in ("hf_api", "hf_local"):
         raise ValueError(
-            f"No HuggingFace token for backend '{api_type}'.\n"
-            f"  Option 1: Start server with --key hf_...\n"
-            f"  Option 2: export HF_TOKEN=hf_...\n"
-            f"  Get a token at: https://huggingface.co/settings/tokens"
+            "No HuggingFace token. "
+            "Export HF_TOKEN=hf_... or pass --key hf_... when starting the server."
         )
-    llm = LLMClient(
-        api_type=api_type or "anthropic",
-        api_key=key,
-        model=model or None,
-        **{k: v for k, v in llm_config.items()
-           if k in ("base_url", "load_in_4bit", "load_in_8bit", "device", "hf_cache_dir")},
-    )
-    ev = SkillEvaluator(llm)
+    llm = _get_or_create_llm(api_type or "anthropic", model or "", key)
+    ev  = SkillEvaluator(llm)
     return ev.evaluate_file(path)
 
 
@@ -536,25 +757,32 @@ def main():
     parser.add_argument("--model",  default=None)
     parser.add_argument("--key",    default=None)
     parser.add_argument("--base-url", default=None)
-    parser.add_argument("--quantize", default=None, choices=["4bit","8bit"])
-    parser.add_argument("--device",   default="cuda", choices=["cuda","mps","cpu"])
+    parser.add_argument("--quantize",   default="4bit", choices=["4bit","8bit"])
+    parser.add_argument("--device",     default="cuda", choices=["cuda","mps","cpu"])
+    parser.add_argument("--max-tokens", default=4096, type=int,
+                        help="Max LLM output tokens. Increase to 8192+ for local models.")
+    parser.add_argument("--log-file",   default="logs/server.log", metavar="FILE",
+                        help="Log file path (default: logs/server.log).")
     args = parser.parse_args()
+
+    _setup_logging(args.log_file)
 
     storage    = ReportStorage(args.reports_dir)
     skills_dir = Path(args.skills_dir)
     llm_config = {
-        "api_type":    args.api,
-        "model":       args.model,
-        "api_key":     args.key or "",   # only store if explicitly passed via --key
-        "base_url":    args.base_url,
+        "api_type":     args.api,
+        "model":        args.model,
+        "api_key":      args.key or "",
+        "base_url":     args.base_url,
         "load_in_4bit": args.quantize == "4bit",
         "load_in_8bit": args.quantize == "8bit",
-        "device":      args.device,
+        "device":       args.device,
+        "max_tokens":   args.max_tokens,
     }
 
     logger.info(f"Skills dir  : {skills_dir}")
     logger.info(f"Reports dir : {args.reports_dir}")
-    logger.info(f"LLM backend : {args.api}  model={args.model or '(default)'}")
+    logger.info(f"LLM backend : {args.api}  model={args.model or '(default)'}  max_tokens={args.max_tokens}")
     logger.info(f"Web server  : http://localhost:{args.port}")
     logger.info(f"Open in browser → http://localhost:{args.port}")
 

@@ -616,12 +616,23 @@ def _slugs_txt_path() -> Path:
 
 
 def _write_slugs_txt(meta: dict) -> None:
-    """Write all slug names from meta dict to data/slugs.txt, one per line."""
+    """
+    Write the top-100 slug names (sorted by stars descending) to data/slugs.txt.
+    One slug per line.  This file is the source of truth for the dropdown.
+    """
     path = _slugs_txt_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    slugs = sorted(meta.keys(), key=str.lower)
-    path.write_text("\n".join(slugs), encoding="utf-8")
-    logger.info(f"Wrote {len(slugs)} slugs to {path}")
+
+    # Sort all slugs by stars descending, take top 100
+    ranked = sorted(
+        meta.items(),
+        key=lambda kv: float((kv[1].get("stats") or {}).get("stars", 0) or 0),
+        reverse=True,
+    )[:100]
+
+    lines = [slug for slug, _ in ranked]
+    path.write_text("\n".join(lines), encoding="utf-8")
+    logger.info(f"Wrote top-{len(lines)} slugs (by stars) to {path}")
 
 
 def _read_slugs_txt() -> Optional[list]:
@@ -639,52 +650,59 @@ def _read_slugs_txt() -> Optional[list]:
 
 def list_slugs_from_meta() -> list:
     """
-    Return all skill slugs for the leaderboard dropdown.
+    Return the top-100 skills for the leaderboard dropdown.
 
-    Fast path — if data/slugs.txt exists, reads slug names from it without
-    opening the JSON file at all. On first call (txt absent), parses
-    clawhub_skills_meta.json and writes slugs.txt as a side-effect so every
-    subsequent server start is instant.
+    Flow:
+      1. If data/slugs.txt exists → read slug names from it (already top-100
+         sorted by stars, written by _write_slugs_txt).
+         Enrich each name with metadata (owner, stats, version) from the JSON.
+      2. If data/slugs.txt does not exist → parse clawhub_skills_meta.json,
+         rank by stars, take top 100, write slugs.txt, return enriched list.
 
-    Returns a list of dicts compatible with /api/skill-files:
-      { slug, filename, display_name, source="clawhub_meta", size_kb=0, ... }
+    The dropdown order always mirrors the order in slugs.txt (stars desc).
     """
-    slugs = _read_slugs_txt()
-
-    if slugs is not None:
-        # Fast path — txt exists, build minimal entries from slug names only
-        return [
-            {
-                "slug":         s,
-                "filename":     f"{s}.md",
-                "display_name": s,
-                "owner_handle": "",
-                "version":      "",
-                "summary":      "",
-                "stats":        {},
-                "tags":         [],
-                "url":          "",
-                "size_kb":      0,
-                "models_done":  [],
-                "source":       "clawhub_meta",
-            }
-            for s in slugs
-        ]
-
-    # Slow path — txt missing, parse JSON, write txt, return full entries
-    logger.info("slugs.txt not found — reading clawhub_skills_meta.json")
     meta = load_skills_meta()
     if not meta:
         return []
 
-    try:
-        _write_slugs_txt(meta)
-    except Exception as e:
-        logger.warning(f"Could not write slugs.txt: {e}")
+    # ── Ensure slugs.txt exists and contains the top-100 ranked list ─────
+    slug_names = _read_slugs_txt()
+    if slug_names is None:
+        try:
+            _write_slugs_txt(meta)           # writes top-100 sorted by stars
+            slug_names = _read_slugs_txt()   # re-read to get the ranked order
+        except Exception as e:
+            logger.warning(f"Could not write slugs.txt: {e}")
+            slug_names = None
 
+    # ── Build entries in slugs.txt order (stars desc) ────────────────────
+    if slug_names:
+        result = []
+        for slug in slug_names:                # order preserved from slugs.txt
+            info  = meta.get(slug, {})
+            owner = info.get("owner_handle", "")
+            stats = info.get("stats") or {}
+            result.append({
+                "slug":         slug,
+                "filename":     f"{slug}.md",
+                "display_name": info.get("display_name", slug),
+                "owner_handle": owner,
+                "version":      info.get("version", ""),
+                "summary":      (info.get("summary") or "")[:120],
+                "stats":        stats,
+                "tags":         info.get("tags", []),
+                "url":          f"{CLAWHUB_WEB}/{owner}/{slug}" if owner else "",
+                "size_kb":      0,
+                "models_done":  [],
+                "source":       "clawhub_meta",
+            })
+        return result
+
+    # ── Fallback: slugs.txt unavailable, build from meta directly ────────
     result = []
     for slug, info in meta.items():
         owner = info.get("owner_handle", "")
+        stats = info.get("stats") or {}
         result.append({
             "slug":         slug,
             "filename":     f"{slug}.md",
@@ -692,15 +710,15 @@ def list_slugs_from_meta() -> list:
             "owner_handle": owner,
             "version":      info.get("version", ""),
             "summary":      (info.get("summary") or "")[:120],
-            "stats":        info.get("stats") or {},
+            "stats":        stats,
             "tags":         info.get("tags", []),
             "url":          f"{CLAWHUB_WEB}/{owner}/{slug}" if owner else "",
             "size_kb":      0,
             "models_done":  [],
             "source":       "clawhub_meta",
         })
-    result.sort(key=lambda x: x["slug"].lower())
-    return result
+    result.sort(key=lambda x: float(x["stats"].get("stars", 0) or 0), reverse=True)
+    return result[:100]
 
 
 def fetch_skill_from_zip(slug: str, timeout: int = 30) -> Optional[str]:
@@ -898,3 +916,4 @@ if __name__ == "__main__":
     print(f"  Done. {len(results)}/{len(slugs)} files fetched.")
     print(f"  Files saved in: ./{TARGET_OWNER}/")
     print(f"{'=' * 60}")
+    
