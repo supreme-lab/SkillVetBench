@@ -1,0 +1,751 @@
+{
+  "generated_at": "2026-04-20T18:33:03.729685+00:00",
+  "enriched_file": "data/clawhub_enriched.json",
+  "total_in_enriched": 99,
+  "total_targeted": 35,
+  "confirmed_malicious": 3,
+  "high_risk": 5,
+  "clean": 27,
+  "download_failed": 2,
+  "pattern_breakdown": {
+    "P01": 2,
+    "P02": 0,
+    "P03": 0,
+    "P04": 0,
+    "P05": 3,
+    "P06": 0,
+    "P07": 0,
+    "P08": 3,
+    "P09": 3,
+    "P10": 0,
+    "P11": 0
+  },
+  "results": [
+    {
+      "slug": "brave-search",
+      "owner_handle": "steipete",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/steipete/brave-search",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 1273,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:14.716242+00:00"
+    },
+    {
+      "slug": "browser-use",
+      "owner_handle": "shawnpana",
+      "version": "2.0.0",
+      "clawhub_url": "https://clawhub.ai/shawnpana/browser-use",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 9567,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 2,
+        "patterns": [
+          {
+            "id": "P05",
+            "name": "Base64-obfuscated shell command",
+            "desc": "Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used by the glot.io macOS delivery chain.",
+            "hits": [
+              "| sh"
+            ],
+            "lines": [
+              "L193: | `--headed` | Show browser window |"
+            ]
+          },
+          {
+            "id": "P08",
+            "name": "Hidden backdoor in operational code",
+            "desc": "Contains an os.system() call or inline curl/shell command hidden inside functional code — the technique used by better-polymarket and polymarket-all-in-one to hide a reverse shell inside working code.",
+            "hits": [
+              "| sh"
+            ],
+            "lines": [
+              "L193: | `--headed` | Show browser window |"
+            ]
+          }
+        ],
+        "verdict": "CONFIRMED_MALICIOUS"
+      },
+      "scanned_at": "2026-04-20T18:31:16.915417+00:00"
+    },
+    {
+      "slug": "byterover",
+      "owner_handle": "byteroverinc",
+      "version": "2.1.0",
+      "clawhub_url": "https://clawhub.ai/byteroverinc/byterover",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 20138,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:18.790734+00:00"
+    },
+    {
+      "slug": "capability-evolver",
+      "owner_handle": "autogame-17",
+      "version": "1.41.0",
+      "clawhub_url": "https://clawhub.ai/autogame-17/capability-evolver",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": false,
+      "skill_md_chars": 0,
+      "download_error": "download or zip extraction failed",
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:26.018958+00:00"
+    },
+    {
+      "slug": "clawdbot-filesystem",
+      "owner_handle": "gtrusler",
+      "version": "1.0.2",
+      "clawhub_url": "https://clawhub.ai/gtrusler/clawdbot-filesystem",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 6270,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:27.336930+00:00"
+    },
+    {
+      "slug": "clawdhub",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/clawdhub",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 1398,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:29.185774+00:00"
+    },
+    {
+      "slug": "deep-research-pro",
+      "owner_handle": "parags",
+      "version": "1.0.2",
+      "clawhub_url": "https://clawhub.ai/parags/deep-research-pro",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 4405,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:35.797260+00:00"
+    },
+    {
+      "slug": "desktop-control",
+      "owner_handle": "matagul",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/matagul/desktop-control",
+      "oc_verdict": "Benign",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 13997,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:37.672512+00:00"
+    },
+    {
+      "slug": "discord",
+      "owner_handle": "steipete",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/steipete/discord",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 7120,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:39.805711+00:00"
+    },
+    {
+      "slug": "elite-longterm-memory",
+      "owner_handle": "nextfrontierbuilds",
+      "version": "1.2.3",
+      "clawhub_url": "https://clawhub.ai/nextfrontierbuilds/elite-longterm-memory",
+      "oc_verdict": "Benign",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 11585,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:46.178096+00:00"
+    },
+    {
+      "slug": "evolver",
+      "owner_handle": "autogame-17",
+      "version": "1.41.0",
+      "clawhub_url": "https://clawhub.ai/autogame-17/evolver",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": false,
+      "skill_md_chars": 0,
+      "download_error": "download or zip extraction failed",
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:48.061905+00:00"
+    },
+    {
+      "slug": "exa-web-search-free",
+      "owner_handle": "whiteknight07",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/whiteknight07/exa-web-search-free",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 2433,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:49.384899+00:00"
+    },
+    {
+      "slug": "gog",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/gog",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 1745,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:51.023120+00:00"
+    },
+    {
+      "slug": "humanize-ai-text",
+      "owner_handle": "moltbro",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/moltbro/humanize-ai-text",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 5200,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:31:52.434506+00:00"
+    },
+    {
+      "slug": "larry",
+      "owner_handle": "olliewazza",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/olliewazza/larry",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 46783,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 1,
+        "patterns": [
+          {
+            "id": "P09",
+            "name": "Social engineering authority/urgency language",
+            "desc": "Uses IMPORTANT/WARNING authority language combined with functional dependency claims to coerce users into installing the malicious prerequisite.",
+            "hits": [
+              "important:"
+            ],
+            "lines": [
+              "L38: **Important:** Use `scripts/onboarding.js --validate` at the end to confirm the config is complete."
+            ]
+          }
+        ],
+        "verdict": "HIGH_RISK"
+      },
+      "scanned_at": "2026-04-20T18:31:58.039771+00:00"
+    },
+    {
+      "slug": "markdown-converter",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/markdown-converter",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 1966,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:00.511816+00:00"
+    },
+    {
+      "slug": "marketing-mode",
+      "owner_handle": "thesethrose",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/thesethrose/marketing-mode",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 18035,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:02.188933+00:00"
+    },
+    {
+      "slug": "mcporter",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/mcporter",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 1477,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:07.678638+00:00"
+    },
+    {
+      "slug": "meitu-skills",
+      "owner_handle": "meituskills",
+      "version": "1.0.20",
+      "clawhub_url": "https://clawhub.ai/meituskills/meitu-skills",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 8537,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:09.090897+00:00"
+    },
+    {
+      "slug": "nano-banana-pro",
+      "owner_handle": "steipete",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/steipete/nano-banana-pro",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 5661,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 1,
+        "patterns": [
+          {
+            "id": "P09",
+            "name": "Social engineering authority/urgency language",
+            "desc": "Uses IMPORTANT/WARNING authority language combined with functional dependency claims to coerce users into installing the malicious prerequisite.",
+            "hits": [
+              "important:"
+            ],
+            "lines": [
+              "L24: **Important:** Always run from the user's current working directory so images are saved where the us"
+            ]
+          }
+        ],
+        "verdict": "HIGH_RISK"
+      },
+      "scanned_at": "2026-04-20T18:32:16.549248+00:00"
+    },
+    {
+      "slug": "news-summary",
+      "owner_handle": "joargp",
+      "version": "1.0.1",
+      "clawhub_url": "https://clawhub.ai/joargp/news-summary",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 2079,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 1,
+        "patterns": [
+          {
+            "id": "P08",
+            "name": "Hidden backdoor in operational code",
+            "desc": "Contains an os.system() call or inline curl/shell command hidden inside functional code — the technique used by better-polymarket and polymarket-all-in-one to hide a reverse shell inside working code.",
+            "hits": [
+              "curl -s https://"
+            ],
+            "lines": [
+              "L70: curl -s https://api.openai.com/v1/audio/speech \\"
+            ]
+          }
+        ],
+        "verdict": "HIGH_RISK"
+      },
+      "scanned_at": "2026-04-20T18:32:18.199309+00:00"
+    },
+    {
+      "slug": "notion",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/notion",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 5028,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:19.681777+00:00"
+    },
+    {
+      "slug": "obsidian",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/obsidian",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 2315,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:21.278080+00:00"
+    },
+    {
+      "slug": "openclaw-tavily-search",
+      "owner_handle": "jacky1n7",
+      "version": "0.1.0",
+      "clawhub_url": "https://clawhub.ai/jacky1n7/openclaw-tavily-search",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 1515,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:25.399647+00:00"
+    },
+    {
+      "slug": "peekaboo",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/peekaboo",
+      "oc_verdict": "Benign",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 5750,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:26.899327+00:00"
+    },
+    {
+      "slug": "proactive-agent",
+      "owner_handle": "halthelobster",
+      "version": "3.1.0",
+      "clawhub_url": "https://clawhub.ai/halthelobster/proactive-agent",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 20551,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:28.728715+00:00"
+    },
+    {
+      "slug": "qmd",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/qmd",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 814,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:33.108821+00:00"
+    },
+    {
+      "slug": "skill-creator",
+      "owner_handle": "chindden",
+      "version": "0.1.0",
+      "clawhub_url": "https://clawhub.ai/chindden/skill-creator",
+      "oc_verdict": "Benign",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 17701,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 1,
+        "patterns": [
+          {
+            "id": "P01",
+            "name": "Fictional prerequisite utility",
+            "desc": "Prerequisites section presenting a fictional/unofficial utility (openclawcli, openclaw-agent, AuthTool) as a hard requirement. This is the social engineering pretext used in all 335 ClawHavoc skills.",
+            "hits": [
+              "requires the"
+            ],
+            "lines": [
+              "L246: 1. Writing a frontend webapp requires the same boilerplate HTML/React each time"
+            ]
+          }
+        ],
+        "verdict": "HIGH_RISK"
+      },
+      "scanned_at": "2026-04-20T18:32:34.833945+00:00"
+    },
+    {
+      "slug": "slack",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/slack",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 2311,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:36.531482+00:00"
+    },
+    {
+      "slug": "stock-analysis",
+      "owner_handle": "udiedrichsen",
+      "version": "6.2.0",
+      "clawhub_url": "https://clawhub.ai/udiedrichsen/stock-analysis",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 8064,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 2,
+        "patterns": [
+          {
+            "id": "P05",
+            "name": "Base64-obfuscated shell command",
+            "desc": "Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used by the glot.io macOS delivery chain.",
+            "hits": [
+              "| sh"
+            ],
+            "lines": [
+              "L203: | Short Interest | Yahoo | Squeeze potential |"
+            ]
+          },
+          {
+            "id": "P08",
+            "name": "Hidden backdoor in operational code",
+            "desc": "Contains an os.system() call or inline curl/shell command hidden inside functional code — the technique used by better-polymarket and polymarket-all-in-one to hide a reverse shell inside working code.",
+            "hits": [
+              "| sh"
+            ],
+            "lines": [
+              "L203: | Short Interest | Yahoo | Squeeze potential |"
+            ]
+          }
+        ],
+        "verdict": "CONFIRMED_MALICIOUS"
+      },
+      "scanned_at": "2026-04-20T18:32:41.499074+00:00"
+    },
+    {
+      "slug": "trello",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/trello",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 2648,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:44.395049+00:00"
+    },
+    {
+      "slug": "ui-ux-pro-max",
+      "owner_handle": "xobi667",
+      "version": "0.1.0",
+      "clawhub_url": "https://clawhub.ai/xobi667/ui-ux-pro-max",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Benign",
+      "skill_md_available": true,
+      "skill_md_chars": 2627,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:48.349504+00:00"
+    },
+    {
+      "slug": "video-transcript-downloader",
+      "owner_handle": "steipete",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/steipete/video-transcript-downloader",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 2296,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 0,
+        "patterns": [],
+        "verdict": "CLEAN"
+      },
+      "scanned_at": "2026-04-20T18:32:56.149591+00:00"
+    },
+    {
+      "slug": "xhs",
+      "owner_handle": "hi-yu",
+      "version": "1.2.5",
+      "clawhub_url": "https://clawhub.ai/hi-yu/xhs",
+      "oc_verdict": "Suspicious",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 14299,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 1,
+        "patterns": [
+          {
+            "id": "P05",
+            "name": "Base64-obfuscated shell command",
+            "desc": "Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used by the glot.io macOS delivery chain.",
+            "hits": [
+              "base64 -d",
+              "base64 -D"
+            ],
+            "lines": [
+              "L309: echo \"$BASE64_STR\" | base64 -d > /tmp/xhs_qr.png",
+              "L309: echo \"$BASE64_STR\" | base64 -d > /tmp/xhs_qr.png"
+            ]
+          }
+        ],
+        "verdict": "CONFIRMED_MALICIOUS"
+      },
+      "scanned_at": "2026-04-20T18:32:58.168081+00:00"
+    },
+    {
+      "slug": "xiaohongshu-mcp",
+      "owner_handle": "borye",
+      "version": "1.0.0",
+      "clawhub_url": "https://clawhub.ai/borye/xiaohongshu-mcp",
+      "oc_verdict": "Benign",
+      "vt_verdict": "Suspicious",
+      "skill_md_available": true,
+      "skill_md_chars": 3825,
+      "download_error": null,
+      "scan": {
+        "pattern_count": 2,
+        "patterns": [
+          {
+            "id": "P01",
+            "name": "Fictional prerequisite utility",
+            "desc": "Prerequisites section presenting a fictional/unofficial utility (openclawcli, openclaw-agent, AuthTool) as a hard requirement. This is the social engineering pretext used in all 335 ClawHavoc skills.",
+            "hits": [
+              "requires the"
+            ],
+            "lines": [
+              "L18: This skill requires the `xiaohongshu-mcp` server to be running on your local machine."
+            ]
+          },
+          {
+            "id": "P09",
+            "name": "Social engineering authority/urgency language",
+            "desc": "Uses IMPORTANT/WARNING authority language combined with functional dependency claims to coerce users into installing the malicious prerequisite.",
+            "hits": [
+              "**important**"
+            ],
+            "lines": [
+              "L44: > **Important**: Do not log into the same Xiaohongshu account on any other web browser, as this will"
+            ]
+          }
+        ],
+        "verdict": "HIGH_RISK"
+      },
+      "scanned_at": "2026-04-20T18:33:00.330518+00:00"
+    }
+  ]
+}

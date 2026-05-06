@@ -1,0 +1,241 @@
+════════════════════════════════════════════════════════════════════════════════
+  ClawHavoc Attack Pattern Scanner — Results
+  Generated : 2026-04-20T18:33:03.729154+00:00
+  Skills scanned : 35
+  CONFIRMED_MALICIOUS : 3
+  HIGH_RISK           : 5
+  CLEAN               : 27
+  Download failed     : 2
+════════════════════════════════════════════════════════════════════════════════
+
+Pattern Legend:
+  P01  Fictional prerequisite utility (openclawcli / openclaw-agent)
+  P02  macOS delivery via anonymous glot.io snippet
+  P03  Non-official GitHub release (password-protected ZIP)
+  P04  Known ClawHavoc C2 server IP
+  P05  Base64-obfuscated shell command
+  P06  Archive password for AV evasion
+  P07  Credential exfiltration via webhook.site
+  P08  Hidden backdoor in operational code
+  P09  Social engineering authority/urgency language
+  P10  Reverse shell command
+  P11  Dual-platform Windows + macOS delivery
+
+Source: https://www.koi.ai/blog/clawhavoc-341-malicious-clawedbot-skills-found-by-the-bot-they-were-targeting
+
+════════════════════════════════════════════════════════════════════════════════
+  SECTION 1 — CONFIRMED MALICIOUS  (3 skills)
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : browser-use
+  Owner      : shawnpana
+  Version    : 2.0.0
+  ClawHub    : https://clawhub.ai/shawnpana/browser-use
+  OC Verdict : Suspicious   VT Verdict: Suspicious
+  Scan Result: CONFIRMED_MALICIOUS   Patterns matched: 2
+
+  [P05] Base64-obfuscated shell command
+       Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used 
+       Keywords matched: | sh
+         > L193: | `--headed` | Show browser window |
+
+  [P08] Hidden backdoor in operational code
+       Contains an os.system() call or inline curl/shell command hidden inside functional code — 
+       Keywords matched: | sh
+         > L193: | `--headed` | Show browser window |
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : stock-analysis
+  Owner      : udiedrichsen
+  Version    : 6.2.0
+  ClawHub    : https://clawhub.ai/udiedrichsen/stock-analysis
+  OC Verdict : Suspicious   VT Verdict: Suspicious
+  Scan Result: CONFIRMED_MALICIOUS   Patterns matched: 2
+
+  [P05] Base64-obfuscated shell command
+       Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used 
+       Keywords matched: | sh
+         > L203: | Short Interest | Yahoo | Squeeze potential |
+
+  [P08] Hidden backdoor in operational code
+       Contains an os.system() call or inline curl/shell command hidden inside functional code — 
+       Keywords matched: | sh
+         > L203: | Short Interest | Yahoo | Squeeze potential |
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : xhs
+  Owner      : hi-yu
+  Version    : 1.2.5
+  ClawHub    : https://clawhub.ai/hi-yu/xhs
+  OC Verdict : Suspicious   VT Verdict: Suspicious
+  Scan Result: CONFIRMED_MALICIOUS   Patterns matched: 1
+
+  [P05] Base64-obfuscated shell command
+       Contains a base64-encoded shell command piped to bash/sh — the obfuscation technique used 
+       Keywords matched: base64 -d, base64 -D
+         > L309: echo "$BASE64_STR" | base64 -d > /tmp/xhs_qr.png
+         > L309: echo "$BASE64_STR" | base64 -d > /tmp/xhs_qr.png
+
+
+════════════════════════════════════════════════════════════════════════════════
+  SECTION 2 — HIGH RISK  (5 skills)
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : larry
+  Owner      : olliewazza
+  Version    : 1.0.0
+  ClawHub    : https://clawhub.ai/olliewazza/larry
+  OC Verdict : Suspicious   VT Verdict: Benign
+  Scan Result: HIGH_RISK   Patterns matched: 1
+
+  [P09] Social engineering authority/urgency language
+       Uses IMPORTANT/WARNING authority language combined with functional dependency claims to co
+       Keywords matched: important:
+         > L38: **Important:** Use `scripts/onboarding.js --validate` at the end to confirm the config is complete.
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : nano-banana-pro
+  Owner      : steipete
+  Version    : 1.0.1
+  ClawHub    : https://clawhub.ai/steipete/nano-banana-pro
+  OC Verdict : Suspicious   VT Verdict: Suspicious
+  Scan Result: HIGH_RISK   Patterns matched: 1
+
+  [P09] Social engineering authority/urgency language
+       Uses IMPORTANT/WARNING authority language combined with functional dependency claims to co
+       Keywords matched: important:
+         > L24: **Important:** Always run from the user's current working directory so images are saved where the us
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : news-summary
+  Owner      : joargp
+  Version    : 1.0.1
+  ClawHub    : https://clawhub.ai/joargp/news-summary
+  OC Verdict : Suspicious   VT Verdict: Benign
+  Scan Result: HIGH_RISK   Patterns matched: 1
+
+  [P08] Hidden backdoor in operational code
+       Contains an os.system() call or inline curl/shell command hidden inside functional code — 
+       Keywords matched: curl -s https://
+         > L70: curl -s https://api.openai.com/v1/audio/speech \
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : skill-creator
+  Owner      : chindden
+  Version    : 0.1.0
+  ClawHub    : https://clawhub.ai/chindden/skill-creator
+  OC Verdict : Benign   VT Verdict: Suspicious
+  Scan Result: HIGH_RISK   Patterns matched: 1
+
+  [P01] Fictional prerequisite utility
+       Prerequisites section presenting a fictional/unofficial utility (openclawcli, openclaw-age
+       Keywords matched: requires the
+         > L246: 1. Writing a frontend webapp requires the same boilerplate HTML/React each time
+
+
+────────────────────────────────────────────────────────────────────────────────
+  Slug       : xiaohongshu-mcp
+  Owner      : borye
+  Version    : 1.0.0
+  ClawHub    : https://clawhub.ai/borye/xiaohongshu-mcp
+  OC Verdict : Benign   VT Verdict: Suspicious
+  Scan Result: HIGH_RISK   Patterns matched: 2
+
+  [P01] Fictional prerequisite utility
+       Prerequisites section presenting a fictional/unofficial utility (openclawcli, openclaw-age
+       Keywords matched: requires the
+         > L18: This skill requires the `xiaohongshu-mcp` server to be running on your local machine.
+
+  [P09] Social engineering authority/urgency language
+       Uses IMPORTANT/WARNING authority language combined with functional dependency claims to co
+       Keywords matched: **important**
+         > L44: > **Important**: Do not log into the same Xiaohongshu account on any other web browser, as this will
+
+
+════════════════════════════════════════════════════════════════════════════════
+  SECTION 3 — CLEAN (no patterns matched)  (27 skills)
+════════════════════════════════════════════════════════════════════════════════
+
+  brave-search                   OC=Suspicious   VT=Benign      
+  byterover                      OC=Suspicious   VT=Suspicious  
+  capability-evolver             OC=Suspicious   VT=Benign       [download failed]
+  clawdbot-filesystem            OC=Suspicious   VT=Benign      
+  clawdhub                       OC=Suspicious   VT=Suspicious  
+  deep-research-pro              OC=Suspicious   VT=Benign      
+  desktop-control                OC=Benign       VT=Suspicious  
+  discord                        OC=Suspicious   VT=Suspicious  
+  elite-longterm-memory          OC=Benign       VT=Suspicious  
+  evolver                        OC=Suspicious   VT=Suspicious   [download failed]
+  exa-web-search-free            OC=Suspicious   VT=Benign      
+  gog                            OC=Suspicious   VT=Benign      
+  humanize-ai-text               OC=Suspicious   VT=Benign      
+  markdown-converter             OC=Suspicious   VT=Benign      
+  marketing-mode                 OC=Suspicious   VT=Suspicious  
+  mcporter                       OC=Suspicious   VT=Suspicious  
+  meitu-skills                   OC=Suspicious   VT=Benign      
+  notion                         OC=Suspicious   VT=Benign      
+  obsidian                       OC=Suspicious   VT=Suspicious  
+  openclaw-tavily-search         OC=Suspicious   VT=Benign      
+  peekaboo                       OC=Benign       VT=Suspicious  
+  proactive-agent                OC=Suspicious   VT=Benign      
+  qmd                            OC=Suspicious   VT=Benign      
+  slack                          OC=Suspicious   VT=Benign      
+  trello                         OC=Suspicious   VT=Benign      
+  ui-ux-pro-max                  OC=Suspicious   VT=Benign      
+  video-transcript-downloader    OC=Suspicious   VT=Suspicious  
+
+════════════════════════════════════════════════════════════════════════════════
+  SECTION 4 — DOWNLOAD FAILURES  (2 skills)
+════════════════════════════════════════════════════════════════════════════════
+
+  capability-evolver             download or zip extraction failed
+  evolver                        download or zip extraction failed
+
+════════════════════════════════════════════════════════════════════════════════
+  QUICK REFERENCE — ALL SUSPICIOUS/MALICIOUS SKILLS
+════════════════════════════════════════════════════════════════════════════════
+
+  Slug                                OC Verdict     VT Verdict     Scan Result            Patterns
+  ----------------------------------------------------------------------------------------------------
+  browser-use                         Suspicious     Suspicious     CONFIRMED_MALICIOUS    P05,P08
+  stock-analysis                      Suspicious     Suspicious     CONFIRMED_MALICIOUS    P05,P08
+  xhs                                 Suspicious     Suspicious     CONFIRMED_MALICIOUS    P05
+  larry                               Suspicious     Benign         HIGH_RISK              P09
+  nano-banana-pro                     Suspicious     Suspicious     HIGH_RISK              P09
+  news-summary                        Suspicious     Benign         HIGH_RISK              P08
+  skill-creator                       Benign         Suspicious     HIGH_RISK              P01
+  xiaohongshu-mcp                     Benign         Suspicious     HIGH_RISK              P01,P09
+  brave-search                        Suspicious     Benign         CLEAN                  ---
+  byterover                           Suspicious     Suspicious     CLEAN                  ---
+  capability-evolver                  Suspicious     Benign         CLEAN                  ---
+  clawdbot-filesystem                 Suspicious     Benign         CLEAN                  ---
+  clawdhub                            Suspicious     Suspicious     CLEAN                  ---
+  deep-research-pro                   Suspicious     Benign         CLEAN                  ---
+  desktop-control                     Benign         Suspicious     CLEAN                  ---
+  discord                             Suspicious     Suspicious     CLEAN                  ---
+  elite-longterm-memory               Benign         Suspicious     CLEAN                  ---
+  evolver                             Suspicious     Suspicious     CLEAN                  ---
+  exa-web-search-free                 Suspicious     Benign         CLEAN                  ---
+  gog                                 Suspicious     Benign         CLEAN                  ---
+  humanize-ai-text                    Suspicious     Benign         CLEAN                  ---
+  markdown-converter                  Suspicious     Benign         CLEAN                  ---
+  marketing-mode                      Suspicious     Suspicious     CLEAN                  ---
+  mcporter                            Suspicious     Suspicious     CLEAN                  ---
+  meitu-skills                        Suspicious     Benign         CLEAN                  ---
+  notion                              Suspicious     Benign         CLEAN                  ---
+  obsidian                            Suspicious     Suspicious     CLEAN                  ---
+  openclaw-tavily-search              Suspicious     Benign         CLEAN                  ---
+  peekaboo                            Benign         Suspicious     CLEAN                  ---
+  proactive-agent                     Suspicious     Benign         CLEAN                  ---
+  qmd                                 Suspicious     Benign         CLEAN                  ---
+  slack                               Suspicious     Benign         CLEAN                  ---
+  trello                              Suspicious     Benign         CLEAN                  ---
+  ui-ux-pro-max                       Suspicious     Benign         CLEAN                  ---
+  video-transcript-downloader         Suspicious     Suspicious     CLEAN                  ---

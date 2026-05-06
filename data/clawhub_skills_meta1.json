@@ -1,0 +1,1714 @@
+{
+    "self-improving-agent": {
+        "display_name": "self-improving-agent",
+        "summary": "Captures learnings, errors, and corrections to enable continuous improvement. Use when: (1) A command or operation fails unexpectedly, (2) User corrects Clau...",
+        "owner_handle": "pskoett",
+        "owner_display_name": "pskoett",
+        "created_date": "2026-01-05 17:03:18 UTC",
+        "version": "3.0.13",
+        "stats": {
+            "comments": 53.0,
+            "downloads": 353594.0,
+            "installsAllTime": 5746.0,
+            "installsCurrent": 5450.0,
+            "stars": 2988.0,
+            "versions": 25.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd71q6bf0e8vcgdcxfdd3qyd817ynzhk"
+    },
+    "skill-vetter": {
+        "display_name": "Skill Vetter",
+        "summary": "Security-first skill vetting for AI agents. Use before installing any skill from ClawdHub, GitHub, or other sources. Checks for red flags, permission scope, and suspicious patterns.",
+        "owner_handle": "spclaudehome",
+        "owner_display_name": "spclaudehome",
+        "created_date": "2026-01-31 12:43:49 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 187936.0,
+            "installsAllTime": 3724.0,
+            "installsCurrent": 3647.0,
+            "stars": 833.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd75wy3sdbqy5yn3f6xptsxx7d808s14"
+    },
+    "ontology": {
+        "display_name": "ontology",
+        "summary": "Typed knowledge graph for structured agent memory and composable skills. Use when creating/querying entities (Person, Project, Task, Event, Document), linkin...",
+        "owner_handle": "oswalpalash",
+        "owner_display_name": "oswalpalash",
+        "created_date": "2026-01-26 08:17:15 UTC",
+        "version": "1.0.4",
+        "stats": {
+            "comments": 7.0,
+            "downloads": 152759.0,
+            "installsAllTime": 1054.0,
+            "installsCurrent": 1022.0,
+            "stars": 484.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7fbkq8d21m09n3bzkz6yg2vd7zysgw"
+    },
+    "self-improving": {
+        "display_name": "Self-Improving + Proactive Agent",
+        "summary": "Self-reflection + Self-criticism + Self-learning + Self-organizing memory. Agent evaluates its own work, catches mistakes, and improves permanently. Use when...",
+        "owner_handle": "ivangdavila",
+        "owner_display_name": "Iván",
+        "created_date": "2026-02-16 18:26:58 UTC",
+        "version": "1.2.16",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 147583.0,
+            "installsAllTime": 1755.0,
+            "installsCurrent": 1661.0,
+            "stars": 886.0,
+            "versions": 22.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79502q5bvsfq0pkj19wd25p1818h85"
+    },
+    "github": {
+        "display_name": "Github",
+        "summary": "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:04 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 7.0,
+            "downloads": 147487.0,
+            "installsAllTime": 3949.0,
+            "installsCurrent": 3834.0,
+            "stars": 488.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7avmm6txvmxgjvd5typxc7157ykb9a"
+    },
+    "gog": {
+        "display_name": "Gog",
+        "summary": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:06 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 36.0,
+            "downloads": 146639.0,
+            "installsAllTime": 3284.0,
+            "installsCurrent": 3174.0,
+            "stars": 818.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd788r6efph888et7ry7q2sfcn7yk1b8"
+    },
+    "proactive-agent": {
+        "display_name": "Proactive Agent",
+        "summary": "Transform AI agents from task-followers into proactive partners that anticipate needs and continuously improve. Now with WAL Protocol, Working Buffer, Autonomous Crons, and battle-tested patterns. Part of the Hal Stack 🦞",
+        "owner_handle": "halthelobster",
+        "owner_display_name": "halthelobster",
+        "created_date": "2026-01-28 19:45:45 UTC",
+        "version": "3.1.0",
+        "stats": {
+            "comments": 19.0,
+            "downloads": 134537.0,
+            "installsAllTime": 2608.0,
+            "installsCurrent": 2517.0,
+            "stars": 675.0,
+            "versions": 11.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7234e74r691cc21jc96sev81802qvf"
+    },
+    "weather": {
+        "display_name": "Weather",
+        "summary": "Get current weather and forecasts (no API key required).",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:54 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 6.0,
+            "downloads": 125892.0,
+            "installsAllTime": 3440.0,
+            "installsCurrent": 3337.0,
+            "stars": 344.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd74g5ggqa7k4j3h9se8sv1p117yj8s2"
+    },
+    "multi-search-engine": {
+        "display_name": "Multi Search Engine",
+        "summary": "Multi search engine integration with 17 engines (8 CN + 9 Global). Supports advanced search operators, time filters, site search, privacy engines, and WolframAlpha knowledge queries. No API keys required.",
+        "owner_handle": "gpyangyoujun",
+        "owner_display_name": "g_pyAng",
+        "created_date": "2026-02-04 16:04:53 UTC",
+        "version": "2.0.1",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 105201.0,
+            "installsAllTime": 1665.0,
+            "installsCurrent": 1608.0,
+            "stars": 511.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78k7vm5pqhvzxmed6hpxts5x80grwm"
+    },
+    "polymarket-trade": {
+        "display_name": "Polymarket",
+        "summary": "Query Polymarket prediction markets. Check odds, find trending markets, search events, track price movements.",
+        "owner_handle": "joelchance",
+        "owner_display_name": "joelchance",
+        "created_date": "2026-03-09 07:28:29 UTC",
+        "version": "1.0.6",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 86849.0,
+            "installsAllTime": 19.0,
+            "installsCurrent": 18.0,
+            "stars": 43.0,
+            "versions": 7.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd76xf5v8avmxnpaa243vhj4p182kzax"
+    },
+    "nano-pdf": {
+        "display_name": "Nano Pdf",
+        "summary": "Edit PDFs with natural-language instructions using the nano-pdf CLI.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:19 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 84165.0,
+            "installsAllTime": 2260.0,
+            "installsCurrent": 2200.0,
+            "stars": 205.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7f3gkfh1hxcbde4bx5dhhp217yjqc9"
+    },
+    "humanizer": {
+        "display_name": "Humanizer",
+        "summary": "Remove signs of AI-generated writing from text. Use when editing or reviewing\ntext to make it sound more natural and human-written. Based on Wikipedia's\ncomprehensive \"Signs of AI writing\" guide. Detects and fixes patterns including:\ninflated symbolism, promotional language, superficial -ing analyses, vague\nattributions, em dash overuse, rule of three, AI vocabulary words, negative\nparallelisms, and excessive conjunctive phrases.",
+        "owner_handle": "biostartechnology",
+        "owner_display_name": "B*T",
+        "created_date": "2026-01-24 05:15:36 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 6.0,
+            "downloads": 82503.0,
+            "installsAllTime": 1202.0,
+            "installsCurrent": 1151.0,
+            "stars": 509.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7dx00dcjb4vzfecwakpcvkhx7zvfgn"
+    },
+    "admapix": {
+        "display_name": "AdMapix",
+        "summary": "Ad intelligence & app analytics assistant. Search ad creatives, analyze apps, view rankings, track downloads/revenue, and get market insights. Get your API k...",
+        "owner_handle": "fly0pants",
+        "owner_display_name": "fly0pants",
+        "created_date": "2026-03-13 07:11:54 UTC",
+        "version": "1.0.28",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 79324.0,
+            "installsAllTime": 206.0,
+            "installsCurrent": 203.0,
+            "stars": 215.0,
+            "versions": 23.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79yk2rbhjw5d698wrsqynfcx82vk7g"
+    },
+    "nano-banana-pro": {
+        "display_name": "Nano Banana Pro",
+        "summary": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use for image create/modify requests incl. edits. Supports text-to-image + image-to-image; 1K/2K/4K; use --input-image.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:18 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 79268.0,
+            "installsAllTime": 1710.0,
+            "installsCurrent": 1665.0,
+            "stars": 316.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7dcr6a98x26ykz8zxevaw22s7yjcgt"
+    },
+    "obsidian": {
+        "display_name": "Obsidian",
+        "summary": "Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:22 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 9.0,
+            "downloads": 74701.0,
+            "installsAllTime": 2270.0,
+            "installsCurrent": 2199.0,
+            "stars": 303.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7azbj921cxvnvb8f90j8hbzn7ykdxr"
+    },
+    "sonoscli": {
+        "display_name": "Sonoscli",
+        "summary": "Control Sonos speakers (discover/status/play/volume/group).",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:41 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 73780.0,
+            "installsAllTime": 2566.0,
+            "installsCurrent": 2453.0,
+            "stars": 47.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd71bx7wzz0xbc492njvdkkrph7yj7m7"
+    },
+    "openclaw-tavily-search": {
+        "display_name": "Tavily 搜索",
+        "summary": "Web search via Tavily API (alternative to Brave). Use when the user asks to search the web / look up sources / find links and Brave web_search is unavailable...",
+        "owner_handle": "jacky1n7",
+        "owner_display_name": "Xiaoran Li",
+        "created_date": "2026-02-26 16:01:19 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 73006.0,
+            "installsAllTime": 1122.0,
+            "installsCurrent": 1074.0,
+            "stars": 203.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd75tsb63ke8ry586sfmpr10a581xn6q"
+    },
+    "baidu-search": {
+        "display_name": "Baidu Search",
+        "summary": "Search the web using Baidu AI Search Engine (BDSE). Use for live information, documentation, or research topics.",
+        "owner_handle": "ide-rea",
+        "owner_display_name": "ide-rea",
+        "created_date": "2026-02-05 11:42:34 UTC",
+        "version": "1.1.3",
+        "stats": {
+            "comments": 21.0,
+            "downloads": 72861.0,
+            "installsAllTime": 790.0,
+            "installsCurrent": 754.0,
+            "stars": 192.0,
+            "versions": 11.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd71egdpwxvbwez13d9ch5qcsd80j2as"
+    },
+    "notion": {
+        "display_name": "Notion",
+        "summary": "Notion API for creating and managing pages, databases, and blocks.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:20 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 72623.0,
+            "installsAllTime": 2157.0,
+            "installsCurrent": 2104.0,
+            "stars": 223.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7dnx178k9z484f8mhmdgs6ds7ykms0"
+    },
+    "agent-browser-clawdbot": {
+        "display_name": "Agent Browser",
+        "summary": "Headless browser automation CLI optimized for AI agents with accessibility tree snapshots and ref-based element selection",
+        "owner_handle": "matrixy",
+        "owner_display_name": "MaTriXy",
+        "created_date": "2026-01-21 22:00:54 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 70813.0,
+            "installsAllTime": 536.0,
+            "installsCurrent": 488.0,
+            "stars": 263.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd73k6ckp22a61dnwn93rwdp2s7znp0a"
+    },
+    "auto-updater": {
+        "display_name": "Auto-Updater Skill",
+        "summary": "Automatically update Clawdbot and all installed skills once daily. Runs via cron, checks for updates, applies them, and messages the user with a summary of what changed.",
+        "owner_handle": "maximeprades",
+        "owner_display_name": "maximeprades",
+        "created_date": "2026-01-13 16:58:59 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 6.0,
+            "downloads": 67027.0,
+            "installsAllTime": 1245.0,
+            "installsCurrent": 1168.0,
+            "stars": 349.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79vgpn7t6vg2vrtkn1cvga4n7z5n8f"
+    },
+    "skill-creator": {
+        "display_name": "Skill Creator",
+        "summary": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+        "owner_handle": "chindden",
+        "owner_display_name": "chindden",
+        "created_date": "2026-01-27 14:04:37 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 64746.0,
+            "installsAllTime": 2115.0,
+            "installsCurrent": 2053.0,
+            "stars": 229.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd70vj4mdfn50dm59s6ypec9e9801f4r"
+    },
+    "openai-whisper": {
+        "display_name": "Openai Whisper",
+        "summary": "Local speech-to-text with the Whisper CLI (no API key).",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:25 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 64560.0,
+            "installsAllTime": 1879.0,
+            "installsCurrent": 1823.0,
+            "stars": 265.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd751x4yfrrd1rkmws7t8jadhx7yknc8"
+    },
+    "api-gateway": {
+        "display_name": "API Gateway",
+        "summary": "Connect to 100+ APIs (Google Workspace, Microsoft 365, GitHub, Notion, Slack, Airtable, HubSpot, etc.) with managed OAuth. Use this skill when users want to...",
+        "owner_handle": "byungkyu",
+        "owner_display_name": "byungkyu",
+        "created_date": "2026-02-01 08:37:47 UTC",
+        "version": "1.0.76",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 63168.0,
+            "installsAllTime": 491.0,
+            "installsCurrent": 461.0,
+            "stars": 311.0,
+            "versions": 77.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7ans4j6fwb8zwr0qyct403n580bqh3"
+    },
+    "automation-workflows": {
+        "display_name": "Automation Workflows",
+        "summary": "Design and implement automation workflows to save time and scale operations as a solopreneur. Use when identifying repetitive tasks to automate, building workflows across tools, setting up triggers and actions, or optimizing existing automations. Covers automation opportunity identification, workflow design, tool selection (Zapier, Make, n8n), testing, and maintenance. Trigger on \"automate\", \"automation\", \"workflow automation\", \"save time\", \"reduce manual work\", \"automate my business\", \"no-code automation\".",
+        "owner_handle": "jk-0001",
+        "owner_display_name": "Jatin Khatri",
+        "created_date": "2026-02-06 01:33:02 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 60104.0,
+            "installsAllTime": 929.0,
+            "installsCurrent": 886.0,
+            "stars": 247.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd766mw8mnzxj5zxz08vatev2980n9pj"
+    },
+    "evolver": {
+        "display_name": "Evolver",
+        "summary": "A self-evolution engine for AI agents. Analyzes runtime history to identify improvements and applies protocol-constrained evolution.",
+        "owner_handle": "autogame-17",
+        "owner_display_name": "autogame-17",
+        "created_date": "2026-02-14 11:48:09 UTC",
+        "version": "1.41.0",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 54801.0,
+            "installsAllTime": 326.0,
+            "installsCurrent": 302.0,
+            "stars": 73.0,
+            "versions": 35.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79dt880njjefngvdv5h2nby581486p"
+    },
+    "prismfy-search": {
+        "display_name": "Prismfy Search",
+        "summary": "Default web search for OpenClaw. Search the web across 10 engines — Google, Reddit, GitHub, arXiv, Hacker News, and more — using Prismfy. Free tier included,...",
+        "owner_handle": "uroboros1205",
+        "owner_display_name": "Uroboros1205",
+        "created_date": "2026-03-26 21:02:50 UTC",
+        "version": "1.1.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 53209.0,
+            "installsAllTime": 4.0,
+            "installsCurrent": 4.0,
+            "stars": 18.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7063jkb37apqm2gm7f1rpj7x83nzpa"
+    },
+    "free-ride": {
+        "display_name": "Free Ride - Unlimited free AI",
+        "summary": "Manages free AI models from OpenRouter for OpenClaw. Automatically ranks models by quality, configures fallbacks for rate-limit handling, and updates opencla...",
+        "owner_handle": "shaivpidadi",
+        "owner_display_name": "Shaishav Pidadi",
+        "created_date": "2026-02-05 17:42:17 UTC",
+        "version": "1.0.8",
+        "stats": {
+            "comments": 25.0,
+            "downloads": 52415.0,
+            "installsAllTime": 426.0,
+            "installsCurrent": 397.0,
+            "stars": 378.0,
+            "versions": 7.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7ca5p9c45ff1p0fsbpv5j3cs80j3ty"
+    },
+    "mcporter": {
+        "display_name": "Mcporter",
+        "summary": "Use the mcporter CLI to list, configure, auth, and call MCP servers/tools directly (HTTP or stdio), including ad-hoc servers, config edits, and CLI/type generation.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:15 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 52265.0,
+            "installsAllTime": 1799.0,
+            "installsCurrent": 1747.0,
+            "stars": 160.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7avvp5d3bdahm3jdr6hwhcvh7ykgg7"
+    },
+    "word-docx": {
+        "display_name": "Word / DOCX",
+        "summary": "Create, inspect, and edit Microsoft Word documents and DOCX files with reliable styles, numbering, tracked changes, tables, sections, and compatibility check...",
+        "owner_handle": "ivangdavila",
+        "owner_display_name": "Iván",
+        "created_date": "2026-02-10 01:23:30 UTC",
+        "version": "1.0.2",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 50432.0,
+            "installsAllTime": 556.0,
+            "installsCurrent": 533.0,
+            "stars": 229.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd70y7yre7z1ngbnw6x3ft54ax80xga2"
+    },
+    "feishu-evolver-wrapper": {
+        "display_name": "Feishu Evolver Wrapper",
+        "summary": "Feishu-integrated wrapper for the capability-evolver. Manages the evolution loop lifecycle (start/stop/ensure), sends rich Feishu card reports, and provides...",
+        "owner_handle": "autogame-17",
+        "owner_display_name": "autogame-17",
+        "created_date": "2026-02-14 03:34:53 UTC",
+        "version": "1.7.1",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 48324.0,
+            "installsAllTime": 170.0,
+            "installsCurrent": 161.0,
+            "stars": 8.0,
+            "versions": 7.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7dvss9x1d59j5dbqen9mv7jn815823"
+    },
+    "brave-search": {
+        "display_name": "Brave Search",
+        "summary": "Web search and content extraction via Brave Search API. Use for searching documentation, facts, or any web content. Lightweight, no browser required.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:24 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 48292.0,
+            "installsAllTime": 701.0,
+            "installsCurrent": 661.0,
+            "stars": 171.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd71fd8g5z3qx06qnjpr9yfaed7ykyt7"
+    },
+    "elite-longterm-memory": {
+        "display_name": "Elite Longterm Memory",
+        "summary": "Ultimate AI agent memory system for Cursor, Claude, ChatGPT & Copilot. WAL protocol + vector search + git-notes + cloud backup. Never lose context again. Vibe-coding ready.",
+        "owner_handle": "nextfrontierbuilds",
+        "owner_display_name": "Next Frontier AI",
+        "created_date": "2026-02-02 16:37:23 UTC",
+        "version": "1.2.3",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 47204.0,
+            "installsAllTime": 526.0,
+            "installsCurrent": 493.0,
+            "stars": 182.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "ai",
+            "clawdbot",
+            "latest",
+            "long-term",
+            "memory",
+            "openclaw",
+            "persistence"
+        ],
+        "skill_id": "kd74k0rp0thkm7eg7h2tvam3ps80c0jy"
+    },
+    "excel-xlsx": {
+        "display_name": "Excel / XLSX",
+        "summary": "Create, inspect, and edit Microsoft Excel workbooks and XLSX files with reliable formulas, dates, types, formatting, recalculation, and template preservation...",
+        "owner_handle": "ivangdavila",
+        "owner_display_name": "Iván",
+        "created_date": "2026-02-10 01:20:33 UTC",
+        "version": "1.0.2",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 44958.0,
+            "installsAllTime": 535.0,
+            "installsCurrent": 516.0,
+            "stars": 177.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78f02qbnmg9ffcg1y9aynp2h80xvab"
+    },
+    "desktop-control": {
+        "display_name": "Desktop Control",
+        "summary": "Advanced desktop automation with mouse, keyboard, and screen control",
+        "owner_handle": "matagul",
+        "owner_display_name": "matagul",
+        "created_date": "2026-02-05 01:33:20 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 43913.0,
+            "installsAllTime": 412.0,
+            "installsCurrent": 383.0,
+            "stars": 284.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd72pn5cm6jsjmb9kpt3991yr980jbwp"
+    },
+    "stock-analysis": {
+        "display_name": "Stock Analysis",
+        "summary": "Analyze stocks and cryptocurrencies using Yahoo Finance data. Supports portfolio management, watchlists with alerts, dividend analysis, 8-dimension stock scoring, viral trend detection (Hot Scanner), and rumor/early signal detection. Use for stock analysis, portfolio tracking, earnings reactions, crypto monitoring, trending stocks, or finding rumors before they hit mainstream.",
+        "owner_handle": "udiedrichsen",
+        "owner_display_name": "udiedrichsen",
+        "created_date": "2026-01-14 09:46:15 UTC",
+        "version": "6.2.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 42304.0,
+            "installsAllTime": 506.0,
+            "installsCurrent": 476.0,
+            "stars": 205.0,
+            "versions": 10.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cwpp23jfes4w92xs5m9ebs17z6wgx"
+    },
+    "youtube-watcher": {
+        "display_name": "YouTube Watcher",
+        "summary": "Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it.",
+        "owner_handle": "michaelgathara",
+        "owner_display_name": "Michael Gathara",
+        "created_date": "2026-01-25 07:56:19 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 6.0,
+            "downloads": 40007.0,
+            "installsAllTime": 466.0,
+            "installsCurrent": 448.0,
+            "stars": 248.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7c5yzn3g2qxr3cp6gm3ba7a97zxb3h"
+    },
+    "video-frames": {
+        "display_name": "Video Frames",
+        "summary": "Extract frames or short clips from videos using ffmpeg.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:51 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 38707.0,
+            "installsAllTime": 1424.0,
+            "installsCurrent": 1387.0,
+            "stars": 98.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7b468xm2szmdtgbd6trwdap57ykzfb"
+    },
+    "humanize-ai-text": {
+        "display_name": "Humanize AI text",
+        "summary": "Humanize AI-generated text to bypass detection. This humanizer rewrites ChatGPT, Claude, and GPT content to sound natural and pass AI detectors like GPTZero,...",
+        "owner_handle": "moltbro",
+        "owner_display_name": "moltbro",
+        "created_date": "2026-02-02 01:16:46 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 8.0,
+            "downloads": 36570.0,
+            "installsAllTime": 291.0,
+            "installsCurrent": 275.0,
+            "stars": 159.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78xkvrmzt97nqzsxpvjrt2y180d8ba"
+    },
+    "slack": {
+        "display_name": "Slack",
+        "summary": "Use when you need to control Slack from Clawdbot via the slack tool, including reacting to messages or pinning/unpinning items in Slack channels or DMs.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:38 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 11.0,
+            "downloads": 36427.0,
+            "installsAllTime": 1297.0,
+            "installsCurrent": 1264.0,
+            "stars": 113.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7aqq9ye7nqa4wwecyvshc5bx7yjz2s"
+    },
+    "himalaya": {
+        "display_name": "Himalaya",
+        "summary": "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIME Meta Language).",
+        "owner_handle": "lamelas",
+        "owner_display_name": "André Lamelas",
+        "created_date": "2026-01-09 10:24:31 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 35505.0,
+            "installsAllTime": 1390.0,
+            "installsCurrent": 1355.0,
+            "stars": 60.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7fz8hxh207xd6haddp6tfmr17ywfcv"
+    },
+    "imap-smtp-email": {
+        "display_name": "imap-smtp-email",
+        "summary": "Read and send email via IMAP/SMTP. Check for new/unread messages, fetch content, search mailboxes, mark as read/unread, and send emails with attachments. Sup...",
+        "owner_handle": "gzlicanyi",
+        "owner_display_name": "gzlicanyi",
+        "created_date": "2026-01-29 09:54:15 UTC",
+        "version": "0.0.10",
+        "stats": {
+            "comments": 7.0,
+            "downloads": 34963.0,
+            "installsAllTime": 398.0,
+            "installsCurrent": 383.0,
+            "stars": 85.0,
+            "versions": 10.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78ty80arj53xb463kdtmawas804psv"
+    },
+    "news-summary": {
+        "display_name": "News Summary",
+        "summary": "This skill should be used when the user asks for news updates, daily briefings, or what's happening in the world. Fetches news from trusted international RSS feeds and can create voice summaries.",
+        "owner_handle": "joargp",
+        "owner_display_name": "joargp",
+        "created_date": "2026-01-06 08:55:41 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 34380.0,
+            "installsAllTime": 444.0,
+            "installsCurrent": 428.0,
+            "stars": 106.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd74cg4edpt6qvgdy2s6nh4ag57yq69d"
+    },
+    "clawddocs": {
+        "display_name": "Clawdbot Documentation Expert",
+        "summary": "Clawdbot documentation expert with decision tree navigation, search scripts, doc fetching, version tracking, and config snippets for all Clawdbot features",
+        "owner_handle": "nicholasspisak",
+        "owner_display_name": "NicholasSpisak",
+        "created_date": "2026-01-11 02:41:49 UTC",
+        "version": "1.2.2",
+        "stats": {
+            "comments": 7.0,
+            "downloads": 34348.0,
+            "installsAllTime": 529.0,
+            "installsCurrent": 496.0,
+            "stars": 276.0,
+            "versions": 5.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd709cbfahxmfwbpt1vyg90gsd7z1xvy"
+    },
+    "byterover": {
+        "display_name": "ByteRover",
+        "summary": "You MUST use this for gathering contexts before any work. This is a Knowledge management for AI agents. Use `brv` to store and retrieve project patterns, dec...",
+        "owner_handle": "byteroverinc",
+        "owner_display_name": "byteroverinc",
+        "created_date": "2026-01-27 10:13:25 UTC",
+        "version": "2.1.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 33974.0,
+            "installsAllTime": 239.0,
+            "installsCurrent": 218.0,
+            "stars": 108.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cjm4z2jwsjjhcv8yprcgez98012kw"
+    },
+    "browser-use": {
+        "display_name": "Browser Use",
+        "summary": "Automates browser interactions for web testing, form filling, screenshots, and data extraction. Use when the user needs to navigate websites, interact with w...",
+        "owner_handle": "shawnpana",
+        "owner_display_name": "shawn pana",
+        "created_date": "2026-01-26 00:43:51 UTC",
+        "version": "2.0.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 33942.0,
+            "installsAllTime": 405.0,
+            "installsCurrent": 387.0,
+            "stars": 79.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7fyw1dazcdmj5n6dnj53g06n7zyq3k"
+    },
+    "trello": {
+        "display_name": "Trello",
+        "summary": "Manage Trello boards, lists, and cards via the Trello REST API.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:49 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 9.0,
+            "downloads": 32568.0,
+            "installsAllTime": 1231.0,
+            "installsCurrent": 1193.0,
+            "stars": 120.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79hv7wxce5yjamakdh9wymmn7yjmzc"
+    },
+    "blogwatcher": {
+        "display_name": "Blogwatcher",
+        "summary": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:19 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 32324.0,
+            "installsAllTime": 1356.0,
+            "installsCurrent": 1318.0,
+            "stars": 56.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd73d0edt3p8ahfmjb76b2nerx7ykrxc"
+    },
+    "memory-setup": {
+        "display_name": "Memory Setup",
+        "summary": "Enable and configure Moltbot/Clawdbot memory search for persistent context. Use when setting up memory, fixing \"goldfish brain,\" or helping users configure memorySearch in their config. Covers MEMORY.md, daily logs, and vector search setup.",
+        "owner_handle": "jrbobbyhansen-pixel",
+        "owner_display_name": "jrbobbyhansen-pixel",
+        "created_date": "2026-01-28 02:40:45 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 32248.0,
+            "installsAllTime": 404.0,
+            "installsCurrent": 383.0,
+            "stars": 113.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7836a46c44y1ngba8ebxyvpd802b5j"
+    },
+    "markdown-converter": {
+        "display_name": "Markdown Converter",
+        "summary": "Convert documents and files to Markdown using markitdown. Use when converting PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx, .xls), HTML, CSV, JSON, XML, images (with EXIF/OCR), audio (with transcription), ZIP archives, YouTube URLs, or EPubs to Markdown format for LLM processing or text analysis.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-05 22:26:05 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 32170.0,
+            "installsAllTime": 398.0,
+            "installsCurrent": 380.0,
+            "stars": 152.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd723j589sxe19d6r3sa864kqd7ymrmn"
+    },
+    "browser-automation": {
+        "display_name": "Browser Automation",
+        "summary": "Automate web browser interactions using natural language via CLI commands. Use when the user asks to browse websites, navigate web pages, extract data from websites, take screenshots, fill forms, click buttons, or interact with web applications.",
+        "owner_handle": "peytoncasper",
+        "owner_display_name": "peytoncasper",
+        "created_date": "2026-02-05 15:58:11 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 32151.0,
+            "installsAllTime": 446.0,
+            "installsCurrent": 421.0,
+            "stars": 46.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd70sz7n38j2j18ag7xqh4dqa580jgjh"
+    },
+    "playwright-mcp": {
+        "display_name": "Playwright MCP",
+        "summary": "Browser automation via Playwright MCP server. Navigate websites, click elements, fill forms, extract data, take screenshots, and perform full browser automation workflows.",
+        "owner_handle": "spiceman161",
+        "owner_display_name": "Spiceman161",
+        "created_date": "2026-02-08 15:36:44 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 31623.0,
+            "installsAllTime": 470.0,
+            "installsCurrent": 446.0,
+            "stars": 111.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd75zw7429ze216e8bwzt1k2as80sccg"
+    },
+    "capability-evolver": {
+        "display_name": "Evolver",
+        "summary": "A self-evolution engine for AI agents. Analyzes runtime history to identify improvements and applies protocol-constrained evolution.",
+        "owner_handle": "autogame-17",
+        "owner_display_name": "autogame-17",
+        "created_date": "2026-02-14 09:22:53 UTC",
+        "version": "1.41.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 31257.0,
+            "installsAllTime": 579.0,
+            "installsCurrent": 540.0,
+            "stars": 89.0,
+            "versions": 30.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cwxhrnmymzvd2wcmyggqrm5814qjj"
+    },
+    "model-usage": {
+        "display_name": "Model Usage",
+        "summary": "Use CodexBar CLI local cost usage to summarize per-model usage for Codex or Claude, including the current (most recent) model or a full model breakdown. Trigger when asked for model-level usage/cost data from codexbar, or when you need a scriptable per-model summary from codexbar cost JSON.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-06 02:47:19 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 30427.0,
+            "installsAllTime": 1446.0,
+            "installsCurrent": 1408.0,
+            "stars": 100.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd70yt0ezqz5zwmtg6mfr5a2f17yq0ky"
+    },
+    "liang-tavily-search": {
+        "display_name": "Tavily Search",
+        "summary": "Web search using Tavily's LLM-optimized API. Returns relevant results with content snippets, scores, and metadata.",
+        "owner_handle": "matthew77",
+        "owner_display_name": "Liang",
+        "created_date": "2026-03-02 02:35:20 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 29623.0,
+            "installsAllTime": 231.0,
+            "installsCurrent": 224.0,
+            "stars": 79.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd760vv4zwst31k091kaxf2fsh824ygq"
+    },
+    "clawdhub": {
+        "display_name": "Clawdhub",
+        "summary": "Use the ClawdHub CLI to search, install, update, and publish agent skills from clawdhub.com. Use when you need to fetch new skills on the fly, sync installed skills to latest or a specific version, or publish new/updated skill folders with the npm-installed clawdhub CLI.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:28 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 28994.0,
+            "installsAllTime": 410.0,
+            "installsCurrent": 379.0,
+            "stars": 221.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79qg7e6gtpc140s549bk0x2s7yjrh9"
+    },
+    "proactive-agent-lite": {
+        "display_name": "Proactive Agent Lite",
+        "summary": "Transform AI agents from task-followers into proactive partners with memory architecture, reverse prompting, and self-healing patterns. Lightweight version f...",
+        "owner_handle": "bestrocky",
+        "owner_display_name": "BestRocky",
+        "created_date": "2026-02-28 03:44:52 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 28807.0,
+            "installsAllTime": 377.0,
+            "installsCurrent": 357.0,
+            "stars": 49.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd75kdbc9phg92p12av465mbf1820dqb"
+    },
+    "xiaohongshu-mcp": {
+        "display_name": "Xiaohongshu (小红书) Automation",
+        "summary": "Automate Xiaohongshu (RedNote) content operations using a Python client for the xiaohongshu-mcp server. Use for: (1) Publishing image, text, and video content, (2) Searching for notes and trends, (3) Analyzing post details and comments, (4) Managing user profiles and content feeds. Triggers: xiaohongshu automation, rednote content, publish to xiaohongshu, xiaohongshu search, social media management.",
+        "owner_handle": "borye",
+        "owner_display_name": "Borye",
+        "created_date": "2026-02-01 09:35:39 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 28768.0,
+            "installsAllTime": 291.0,
+            "installsCurrent": 274.0,
+            "stars": 140.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78hgzx8rcs2d8zjc273v9qz580bvtw"
+    },
+    "gmail": {
+        "display_name": "Gmail",
+        "summary": "Gmail API integration with managed OAuth. Read, send, and manage emails, threads, labels, and drafts. Use this skill when users want to interact with Gmail. For other third party apps, use the api-gateway skill (https://clawhub.ai/byungkyu/api-gateway).",
+        "owner_handle": "byungkyu",
+        "owner_display_name": "byungkyu",
+        "created_date": "2026-02-02 08:31:14 UTC",
+        "version": "1.0.6",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 28709.0,
+            "installsAllTime": 297.0,
+            "installsCurrent": 279.0,
+            "stars": 64.0,
+            "versions": 7.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7a1m28fztk146yypfxj8f9sh80ck0b"
+    },
+    "tavily": {
+        "display_name": "Tavily AI Search",
+        "summary": "AI-optimized web search using Tavily Search API. Use when you need comprehensive web research, current events lookup, domain-specific search, or AI-generated answer summaries. Tavily is optimized for LLM consumption with clean structured results, answer generation, and raw content extraction. Best for research tasks, news queries, fact-checking, and gathering authoritative sources.",
+        "owner_handle": "bert-builder",
+        "owner_display_name": "bert-builder",
+        "created_date": "2026-01-24 20:53:10 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 28209.0,
+            "installsAllTime": 489.0,
+            "installsCurrent": 456.0,
+            "stars": 29.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "ai",
+            "latest",
+            "search",
+            "web"
+        ],
+        "skill_id": "kd720w0qd6bbk96a5pvsghptt57ztvw5"
+    },
+    "powerpoint-pptx": {
+        "display_name": "Powerpoint / PPTX",
+        "summary": "Create, inspect, and edit Microsoft PowerPoint presentations and PPTX decks with reliable layouts, templates, placeholders, notes, charts, and visual QA. Use...",
+        "owner_handle": "ivangdavila",
+        "owner_display_name": "Iván",
+        "created_date": "2026-02-20 10:32:38 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 28103.0,
+            "installsAllTime": 301.0,
+            "installsCurrent": 288.0,
+            "stars": 86.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79b0zpa6er9c32v56ht47w0h81gdmh"
+    },
+    "discord": {
+        "display_name": "Discord",
+        "summary": "Use when you need to control Discord from Clawdbot via the discord tool: send messages, react, post or upload stickers, upload emojis, run polls, manage threads/pins/search, fetch permissions or member/role/channel info, or handle moderation actions in Discord DMs or channels.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:31 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 27809.0,
+            "installsAllTime": 1186.0,
+            "installsCurrent": 1157.0,
+            "stars": 58.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7e2wyr0whjbkwxxcraz7f5gs7ykpk2"
+    },
+    "superdesign": {
+        "display_name": "SuperDesign",
+        "summary": "Expert frontend design guidelines for creating beautiful, modern UIs. Use when building landing pages, dashboards, or any user interface.",
+        "owner_handle": "mpociot",
+        "owner_display_name": "mpociot",
+        "created_date": "2026-01-06 17:04:34 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 27714.0,
+            "installsAllTime": 281.0,
+            "installsCurrent": 267.0,
+            "stars": 147.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7a6tk0p3eg1jzwq62aw9c6cd7yqqeb"
+    },
+    "pdf": {
+        "display_name": "Pdf",
+        "summary": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+        "owner_handle": "awspace",
+        "owner_display_name": "awspace",
+        "created_date": "2026-01-31 08:24:15 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 27589.0,
+            "installsAllTime": 613.0,
+            "installsCurrent": 596.0,
+            "stars": 43.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd74n44stcpmhfvqe02yj7r6ms808nvm"
+    },
+    "apple-notes": {
+        "display_name": "Apple Notes",
+        "summary": "Manage Apple Notes via the `memo` CLI on macOS (create, view, edit, delete, search, move, and export notes). Use when a user asks Clawdbot to add a note, list notes, search notes, or manage note folders.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:14 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 27473.0,
+            "installsAllTime": 1229.0,
+            "installsCurrent": 1199.0,
+            "stars": 43.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd79zyh1kxr5qm4459p0etvy2h7yjcxr"
+    },
+    "gemini": {
+        "display_name": "Gemini",
+        "summary": "Gemini CLI for one-shot Q&A, summaries, and generation.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:48:36 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 27308.0,
+            "installsAllTime": 1327.0,
+            "installsCurrent": 1292.0,
+            "stars": 47.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd72ftyq71gwkwg95bx17mavz97ykh35"
+    },
+    "session-logs": {
+        "display_name": "Session-logs",
+        "summary": "Search and analyze your own session logs (older/parent conversations) using jq.",
+        "owner_handle": "guogang1024",
+        "owner_display_name": "guogang1024",
+        "created_date": "2026-02-03 16:33:47 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 27263.0,
+            "installsAllTime": 1265.0,
+            "installsCurrent": 1230.0,
+            "stars": 22.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7assgx2j7jfrms80x8ytdhvs80edc0"
+    },
+    "xiucheng-self-improving-agent": {
+        "display_name": "Self Improving Agent",
+        "summary": "Self-improving agent system that analyzes conversation quality, identifies improvement opportunities, and continuously optimizes response strategies.",
+        "owner_handle": "xiucheng",
+        "owner_display_name": "xiucheng",
+        "created_date": "2026-03-06 23:43:46 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 26776.0,
+            "installsAllTime": 210.0,
+            "installsCurrent": 197.0,
+            "stars": 44.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd76p8gkm8av7zj6bqexh6965n82dazt"
+    },
+    "skill-finder-cn": {
+        "display_name": "Skill Finder Cn",
+        "summary": "Skill 查找器 | Skill Finder. 帮助发现和安装 ClawHub Skills | Discover and install ClawHub Skills. 回答'有什么技能可以X'、'找一个技能' | Answers 'what skill can X', 'find a skill'. 触发...",
+        "owner_handle": "guohongbin-git",
+        "owner_display_name": "Guohongbin",
+        "created_date": "2026-02-17 10:16:29 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 26691.0,
+            "installsAllTime": 239.0,
+            "installsCurrent": 222.0,
+            "stars": 84.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "chinese",
+            "finder",
+            "latest",
+            "search"
+        ],
+        "skill_id": "kd7e8btm839dy7ak8zmvh3m7rn81bp1m"
+    },
+    "qmd": {
+        "display_name": "Qmd",
+        "summary": "Local search/indexing CLI (BM25 + vectors + rerank) with MCP mode.",
+        "owner_handle": "steipete",
+        "owner_display_name": "Peter Steinberger",
+        "created_date": "2026-01-04 16:49:34 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 5.0,
+            "downloads": 26505.0,
+            "installsAllTime": 362.0,
+            "installsCurrent": 340.0,
+            "stars": 95.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd74njmpb830y6v2ezk1drafgx7ykr80"
+    },
+    "stock-watcher": {
+        "display_name": "Stock Watcher",
+        "summary": "Manage and monitor a personal stock watchlist with support for adding, removing, listing stocks, and summarizing their recent performance using data from 10jqka.com.cn. Use when the user wants to track specific stocks, get performance summaries, or manage their watchlist.",
+        "owner_handle": "robin797860",
+        "owner_display_name": "Robin797860",
+        "created_date": "2026-02-06 03:25:43 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 25315.0,
+            "installsAllTime": 350.0,
+            "installsCurrent": 338.0,
+            "stars": 77.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7ccpk0jmcp0pzqeyp0ttey7s80np5q"
+    },
+    "docker-essentials": {
+        "display_name": "Docker Essentials",
+        "summary": "Essential Docker commands and workflows for container management, image operations, and debugging.",
+        "owner_handle": "arnarsson",
+        "owner_display_name": "Arnarsson",
+        "created_date": "2026-01-29 13:07:20 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 25267.0,
+            "installsAllTime": 280.0,
+            "installsCurrent": 269.0,
+            "stars": 29.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cbqjkpa7z52yvhh8s1f2k0h804jpj"
+    },
+    "agentmail": {
+        "display_name": "AgentMail",
+        "summary": "API-first email platform designed for AI agents. Create and manage dedicated email inboxes, send and receive emails programmatically, and handle email-based workflows with webhooks and real-time events. Use when you need to set up agent email identity, send emails from agents, handle incoming email workflows, or replace traditional email providers like Gmail with agent-friendly infrastructure.",
+        "owner_handle": "adboio",
+        "owner_display_name": "adboio",
+        "created_date": "2026-01-25 05:42:40 UTC",
+        "version": "1.1.1",
+        "stats": {
+            "comments": 2.0,
+            "downloads": 24761.0,
+            "installsAllTime": 307.0,
+            "installsCurrent": 286.0,
+            "stars": 52.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd70nngfsaftpxymdjhhs6wwjh7zwym5"
+    },
+    "find-skills-skill": {
+        "display_name": "Find Skills Skill",
+        "summary": "Search and discover OpenClaw skills from various sources. Use when: user wants to find available skills, search for specific functionality, or discover new s...",
+        "owner_handle": "fangkelvin",
+        "owner_display_name": "fangkelvin",
+        "created_date": "2026-03-01 16:35:42 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 24647.0,
+            "installsAllTime": 191.0,
+            "installsCurrent": 184.0,
+            "stars": 60.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cjktzzxc179wk2jn75y71mh8228g7"
+    },
+    "web-search-exa": {
+        "display_name": "Web Search by Exa",
+        "summary": "Neural web search, content extraction, company and people research, code search, and deep research via the Exa MCP server. Use when you need to: (1) search t...",
+        "owner_handle": "theishangoswami",
+        "owner_display_name": "Ishan Goswami",
+        "created_date": "2026-01-26 16:45:04 UTC",
+        "version": "2.0.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 24391.0,
+            "installsAllTime": 46.0,
+            "installsCurrent": 46.0,
+            "stars": 42.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7dm1vw870vzd789683qt5gc57zzzj5"
+    },
+    "caldav-calendar": {
+        "display_name": "Caldav Calendar",
+        "summary": "Sync and query CalDAV calendars (iCloud, Google, Fastmail, Nextcloud, etc.) using vdirsyncer + khal. Works on Linux.",
+        "owner_handle": "asleep123",
+        "owner_display_name": "Asleep",
+        "created_date": "2026-01-05 02:34:15 UTC",
+        "version": "1.0.1",
+        "stats": {
+            "comments": 19.0,
+            "downloads": 24165.0,
+            "installsAllTime": 240.0,
+            "installsCurrent": 234.0,
+            "stars": 192.0,
+            "versions": 2.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd71z6ryt8kbf3z1g7cdaag5t97ymj2x"
+    },
+    "playwright": {
+        "display_name": "Playwright (Automation + MCP + Scraper)",
+        "summary": "Browser automation via Playwright MCP. Navigate websites, click elements, fill forms, take screenshots, extract data, and debug real browser workflows. Use w...",
+        "owner_handle": "ivangdavila",
+        "owner_display_name": "Iván",
+        "created_date": "2026-02-13 11:29:44 UTC",
+        "version": "1.0.3",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 24129.0,
+            "installsAllTime": 331.0,
+            "installsCurrent": 315.0,
+            "stars": 79.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd78xyenevfb7gged4gf184cyn8125r2"
+    },
+    "ai-ppt-generator": {
+        "display_name": "Baidu Wenku AIPPT",
+        "summary": "Generate PPT with Baidu Wenku AI. Smart template selection based on content.",
+        "owner_handle": "ide-rea",
+        "owner_display_name": "ide-rea",
+        "created_date": "2026-02-07 17:07:38 UTC",
+        "version": "1.1.5",
+        "stats": {
+            "comments": 3.0,
+            "downloads": 23980.0,
+            "installsAllTime": 208.0,
+            "installsCurrent": 188.0,
+            "stars": 51.0,
+            "versions": 14.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd73adgpgb1dbn4evkm4v16nvh80q1ge"
+    },
+    "youtube-api-skill": {
+        "display_name": "YouTube",
+        "summary": "YouTube Data API integration with managed OAuth. Search videos, manage playlists, access channel data, and interact with comments. Use this skill when users want to interact with YouTube. For other third party apps, use the api-gateway skill (https://clawhub.ai/byungkyu/api-gateway).",
+        "owner_handle": "byungkyu",
+        "owner_display_name": "byungkyu",
+        "created_date": "2026-02-04 08:26:21 UTC",
+        "version": "1.0.3",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 23856.0,
+            "installsAllTime": 98.0,
+            "installsCurrent": 92.0,
+            "stars": 130.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7ac4s7egcre3jyddgh4mj01n80g7hy"
+    },
+    "stock-market-pro": {
+        "display_name": "Stock Market Pro",
+        "summary": "Yahoo Finance (yfinance) powered stock analysis skill: quotes, fundamentals, ASCII trends, high-resolution charts (RSI/MACD/BB/VWAP/ATR), plus optional web a...",
+        "owner_handle": "kys42",
+        "owner_display_name": "ClawMaker",
+        "created_date": "2026-01-29 07:23:04 UTC",
+        "version": "1.2.12",
+        "stats": {
+            "comments": 9.0,
+            "downloads": 23804.0,
+            "installsAllTime": 227.0,
+            "installsCurrent": 214.0,
+            "stars": 142.0,
+            "versions": 4.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7feaqfx57t7kbpp7vkxkjw9s805hvx"
+    },
+    "web-search": {
+        "display_name": "Web Search",
+        "summary": "This skill should be used when users need to search the web for information, find current content, look up news articles, search for images, or find videos. It uses DuckDuckGo's search API to return results in clean, formatted output (text, markdown, or JSON). Use for research, fact-checking, finding recent information, or gathering web resources.",
+        "owner_handle": "billyutw",
+        "owner_display_name": "billyutw",
+        "created_date": "2026-01-29 07:57:34 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 1.0,
+            "downloads": 23787.0,
+            "installsAllTime": 463.0,
+            "installsCurrent": 442.0,
+            "stars": 27.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7car3k6zj36bgjmcsxmyb01x805ydd"
+    },
+    "n8n-workflow-automation": {
+        "display_name": "n8n workflow automation",
+        "summary": "Designs and outputs n8n workflow JSON with robust triggers, idempotency, error handling, logging, retries, and human-in-the-loop review queues. Use when you need an auditable automation that won’t silently fail.",
+        "owner_handle": "kowl64",
+        "owner_display_name": "KOwl64",
+        "created_date": "2026-01-17 15:38:41 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 23742.0,
+            "installsAllTime": 262.0,
+            "installsCurrent": 251.0,
+            "stars": 108.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7d9t83pt6xwgwwwcs575f61s7zdqta"
+    },
+    "ui-ux-pro-max": {
+        "display_name": "UI/UX Pro Max",
+        "summary": "UI/UX design intelligence and implementation guidance for building polished interfaces. Use when the user asks for UI design, UX flows, information architecture, visual style direction, design systems/tokens, component specs, copy/microcopy, accessibility, or to generate/critique/refine frontend UI (HTML/CSS/JS, React, Next.js, Vue, Svelte, Tailwind). Includes workflows for (1) generating new UI layouts and styling, (2) improving existing UI/UX, (3) producing design-system tokens and component guidelines, and (4) turning UX recommendations into concrete code changes.",
+        "owner_handle": "xobi667",
+        "owner_display_name": "xobi667",
+        "created_date": "2026-01-28 16:02:39 UTC",
+        "version": "0.1.0",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 23597.0,
+            "installsAllTime": 292.0,
+            "installsCurrent": 279.0,
+            "stars": 114.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7cm1ckpb7zcdnh2fmf2gbfxd8030d7"
+    },
+    "deep-research-pro": {
+        "display_name": "Deep Research Pro",
+        "summary": "Multi-source deep research agent. Searches the web, synthesizes findings, and delivers cited reports. No API keys required.",
+        "owner_handle": "parags",
+        "owner_display_name": "parags",
+        "created_date": "2026-02-05 14:51:40 UTC",
+        "version": "1.0.2",
+        "stats": {
+            "comments": 0.0,
+            "downloads": 23450.0,
+            "installsAllTime": 303.0,
+            "installsCurrent": 287.0,
+            "stars": 61.0,
+            "versions": 3.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7erx03e8m62jff7nr3ag5d5180kksb"
+    },
+    "ddg-web-search": {
+        "display_name": "DuckDuckGo Web Search",
+        "summary": "Web search without an API key using DuckDuckGo Lite via web_fetch. Use as a fallback when web_search fails with missing_brave_api_key error, or whenever you...",
+        "owner_handle": "jakelin",
+        "owner_display_name": "JakeLin",
+        "created_date": "2026-02-15 09:34:14 UTC",
+        "version": "1.0.0",
+        "stats": {
+            "comments": 4.0,
+            "downloads": 23227.0,
+            "installsAllTime": 259.0,
+            "installsCurrent": 242.0,
+            "stars": 21.0,
+            "versions": 1.0
+        },
+        "tags": [
+            "latest"
+        ],
+        "skill_id": "kd7ctbfmg3b8pym644agb94kwx816x3v"
+    }
+}

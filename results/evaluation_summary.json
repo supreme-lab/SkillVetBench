@@ -1,0 +1,63 @@
+{
+  "total_skills": 100,
+  "cvss": {
+    "mean": 2.818,
+    "median": 4.1,
+    "std": 2.229,
+    "distribution": {
+      "NONE": 0,
+      "LOW": 23,
+      "MEDIUM": 50,
+      "HIGH": 5,
+      "CRITICAL": 0
+    }
+  },
+  "sars": {
+    "mean": 4.982,
+    "median": 5.4,
+    "std": 2.009,
+    "distribution": {
+      "NONE": 0,
+      "LOW": 22,
+      "MEDIUM": 72,
+      "HIGH": 5,
+      "CRITICAL": 1
+    },
+    "dimension_means": {
+      "sars_ifr": 1.81,
+      "sars_dg": 1.21,
+      "sars_ai": 1.47,
+      "sars_br": 1.08,
+      "sars_ca": 1.82
+    }
+  },
+  "delta_sars_minus_cvss": {
+    "mean": 2.164,
+    "median": 1.9,
+    "pct_sars_higher": 100.0,
+    "pct_cvss_higher": 0.0,
+    "pct_equal": 0.0
+  },
+  "openclaw": {
+    "distribution": {
+      "Benign": 70,
+      "Suspicious": 30,
+      "Malicious": 0,
+      "Unknown": 0
+    },
+    "coverage_pct": 100.0
+  },
+  "virustotal": {
+    "distribution": {
+      "Benign": 83,
+      "Suspicious": 17,
+      "Malicious": 0,
+      "Unknown": 0
+    },
+    "coverage_pct": 100.0
+  },
+  "key_finding": {
+    "vt_benign_but_sars_high_critical": 3,
+    "pct": 3.0
+  }
+}

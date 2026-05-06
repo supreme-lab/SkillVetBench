@@ -1,0 +1,3 @@
+auto-updater-sxdg2
+poly
+update
