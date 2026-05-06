@@ -1,16 +1,7 @@
----
-title: AgentAIBench Skill Security Evaluator
-emoji: 🔐
-colorFrom: indigo
-colorTo: green
-sdk: docker
-app_port: 7860
-pinned: false
----
 
 # 🔐 AgentAIBench — Skill Security Evaluator
 
-A dual-metric security evaluation leaderboard for agentic AI skills, developed by the **SUPREME Lab** at the **University of Texas at El Paso (UTEP)**.
+A dual-metric security evaluation leaderboard for agentic AI skills.
 
 Part of the **AgentAIBench** benchmark framework for evaluating the safety and security of agentic AI tool-use skills sourced from [ClawHub](https://clawhub.ai) / [OpenClaw](https://openclaw.ai).
 
@@ -42,19 +33,6 @@ Every skill is evaluated by an LLM that scores both metrics simultaneously, prod
 
 ---
 
-## Why Two Metrics?
-
-| | CVSS v4.0 | SARS |
-|---|---|---|
-| **Designed for** | Software vulnerabilities | Agentic AI skill files |
-| **Attack model** | Exploit a software bug | Manipulate LLM interpretation |
-| **Scores** | Exploitability + System Impact | Agentic-specific risk dimensions |
-| **Standard** | FIRST.Org international standard | SUPREME Lab research metric |
-| **Best for** | Comparison with CVE databases | Understanding agentic-native risk |
-
-CVSS was designed to score bugs in software systems. It works well for measuring the impact of a discovered vulnerability, but it does not capture several properties that are unique to agentic skill files: how susceptible the skill is to prompt injection, whether its actions can be undone, or how much more dangerous it becomes when combined with other skills in an agent pipeline. SARS fills that gap.
-
----
 
 ## SARS — Skill Agentic Risk Score
 
@@ -360,36 +338,6 @@ export ANTHROPIC_API_KEY=sk-ant-...
 export HF_TOKEN=hf_...
 export OPENAI_API_KEY=sk-...
 ```
-
----
-
-## Research
-
-This tool is part of ongoing research on agentic AI security at the **SUPREME Lab** (Security and Privacy-Enhanced Machine Learning), University of Texas at El Paso.
-
-**Related papers:**
-- *AgentFence: Benchmarking Prompt Injection Defenses in Agentic Systems* — [arXiv:2602.07652](https://arxiv.org/abs/2602.07652)
-- *ChainFuzzer: Fuzzing LLM Tool-Call Chains* — [arXiv:2603.12614](https://arxiv.org/abs/2603.12614)
-- *FW-SSR: Fine-Tuning Vulnerabilities in Agentic Guards*
-
-**Lab:** [SUPREME Lab, UTEP](https://cs.utep.edu)
-
----
-
-## Citation
-
-If you use AgentAIBench, the SARS metric, or this evaluator in your research, please cite:
-
-```bibtex
-@misc{agentaibench2025,
-  title   = {AgentAIBench: Benchmarking Security of Agentic AI Skills},
-  author  = {Hossain, Ismail and others},
-  year    = {2025},
-  note    = {SUPREME Lab, University of Texas at El Paso},
-  url     = {https://huggingface.co/spaces/ismail-h/AgentSkillBench}
-}
-```
-
 ---
 
 ## License
@@ -398,5 +346,3 @@ MIT License — see `LICENSE` for details.
 
 CVSS v4.0 scoring is implemented per the [FIRST specification](https://www.first.org/cvss/v4.0/specification-document).
 CVSS is a registered trademark of FIRST.Org, Inc. and is used by permission.
-
-SARS (Skill Agentic Risk Score) is an original metric developed by the SUPREME Lab at UTEP.
