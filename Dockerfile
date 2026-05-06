@@ -12,11 +12,10 @@ COPY sars.py .
 COPY storage.py .
 COPY evaluator.py .
 COPY llm_client.py .
-COPY main.py .
 COPY cvss4_0.py .
 COPY prompts_cvss4_0.py .
 COPY prompts_clawhub.py .
-COPY clawhub_fetch.py .
+COPY clawhub/clawhub_fetch.py .
 COPY templates.html .
 COPY metrics.json .
 
@@ -24,6 +23,8 @@ COPY metrics.json .
 COPY data/ ./data/
 COPY reports/ ./reports/
 COPY skills/ ./skills/
+COPY eval/ ./eval/
+COPY clawhub/ ./clawhub/
 
 # Ensure reports dir is writable (HF runs as non-root)
 RUN mkdir -p reports && chmod -R 777 reports
