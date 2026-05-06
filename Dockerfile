@@ -14,9 +14,7 @@ COPY evaluator.py .
 COPY llm_client.py .
 COPY main.py .
 COPY cvss4_0.py .
-COPY cvss3_5.py .
 COPY prompts_cvss4_0.py .
-COPY prompts_cvss3_5.py .
 COPY prompts_clawhub.py .
 COPY clawhub_fetch.py .
 COPY templates.html .
