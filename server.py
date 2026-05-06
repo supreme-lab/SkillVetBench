@@ -89,6 +89,9 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app):
     # ── Startup ──────────────────────────────────────────────────────
+    global _hf_local_sem, _api_sem
+    _hf_local_sem = asyncio.Semaphore(1)   # hf_local: strictly one job at a time
+    _api_sem      = asyncio.Semaphore(3)   # API backends: up to 3 concurrent jobs
     logger.info("━" * 60)
     logger.info("  AgentSkillBench Skill Security Evaluator — READY")
     logger.info("━" * 60)
@@ -116,6 +119,25 @@ jobs:        dict      = {}
 # We cache the LLMClient after first creation so the model is loaded only
 # once and reused across all subsequent evaluate-all jobs.
 _llm_cache:  dict      = {}
+
+# ── Concurrency control ───────────────────────────────────────────────────
+# hf_local: the transformers pipeline is NOT thread-safe under concurrent use.
+# Two jobs running simultaneously would share the same pipeline object → race
+# condition, corrupted outputs, or GPU OOM crash.
+# Semaphore(1) forces jobs to run one-at-a-time for hf_local.
+#
+# API backends (Anthropic, OpenAI, hf_api): safe to run in parallel.
+# Semaphore(3) allows 3 concurrent jobs — enough to keep the network busy
+# without hammering rate limits.
+_hf_local_sem: asyncio.Semaphore = None   # type: ignore  (set in lifespan)
+_api_sem:      asyncio.Semaphore = None   # type: ignore  (set in lifespan)
+
+
+def _get_semaphore(api_type: str) -> asyncio.Semaphore:
+    """Return the correct semaphore for the given backend."""
+    if api_type == "hf_local":
+        return _hf_local_sem
+    return _api_sem
 
 
 def _get_or_create_llm(api_type: str, model: str, api_key: str) -> "LLMClient":
@@ -579,53 +601,65 @@ async def _run_evaluation(
     slug: str = "",
 ):
     job = jobs[job_id]
-    job["status"]     = "running"
-    job["started_at"] = datetime.now().isoformat()
+    sem = _get_semaphore(api_type)
 
+    # Acquire slot before starting.
+    # hf_local: semaphore(1) — strictly sequential, one job at a time.
+    #           Guarantees the GPU pipeline is never accessed concurrently.
+    # API backends: semaphore(3) — up to 3 parallel jobs.
     display_name = (path.name if path else filename) or slug
-    logger.info(f"[Job {job_id}] ▶ Start  : {display_name}")
-    logger.info(f"[Job {job_id}]   Source : {'disk' if path else 'ClawHub download ('+slug+')'}")
-    logger.info(f"[Job {job_id}]   Backend: {api_type}  model={model or '(default)'}")
+    if api_type == "hf_local":
+        logger.info(f"[Job {job_id}] ⏳ Queued (hf_local slot): {display_name}")
 
-    try:
-        loop = asyncio.get_event_loop()
+    async with sem:
+        job["status"]     = "running"
+        job["started_at"] = datetime.now().isoformat()
 
-        if path and path.exists():
-            # ── Evaluate from disk ────────────────────────────────────────
-            report = await loop.run_in_executor(
-                None, lambda: _do_evaluate(path, model, api_type, api_key)
-            )
-            report_filename = path.name
-        else:
-            # ── Download zip from ClawHub, evaluate in memory ─────────────
-            logger.info(f"[Job {job_id}]   Downloading zip for slug='{slug}'")
-            from clawhub_fetch import fetch_skill_from_zip
-            content = await loop.run_in_executor(
-                None, lambda: fetch_skill_from_zip(slug)
-            )
-            if not content:
-                raise ValueError(
-                    f"Could not download SKILL.md for slug '{slug}'. "
-                    "Check the slug spelling and your internet connection."
+        logger.info(f"[Job {job_id}] ▶ Start  : {display_name}")
+        logger.info(f"[Job {job_id}]   Source : {'disk' if path else 'ClawHub download ('+slug+')'}")
+        logger.info(f"[Job {job_id}]   Backend: {api_type}  model={model or '(default)'}")
+
+        try:
+            loop = asyncio.get_event_loop()
+
+            if path and path.exists():
+                # ── Evaluate from disk ────────────────────────────────────
+                report = await loop.run_in_executor(
+                    None, lambda: _do_evaluate(path, model, api_type, api_key)
                 )
-            logger.info(f"[Job {job_id}]   SKILL.md: {len(content):,} chars")
-            report = await loop.run_in_executor(
-                None, lambda: _do_evaluate_content(content, filename or f"{slug}.md", model, api_type, api_key)
-            )
-            report_filename = filename or f"{slug}.md"
+                report_filename = path.name
+            else:
+                # ── Download zip from ClawHub, evaluate in memory ─────────
+                logger.info(f"[Job {job_id}]   Downloading zip for slug='{slug}'")
+                from clawhub_fetch import fetch_skill_from_zip
+                content = await loop.run_in_executor(
+                    None, lambda: fetch_skill_from_zip(slug)
+                )
+                if not content:
+                    raise ValueError(
+                        f"Could not download SKILL.md for slug '{slug}'. "
+                        "Check the slug spelling and your internet connection."
+                    )
+                logger.info(f"[Job {job_id}]   SKILL.md: {len(content):,} chars")
+                report = await loop.run_in_executor(
+                    None, lambda: _do_evaluate_content(
+                        content, filename or f"{slug}.md", model, api_type, api_key
+                    )
+                )
+                report_filename = filename or f"{slug}.md"
 
-        effective_model = model or _default_model(api_type)
-        save_path = storage.save(report, model_name=effective_model)
-        job["status"]     = "done"
-        job["done_at"]    = datetime.now().isoformat()
-        job["result_key"] = f"{_slug(report_filename)}::{_slug(effective_model)}"
-        logger.info(f"[Job {job_id}] ✅ Done  : {save_path.name}")
+            effective_model = model or _default_model(api_type)
+            save_path = storage.save(report, model_name=effective_model)
+            job["status"]     = "done"
+            job["done_at"]    = datetime.now().isoformat()
+            job["result_key"] = f"{_slug(report_filename)}::{_slug(effective_model)}"
+            logger.info(f"[Job {job_id}] ✅ Done  : {save_path.name}")
 
-    except Exception as exc:
-        job["status"]  = "error"
-        job["error"]   = str(exc)
-        job["done_at"] = datetime.now().isoformat()
-        logger.error(f"[Job {job_id}] ❌ Error : {exc}", exc_info=True)
+        except Exception as exc:
+            job["status"]  = "error"
+            job["error"]   = str(exc)
+            job["done_at"] = datetime.now().isoformat()
+            logger.error(f"[Job {job_id}] ❌ Error : {exc}", exc_info=True)
 
 
 def _do_evaluate_content(content: str, filename: str, model: str, api_type: str, api_key: str):
@@ -752,15 +786,18 @@ def main():
     parser.add_argument("--port",  "-p", default=8000, type=int)
     parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
     parser.add_argument("--skills-dir",  default="remote",   metavar="DIR")
-    parser.add_argument("--api",         default="hf_api",
+    parser.add_argument("--api",         default="hf_local",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])
     parser.add_argument("--model",  default=None)
     parser.add_argument("--key",    default=None)
     parser.add_argument("--base-url", default=None)
     parser.add_argument("--quantize",   default="4bit", choices=["4bit","8bit"])
     parser.add_argument("--device",     default="cuda", choices=["cuda","mps","cpu"])
-    parser.add_argument("--max-tokens", default=4096, type=int,
-                        help="Max LLM output tokens. Increase to 8192+ for local models.")
+    parser.add_argument("--max-tokens", default=6000, type=int,
+                        help="Max new tokens for LLM output (default: 6000). "
+                             "The CVSS+SARS system prompt alone is ~3,636 tokens, "
+                             "so 4096 is too small for hf_local models on medium skills. "
+                             "Use 6000 for 8B models, 4096 is fine for API backends.")
     parser.add_argument("--log-file",   default="logs/server.log", metavar="FILE",
                         help="Log file path (default: logs/server.log).")
     args = parser.parse_args()
