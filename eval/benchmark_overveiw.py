@@ -262,8 +262,8 @@ def build_latex(model_names, model_labels, df, metric_rows, caption, label):
  
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--input",   "-i", default="/home/ihossain/ISMAIL/SUPREMELAB/AgentSkillBench/data/agentskillbench_full_leaderboard.csv")
-    p.add_argument("--output",  "-o", default="/home/ihossain/ISMAIL/SUPREMELAB/AgentSkillBench/results/dataset_overview_table.tex")
+    p.add_argument("--input",   "-i", default="/data/agentskillbench_full_leaderboard.csv")
+    p.add_argument("--output",  "-o", default="/results/dataset_overview_table.tex")
     p.add_argument("--caption", default="Model-wise Dataset Overview across LLM Evaluators on AgentSkillBench.")
     p.add_argument("--label",   default="tab:dataset_overview")
     return p.parse_args()

@@ -6,7 +6,7 @@ Generates all tables and figures for the §Results section of the paper.
 Usage
 -----
   # Single model directory (all *.json files inside)
-  python generate_results.py --input /home/ihossain/ISMAIL/SUPREMELAB/AgentSkillBench/reports/Qwen_Qwen2.5-32B-Instruct/
+  python generate_results.py --input /reports/Qwen_Qwen2.5-32B-Instruct/
 
   # Multiple model directories combined
   python generate_results.py --input /path/to/reports/ModelA/ /path/to/reports/ModelB/
