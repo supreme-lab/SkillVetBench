@@ -1,9 +1,9 @@
 
-# 🔐 AgentAIBench — Skill Security Evaluator
+# 🔐 SkillVetBench — Skill Security Evaluator
 
 A dual-metric security evaluation leaderboard for agentic AI skills.
 
-Part of the **AgentAIBench** benchmark framework for evaluating the safety and security of agentic AI tool-use skills sourced from [ClawHub](https://clawhub.ai) / [OpenClaw](https://openclaw.ai).
+Part of the **SkillVetBench** benchmark framework for evaluating the safety and security of agentic AI tool-use skills sourced from [ClawHub](https://clawhub.ai) / [OpenClaw](https://openclaw.ai).
 
 ---
 
