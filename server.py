@@ -278,7 +278,7 @@ async def api_evaluate_all(body: dict, background_tasks: BackgroundTasks):
     Skips any skill already evaluated with the same model.
     The hf_local model is loaded once and reused across all jobs (via _llm_cache).
     """
-    from clawhub_fetch import list_slugs_from_meta
+    from clawhub.clawhub_fetch import list_slugs_from_meta
 
     model    = body.get("model",    llm_config.get("model", ""))
     api_type = body.get("api_type", llm_config.get("api_type", "anthropic"))
@@ -416,7 +416,7 @@ def _hf_test_call(api_key: str, model: str) -> dict:
 
 @app.get("/api/skill-files")
 def api_skill_files():
-    from clawhub_fetch import list_slugs_from_meta
+    from clawhub.clawhub_fetch import list_slugs_from_meta
 
     logger.info("skills_dir: " + (str(skills_dir) if skills_dir else "None"))
 
@@ -538,7 +538,7 @@ async def api_clawhub_official(slug: str):
     and tries multiple API endpoints + HTML scraping as fallback.
     """
     import asyncio
-    from clawhub_fetch import fetch_official_evaluation, get_skill_stats
+    from clawhub.clawhub_fetch import fetch_official_evaluation, get_skill_stats
 
     logger.info(f"ClawHub official evaluation requested: {slug}")
 
@@ -631,7 +631,7 @@ async def _run_evaluation(
             else:
                 # ── Download zip from ClawHub, evaluate in memory ─────────
                 logger.info(f"[Job {job_id}]   Downloading zip for slug='{slug}'")
-                from clawhub_fetch import fetch_skill_from_zip
+                from clawhub.clawhub_fetch import fetch_skill_from_zip
                 content = await loop.run_in_executor(
                     None, lambda: fetch_skill_from_zip(slug)
                 )

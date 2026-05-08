@@ -117,7 +117,7 @@ tr{animation:fadein .22s ease both}
 <header>
   <div class="logo">
     <div class="logo-icon">🔐</div>
-    <div><h1>Skill Security Evaluator</h1><p>AgentAIBench · UTEP SUPREME Lab</p></div>
+    <div><h1>SkillVetBench</h1><p>Skill Security Evaluator</p></div>
   </div>
   <div class="nav"><a href="/">Leaderboard</a></div>
 </header>
@@ -392,7 +392,156 @@ async function deleteRow(e,skillSlug,modelSlug){
   else{tr.classList.remove('row-deleting');const d=await r.json().catch(()=>({}));alert('Delete failed: '+(d.detail||r.status));}
 }
 
-const HF_MODELS={'Llama 3.1/3.2':[{id:'meta-llama/Meta-Llama-3.1-8B-Instruct',size:'8B',note:'Best 8B instruction model'},{id:'meta-llama/Meta-Llama-3.1-70B-Instruct',size:'70B',note:'Top-tier open-source reasoning'},{id:'meta-llama/Llama-3.2-3B-Instruct',size:'3B',note:'Ultra-lightweight'},{id:'meta-llama/Llama-3.2-11B-Vision-Instruct',size:'11B',note:'Multimodal'}],'Qwen 2.5':[{id:'Qwen/Qwen2.5-7B-Instruct',size:'7B',note:'Excellent JSON output'},{id:'Qwen/Qwen2.5-14B-Instruct',size:'14B',note:'Strong security reasoning'},{id:'Qwen/Qwen2.5-32B-Instruct',size:'32B',note:'Near-frontier quality'},{id:'Qwen/Qwen2.5-72B-Instruct',size:'72B',note:'Best Qwen flagship'},{id:'Qwen/QwQ-32B',size:'32B',note:'Reasoning / chain-of-thought'}],'Mistral':[{id:'mistralai/Mistral-7B-Instruct-v0.3',size:'7B',note:'Fast, reliable JSON'},{id:'mistralai/Mixtral-8x7B-Instruct-v0.1',size:'8×7B',note:'MoE strong reasoning'},{id:'mistralai/Mistral-Large-Instruct-2407',size:'123B',note:'Frontier quality'}],'Phi / Gemma':[{id:'microsoft/Phi-3.5-mini-instruct',size:'3.8B',note:'CPU-friendly'},{id:'microsoft/phi-4',size:'14B',note:'Latest Phi'},{id:'google/gemma-2-9b-it',size:'9B',note:'Best Gemma 9B'},{id:'google/gemma-2-27b-it',size:'27B',note:'Google flagship open'}],'DeepSeek':[{id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B',size:'14B',note:'R1 reasoning distilled'},{id:'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',size:'32B',note:'Best R1 distill'}],'Other':[{id:'NousResearch/Hermes-3-Llama-3.1-8B',size:'8B',note:'Structured output & tool use'},{id:'CohereForAI/c4ai-command-r-plus',size:'104B',note:'Retrieval-optimised'}]};
+const HF_MODELS = {
+  'Llama 3.1/3.2/4': [
+    {
+      id: 'meta-llama/Meta-Llama-3.1-8B-Instruct',
+      size: '8B',
+      note: 'Best 8B instruction model'
+    },
+    {
+      id: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
+      size: '70B',
+      note: 'Top-tier open-source reasoning'
+    },
+    {
+      id: 'meta-llama/Llama-3.2-3B-Instruct',
+      size: '3B',
+      note: 'Ultra-lightweight'
+    },
+    {
+      id: 'meta-llama/Llama-3.2-11B-Vision-Instruct',
+      size: '11B',
+      note: 'Multimodal'
+    },
+    {
+      id: 'meta-llama/Llama-4-Scout-17B-16E-Instruct',
+      size: '17B MoE',
+      note: 'Reasoning and code-focused Llama 4'
+    },
+    {
+      id: 'meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo',
+      size: '11B',
+      note: 'Together AI multimodal turbo'
+    }
+  ],
+
+  'Qwen 2.5/3': [
+    {
+      id: 'Qwen/Qwen2.5-7B-Instruct',
+      size: '7B',
+      note: 'Excellent JSON output'
+    },
+    {
+      id: 'Qwen/Qwen2.5-14B-Instruct',
+      size: '14B',
+      note: 'Strong security reasoning'
+    },
+    {
+      id: 'Qwen/Qwen2.5-32B-Instruct',
+      size: '32B',
+      note: 'Near-frontier quality'
+    },
+    {
+      id: 'Qwen/Qwen2.5-72B-Instruct',
+      size: '72B',
+      note: 'Best Qwen flagship'
+    },
+    {
+      id: 'Qwen/QwQ-32B',
+      size: '32B',
+      note: 'Reasoning / chain-of-thought'
+    },
+    {
+      id: 'Qwen/Qwen3.6-27B',
+      size: '27B',
+      note: 'Latest Qwen reasoning model'
+    }
+  ],
+
+  'Mistral': [
+    {
+      id: 'mistralai/Mistral-7B-Instruct-v0.3',
+      size: '7B',
+      note: 'Fast, reliable JSON'
+    },
+    {
+      id: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+      size: '8×7B',
+      note: 'MoE strong reasoning'
+    },
+    {
+      id: 'mistralai/Mistral-Large-Instruct-2407',
+      size: '123B',
+      note: 'Frontier quality'
+    }
+  ],
+
+  'Phi / Gemma': [
+    {
+      id: 'microsoft/Phi-3.5-mini-instruct',
+      size: '3.8B',
+      note: 'CPU-friendly'
+    },
+    {
+      id: 'microsoft/phi-4',
+      size: '14B',
+      note: 'Latest Phi'
+    },
+    {
+      id: 'google/gemma-2-9b-it',
+      size: '9B',
+      note: 'Best Gemma 9B'
+    },
+    {
+      id: 'google/gemma-2-27b-it',
+      size: '27B',
+      note: 'Google flagship open'
+    },
+    {
+      id: 'google/gemma-4-31B-it',
+      size: '31B',
+      note: "Google's best open Gemma model"
+    }
+  ],
+
+  'DeepSeek': [
+    {
+      id: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-14B',
+      size: '14B',
+      note: 'R1 reasoning distilled'
+    },
+    {
+      id: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
+      size: '32B',
+      note: 'Best R1 distill'
+    },
+    {
+      id: 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B',
+      size: '8B',
+      note: 'Llama-based R1 distillation'
+    }
+  ],
+
+  'Other': [
+    {
+      id: 'NousResearch/Hermes-3-Llama-3.1-8B',
+      size: '8B',
+      note: 'Structured output & tool use'
+    },
+    {
+      id: 'CohereForAI/c4ai-command-r-plus',
+      size: '104B',
+      note: 'Retrieval-optimised'
+    },
+    {
+      id: 'llama-3.1-70b-versatile',
+      size: '70B',
+      note: 'Groq-hosted high-speed inference'
+    }
+  ]
+};
+
 let hfActiveCat=Object.keys(HF_MODELS)[0],hfOpen=false;
 
 function onApiChange(val){
@@ -766,7 +915,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;bo
 <header>
   <div class="logo">
     <div class="logo-icon">🔐</div>
-    <div><h1>Skill Security Evaluator</h1><p>AgentAIBench · UTEP SUPREME Lab</p></div>
+    <div><h1>SkillVetBench</h1><p>Skill Security Evaluator</p></div>
   </div>
   <div class="nav"><a href="/">← Leaderboard</a></div>
 </header>
@@ -845,7 +994,7 @@ function showSARSPopup(abbr, score){
           <div class="mm-sec-lbl" style="margin-top:14px">Other possible scores</div>
           ${others}
         </div>
-        <div class="mm-foot">Source: AgentAIBench SARS · UTEP SUPREME Lab</div>
+        <div class="mm-foot">Source: SkillVetBench · Agentic AI Research</div>
       </div>
     </div>`);
 }

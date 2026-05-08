@@ -184,7 +184,7 @@ def make_metric_rows(df):
 # ── LaTeX builder ─────────────────────────────────────────────────────────────
  
 def build_latex(model_names, model_labels, df, metric_rows, caption, label):
-    n_data   = len(model_names) + 1          # models + Avg. across Models
+    n_data   = len(model_names)+1          # models + Avg. across Models
     col_spec = "l" + "r" * n_data
  
     def esc(v): return str(v).replace("&", r"\&")
@@ -207,8 +207,7 @@ def build_latex(model_names, model_labels, df, metric_rows, caption, label):
  
     # Header
     hdr = ["\\textbf{Metric}"] + \
-          [f"\\textbf{{{lbl}}}" for lbl in model_labels] + \
-          [r"\textbf{Avg. across Models}"]
+          [f"\\textbf{{{lbl}}}" for lbl in model_labels]
     L.append("    " + " & ".join(hdr) + r" \\")
     L.append(r"    \midrule")
  
@@ -237,8 +236,7 @@ def build_latex(model_names, model_labels, df, metric_rows, caption, label):
         # Compute cross-model average
         avg_disp = esc(avg_fn(raw_vals))
  
-        cells = [f"\\textbf{{{esc(label_text)}}}"] + disp_vals + \
-                [f"\\textbf{{{avg_disp}}}"]
+        cells = [f"\\textbf{{{esc(label_text)}}}"] + disp_vals
         L.append("    " + " & ".join(cells) + r" \\")
  
     L += [
