@@ -4,7 +4,7 @@ A dual-metric security evaluation leaderboard for agentic AI skills.
 
 Part of the **SkillVetBench** benchmark framework for evaluating the safety and security of agentic AI tool-use skills sourced from [ClawHub](https://clawhub.ai) / [OpenClaw](https://openclaw.ai).
 
-## Leaderboar
+## Leaderboard
 
 This leaderboard presents a comprehensive security analysis of agent skills available on ClawHub
 . Each skill is evaluated and categorized as Malicious, Suspicious, or Benign based on its behavioral and security characteristics. Our framework performs detailed assessments using multiple Large Language Models (LLMs) to provide transparent and explainable security insights for agentic ecosystems.
