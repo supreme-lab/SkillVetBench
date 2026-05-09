@@ -4,12 +4,41 @@ A dual-metric security evaluation leaderboard for agentic AI skills.
 
 Part of the **SkillVetBench** benchmark framework for evaluating the safety and security of agentic AI tool-use skills sourced from [ClawHub](https://clawhub.ai) / [OpenClaw](https://openclaw.ai).
 
+## Leaderboar
+
+This leaderboard presents a comprehensive security analysis of agent skills available on ClawHub
+. Each skill is evaluated and categorized as Malicious, Suspicious, or Benign based on its behavioral and security characteristics. Our framework performs detailed assessments using multiple Large Language Models (LLMs) to provide transparent and explainable security insights for agentic ecosystems.
+
+The evaluation pipeline combines both the SARS methodology and the CVSS framework. SARS performs semantic analysis of a skill to identify potentially dangerous behaviors, unsafe execution patterns, and security risks within the skill logic. CVSS (Common Vulnerability Scoring System) is leveraged to quantify the severity and impact of discovered vulnerabilities from a standardized cybersecurity perspective. Together, these methods provide both semantic understanding and severity-based risk assessment for each skill.
+
+The platform supports both single-skill analysis and batch evaluation, enabling scalable security vetting across large collections of agent skills. In addition to displaying evaluation results from ClawHub
+, the system highlights potentially dangerous patterns, lists detected vulnerabilities, and provides remediation priorities to help users understand which issues should be addressed first before deploying a skill in an agentic environment.
+
+We plan to continuously expand the platform’s capabilities and make it publicly available for researchers and users working with autonomous agents and agentic skill ecosystems. Our goal is to improve transparency, strengthen ecosystem security, and help users make informed decisions before integrating third-party skills into their workflows.
+
+#### Key Functionalities
+
+- Security analysis of agent skills from ClawHub
+- Classification of skills as Malicious, Suspicious, or Benign
+- Multi-LLM based skill evaluation and reasoning
+- SARS-based semantic vulnerability analysis
+- CVSS-based severity scoring and risk assessment
+- Single skill evaluation
+- Batch skill evaluation at scale
+- Detection of dangerous or suspicious behavioral patterns
+- Detailed vulnerability reporting for each skill
+- Remediation priority recommendations
+- Transparent and explainable security insights for agent ecosystems
+
+![leaderboard](resources/leaderboard.gif)
+
 ---
-Figure 1: System Architecture
+
+## Figure 1: System Architecture
+
 ![1778157344562](images/README/1778157344562.png)
 
-
-Figure 2: Tool Multiplier Effect
+## Figure 2: Tool Multiplier Effect
 ![1778157413609](images/README/1778157413609.png)
 
 ## What This Is
