@@ -49,7 +49,7 @@ except ImportError:
 PROJECT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_DIR))
 
-from storage import ReportStorage, _slug
+from skillvetbench_github.source_code.storage import ReportStorage, _slug
 
 logger = logging.getLogger("SkillEvalServer")
 
@@ -148,7 +148,7 @@ def _get_or_create_llm(api_type: str, model: str, api_key: str) -> "LLMClient":
     For hf_local this means the model weights are loaded into GPU memory exactly
     once — not once per skill evaluation job.
     """
-    from llm_client import LLMClient
+    from skillvetbench_github.source_code.llm_client import LLMClient
     cache_key = f"{api_type}::{model or 'default'}"
     if cache_key not in _llm_cache:
         logger.info(f"Creating new LLMClient for {cache_key} ...")
@@ -574,7 +574,7 @@ async def api_clawhub_official(slug: str):
 @app.get("/api/sars-metrics")
 def api_sars_metrics():
     """Serve SARS dimension definitions for the popup feature."""
-    from sars import SARS_DIMENSIONS
+    from skillvetbench_github.source_code.sars import SARS_DIMENSIONS
     return {
         k: {
             "name":        v["name"],
@@ -664,7 +664,7 @@ async def _run_evaluation(
 
 def _do_evaluate_content(content: str, filename: str, model: str, api_type: str, api_key: str):
     """Evaluate skill content passed as a string (no file on disk needed)."""
-    from evaluator import SkillEvaluator
+    from skillvetbench_github.source_code.evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -698,7 +698,7 @@ def _do_evaluate_content(content: str, filename: str, model: str, api_type: str,
 
 
 def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
-    from evaluator import SkillEvaluator
+    from skillvetbench_github.source_code.evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -728,7 +728,7 @@ def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
 
 
 def _default_model(api_type: str) -> str:
-    from llm_client import LLMClient
+    from skillvetbench_github.source_code.llm_client import LLMClient
     return LLMClient.DEFAULTS.get(api_type, api_type)
 
 

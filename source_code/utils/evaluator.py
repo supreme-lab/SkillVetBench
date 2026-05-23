@@ -11,13 +11,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-from cvss3_5 import CVSSv3, cvss_from_dict
-from cvss4_0 import CVSSv4, cvss4_from_dict, severity_label
+from skillvetbench_github.source_code.cvss3_5 import CVSSv3, cvss_from_dict
+from skillvetbench_github.source_code.cvss4_0 import CVSSv4, cvss4_from_dict, severity_label
 # from prompts_cvss3_5 import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
-from prompts_cvss4_0 import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
-from llm_client import LLMClient
-from sars import SARSScore, sars_from_dict, SARS_DIMENSIONS
-from prompts_clawhub import CLAWHUB_EVAL_SYSTEM_PROMPT, build_clawhub_prompt
+from skillvetbench_github.source_code.prompts_cvss4_0 import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
+from skillvetbench_github.source_code.llm_client import LLMClient
+from skillvetbench_github.source_code.sars import SARSScore, sars_from_dict, SARS_DIMENSIONS
+from skillvetbench_github.source_code.prompts_clawhub import CLAWHUB_EVAL_SYSTEM_PROMPT, build_clawhub_prompt
 
 logger = logging.getLogger("SkillEval")
 
@@ -245,7 +245,7 @@ class SkillEvaluator:
             sars_obj = sars_from_dict(data)
         except Exception as e:
             logger.warning(f"  SARS parse error ({e}), using safe defaults")
-            from sars import SARSScore
+            from skillvetbench_github.source_code.sars import SARSScore
             sars_obj = SARSScore(ifr=0, dg=0, ai=0, br=0, ca=0)
         sars_data = sars_obj.as_dict()
 
