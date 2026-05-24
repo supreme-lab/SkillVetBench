@@ -87,6 +87,32 @@ kill $(cat logs/eval.pid)
 | `--skip-existing` | Flag | Skip skills already evaluated for this model |
 | `--verbose` | Flag | Show DEBUG logs including LLM responses |
 
+#### Popular Models by Tier
+
+**Low-Tier Models** (7B–13B, ~6–12 GB VRAM):
+
+| Provider | Model | Command |
+|----------|-------|---------|
+| **HuggingFace** | Llama 3.1 8B | `./run_eval.sh --api hf_local --model meta-llama/Llama-3.1-8B-Instruct` |
+| | Qwen 2.5 7B | `./run_eval.sh --api hf_local --model Qwen/Qwen2.5-7B-Instruct` |
+| | Mistral 7B | `./run_eval.sh --api hf_local --model mistralai/Mistral-7B-Instruct-v0.3` |
+| | Gemma 2 9B | `./run_eval.sh --api hf_local --model google/gemma-2-9b-it` |
+| **API** | Claude 3.5 Haiku | `./run_eval.sh --api anthropic --model claude-3-5-haiku-20241022` |
+| | GPT-4o Mini | `./run_eval.sh --api openai --model gpt-4o-mini` |
+
+**Top-Tier Models** (27B–72B, ~30–80 GB VRAM):
+
+| Provider | Model | Command |
+|----------|-------|---------|
+| **HuggingFace** | Llama 3.1 70B | `./run_eval.sh --api hf_local --model meta-llama/Meta-Llama-3.1-70B-Instruct` |
+| | Qwen 2.5 72B | `./run_eval.sh --api hf_local --model Qwen/Qwen2.5-72B-Instruct` |
+| | Mistral Large | `./run_eval.sh --api hf_local --model mistralai/Mistral-Large-Instruct-2407` |
+| | Gemma 2 27B | `./run_eval.sh --api hf_local --model google/gemma-2-27b-it` |
+| **API** | Claude 3.5 Sonnet | `./run_eval.sh --api anthropic --model claude-3-5-sonnet-20241022` |
+| | GPT-4o | `./run_eval.sh --api openai --model gpt-4o` |
+
+**Tip:** Start with a low-tier model to test, then scale to top-tier for better evaluations. Multi-model comparison reveals scoring differences and model biases.
+
 ---
 
 ### Option B: Web Interface (Interactive Leaderboard)

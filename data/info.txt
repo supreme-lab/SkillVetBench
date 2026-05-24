@@ -1,0 +1,1 @@
+This dataset contains all skills meta data extracted from clawhub. Here it contains more than 40k skills.
