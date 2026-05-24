@@ -608,27 +608,26 @@ def get_skill_stats(slug_or_filename: str) -> Optional[dict]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 DOWNLOAD_API = "https://wry-manatee-359.convex.site/api/v1/download"
-SLUGS_TXT    = "data/slugs.txt"   # one slug name per line, written on first page hit
+SLUGS_TXT    = "data/slugs.txt"   # one slug name per line, top-N sorted by stars
 
 
 def _slugs_txt_path() -> Path:
     return Path(__file__).resolve().parent / SLUGS_TXT
 
 
-def _write_slugs_txt(meta: dict) -> None:
+def _write_slugs_txt(meta: dict, top_n: int = 100) -> None:
     """
-    Write the top-100 slug names (sorted by stars descending) to data/slugs.txt.
+    Write the top-N slug names (sorted by stars descending) to data/slugs.txt.
     One slug per line.  This file is the source of truth for the dropdown.
     """
     path = _slugs_txt_path()
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Sort all slugs by stars descending, take top 100
     ranked = sorted(
         meta.items(),
         key=lambda kv: float((kv[1].get("stats") or {}).get("stars", 0) or 0),
         reverse=True,
-    )[:100]
+    )[:top_n]
 
     lines = [slug for slug, _ in ranked]
     path.write_text("\n".join(lines), encoding="utf-8")
@@ -648,16 +647,19 @@ def _read_slugs_txt() -> Optional[list]:
     return slugs
 
 
-def list_slugs_from_meta() -> list:
+def list_slugs_from_meta(top_n: int = 100) -> list:
     """
-    Return the top-100 skills for the leaderboard dropdown.
+    Return the top-N skills for the leaderboard dropdown.
+
+    Args:
+        top_n: Maximum number of skills to return, ranked by stars (default 100).
 
     Flow:
-      1. If data/slugs.txt exists → read slug names from it (already top-100
-         sorted by stars, written by _write_slugs_txt).
-         Enrich each name with metadata (owner, stats, version) from the JSON.
+      1. If data/slugs.txt exists → read slug names from it (stars-sorted list),
+         enrich each name with metadata (owner, stats, version) from the JSON,
+         then return the first top_n entries.
       2. If data/slugs.txt does not exist → parse clawhub_skills_meta.json,
-         rank by stars, take top 100, write slugs.txt, return enriched list.
+         rank by stars, write slugs.txt (full list), return top_n enriched entries.
 
     The dropdown order always mirrors the order in slugs.txt (stars desc).
     """
@@ -669,7 +671,7 @@ def list_slugs_from_meta() -> list:
     slug_names = _read_slugs_txt()
     if slug_names is None:
         try:
-            _write_slugs_txt(meta)           # writes top-100 sorted by stars
+            _write_slugs_txt(meta, top_n)    # writes top-N sorted by stars
             slug_names = _read_slugs_txt()   # re-read to get the ranked order
         except Exception as e:
             logger.warning(f"Could not write slugs.txt: {e}")
@@ -678,7 +680,7 @@ def list_slugs_from_meta() -> list:
     # ── Build entries in slugs.txt order (stars desc) ────────────────────
     if slug_names:
         result = []
-        for slug in slug_names:                # order preserved from slugs.txt
+        for slug in slug_names[:top_n]:        # honour top_n; order preserved from slugs.txt
             info  = meta.get(slug, {})
             owner = info.get("owner_handle", "")
             stats = info.get("stats") or {}
@@ -718,7 +720,7 @@ def list_slugs_from_meta() -> list:
             "source":       "clawhub_meta",
         })
     result.sort(key=lambda x: float(x["stats"].get("stars", 0) or 0), reverse=True)
-    return result[:100]
+    return result[:top_n]
 
 
 def fetch_skill_from_zip(slug: str, timeout: int = 30) -> Optional[str]:

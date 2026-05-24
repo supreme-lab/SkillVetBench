@@ -12,7 +12,7 @@ git clone https://github.com/yourusername/skillvetbench_github.git && cd skillve
 pip install -r requirements.txt && export ANTHROPIC_API_KEY=sk-ant-...
 
 # Run
-python server.py
+python source_code/Backend/server.py
 
 # Open http://localhost:8000
 ```
@@ -24,10 +24,10 @@ python server.py
 ### Start Web Server
 
 ```bash
-python server.py                                    # Default: localhost:8000
-python server.py --port 9000                       # Custom port
-python server.py --api anthropic --model claude-sonnet-4-6  # Specify model
-python server.py --skills-dir my_skills/ --reports-dir my_reports/  # Custom dirs
+python source_code/Backend/server.py                                          # Default: localhost:8000
+python source_code/Backend/server.py --port 9000                             # Custom port
+python source_code/Backend/server.py --api anthropic --model claude-sonnet-4-6  # Specify model
+python source_code/Backend/server.py --skills-dir my_skills/ --reports-dir my_reports/  # Custom dirs
 ```
 
 ### Supported Backends
@@ -55,6 +55,9 @@ export HF_TOKEN=hf_...                  # HuggingFace
 ### Basic Evaluation
 
 ```python
+import sys
+sys.path.insert(0, "source_code/utils")
+sys.path.insert(0, "clawhub")
 from evaluator import SkillEvaluator
 from llm_client import LLMClient
 
@@ -69,6 +72,8 @@ print(f"CVSS: {report.cvss.score:.1f}")
 ### Batch Evaluation
 
 ```python
+import sys
+sys.path.insert(0, "source_code/utils")
 from pathlib import Path
 from storage import ReportStorage
 

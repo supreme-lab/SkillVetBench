@@ -164,7 +164,13 @@ tr{animation:fadein .22s ease both}
       <div id="token-result" style="margin-top:5px;font-size:11px;font-family:var(--mono);display:none"></div>
     </div>
     <button class="btn btn-primary" onclick="submitEval()">▶ Evaluate</button>
-    <button class="btn btn-ghost" onclick="evaluateAll()" id="eval-all-btn" title="Evaluate top-100 skills by stars one by one">⚡ Evaluate All (Top 100)</button>
+    <div class="eval-field" style="align-items:center">
+      <div class="eval-label" style="white-space:nowrap">Top N skills</div>
+      <input type="number" id="eval-top-n" value="100" min="1" max="500" step="1"
+             title="How many top-starred skills to queue"
+             style="width:72px;text-align:center;background:var(--card);border:1.5px solid var(--border);color:var(--text);border-radius:var(--r);padding:8px 6px;font-size:13px;font-family:var(--sans);font-weight:500">
+    </div>
+    <button class="btn btn-ghost" onclick="evaluateAll()" id="eval-all-btn" title="Evaluate top-N skills (sorted by stars)">⚡ Evaluate All</button>
   </div>
   <div id="key-hint" style="display:none;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text3)"></div>
   <div class="jobs-panel" id="jobs-panel"></div>
@@ -498,28 +504,36 @@ async function evaluateAll(){
   const model   = document.getElementById('eval-model').value.trim();
   const api     = document.getElementById('eval-api').value;
   const key     = document.getElementById('eval-key').value.trim();
+  const topNRaw = parseInt(document.getElementById('eval-top-n').value, 10);
+  const topN    = (isNaN(topNRaw) || topNRaw < 1) ? 100 : topNRaw;
   const btn     = document.getElementById('eval-all-btn');
   if(!model){alert('Please enter a Model ID first.');return;}
-  if(!confirm('This will queue all top-100 skills (sorted by stars) for evaluation with model "'+model+'". Skills already evaluated with this model will be skipped. Continue?'))return;
+  if(!confirm(
+    `Queue the top-${topN} skills (sorted by stars) for evaluation with model "${model}"?\n` +
+    `Skills already evaluated with this model will be skipped.`
+  ))return;
   btn.disabled=true; btn.textContent='⏳ Queuing…';
-  const body={model,api_type:api};
+  const body={model, api_type:api, top_n:topN};
   if(key) body.api_key=key;
   try{
     const r=await fetch('/api/evaluate-all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const data=await r.json();
     if(r.ok){
-      btn.textContent=`⚡ Evaluate All (Top 100)`;
+      btn.textContent='⚡ Evaluate All';
       btn.disabled=false;
-      const msg=`Batch queued:\n• ${data.queued} skills queued\n• ${data.skipped} already evaluated (skipped)\nBatch ID: ${data.batch_id}`;
+      const msg=
+        `Batch queued (top ${data.top_n||topN}):\n` +
+        `• ${data.queued} skills queued\n` +
+        `• ${data.skipped} already evaluated (skipped)\n` +
+        `Batch ID: ${data.batch_id}`;
       alert(msg);
-      // Start polling each job
       (data.job_ids||[]).forEach(jid=>pollJob(jid));
     }else{
-      btn.disabled=false; btn.textContent='⚡ Evaluate All (Top 100)';
+      btn.disabled=false; btn.textContent='⚡ Evaluate All';
       alert('Error: '+(data.detail||JSON.stringify(data)));
     }
   }catch(e){
-    btn.disabled=false; btn.textContent='⚡ Evaluate All (Top 100)';
+    btn.disabled=false; btn.textContent='⚡ Evaluate All';
     alert('Request failed: '+e.message);
   }
 }

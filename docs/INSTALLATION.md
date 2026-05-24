@@ -66,7 +66,7 @@ docker run -p 8000:8000 \
 
 Test the installation:
 ```bash
-python -c "from evaluator import SkillEvaluator; print('✓ Installation successful')"
+python -c "import sys; sys.path.insert(0, 'source_code/utils'); from evaluator import SkillEvaluator; print('✓ Installation successful')"
 ```
 
 ## Troubleshooting

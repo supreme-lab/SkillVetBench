@@ -5,7 +5,7 @@ tool_multiplier_analysis.py
 Analyzes a picoclaw gateway.log file to extract tool usage and attack-event
 counts, then generates the Tool Multiplier Effect figure as a PDF.
 
-SUPREME Lab – University of Texas at El Paso
+SkillVetBench — Security Evaluation Framework
 
 Usage:
     python3 tool_multiplier_analysis.py --log gateway.log

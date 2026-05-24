@@ -6,16 +6,16 @@
 
 ```bash
 # Default — http://localhost:8000
-python server.py
+python source_code/Backend/server.py
 
 # Specify backend and model
-python server.py --api anthropic --model claude-sonnet-4-6
+python source_code/Backend/server.py --api anthropic --model claude-sonnet-4-6
 
 # Custom port
-python server.py --port 9000
+python source_code/Backend/server.py --port 9000
 
 # Custom skill and output directories
-python server.py --skills-dir my_skills/ --reports-dir my_reports/
+python source_code/Backend/server.py --skills-dir my_skills/ --reports-dir my_reports/
 ```
 
 ### Features Available in Web Interface
@@ -42,6 +42,9 @@ python server.py --skills-dir my_skills/ --reports-dir my_reports/
 ### Single Skill Evaluation
 
 ```python
+import sys
+sys.path.insert(0, "source_code/utils")
+sys.path.insert(0, "clawhub")
 from evaluator import SkillEvaluator
 from llm_client import LLMClient
 
@@ -61,8 +64,12 @@ print(f"CVSS Score: {report.cvss.score}")
 ### Batch Evaluation
 
 ```python
+import sys
+sys.path.insert(0, "source_code/utils")
+sys.path.insert(0, "clawhub")
 from pathlib import Path
 from evaluator import SkillEvaluator
+from llm_client import LLMClient
 from storage import ReportStorage
 
 llm = LLMClient(api="anthropic", model="claude-sonnet-4-6")
@@ -81,20 +88,19 @@ for skill_file in skills_dir.glob("*.md"):
 ### Evaluation Analysis
 
 ```bash
-cd eval/
-python evaluation_analysis.py
+python eval/evaluation_analysis.py
 ```
 
 ### Generate Results & Visualizations
 
 ```bash
-python generate_results.py
+python eval/generate_results.py
 ```
 
 ### Benchmark Overview
 
 ```bash
-python benchmark_overveiw.py
+python eval/benchmark_overveiw.py
 ```
 
 ## Supported LLM Backends
@@ -111,13 +117,13 @@ python benchmark_overveiw.py
 
 ```bash
 # GPT-4o
-python server.py --api openai --model gpt-4o
+python source_code/Backend/server.py --api openai --model gpt-4o
 
 # HuggingFace Qwen
-python server.py --api hf_api --model Qwen/Qwen2.5-14B-Instruct
+python source_code/Backend/server.py --api hf_api --model Qwen/Qwen2.5-14B-Instruct
 
 # Local inference with GPU
-python server.py --api hf_local --model mistral/Mistral-7B-Instruct-v0.1 --device cuda
+python source_code/Backend/server.py --api hf_local --model mistral/Mistral-7B-Instruct-v0.1 --device cuda
 ```
 
 ## Output Structure
@@ -153,7 +159,7 @@ Evaluation results are stored in JSON format:
 
 ### Extending the Framework
 
-1. **Add Custom Scoring Metrics**: Extend `sars.py` or create `custom_metrics.py`
-2. **Add New Vulnerability Categories**: Modify `prompts_cvss4_0.py`
-3. **Create New LLM Clients**: Extend `llm_client.py` with new backends
-4. **Custom Evaluation Workflows**: Use `evaluator.py` as a base class
+1. **Add Custom Scoring Metrics**: Extend `source_code/utils/sars.py` or create a new file under `source_code/utils/`
+2. **Add New Vulnerability Categories**: Modify `source_code/utils/prompts_cvss4_0.py`
+3. **Create New LLM Clients**: Extend `source_code/utils/llm_client.py` with new backends
+4. **Custom Evaluation Workflows**: Use `source_code/utils/evaluator.py` as a base class

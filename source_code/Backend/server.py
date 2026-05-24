@@ -46,10 +46,12 @@ except ImportError:
     print("Install: pip install fastapi uvicorn python-multipart")
     sys.exit(1)
 
-PROJECT_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(PROJECT_DIR))
+PROJECT_DIR = Path(__file__).resolve().parent          # source_code/Backend
+REPO_ROOT   = PROJECT_DIR.parent.parent                # skillvetbench_github
+sys.path.insert(0, str(REPO_ROOT.parent))              # repo parent — for skillvetbench_github.* imports
+sys.path.insert(0, str(PROJECT_DIR.parent / "clawhub")) # source_code/clawhub — for clawhub_fetch imports
 
-from skillvetbench_github.source_code.storage import ReportStorage, _slug
+from skillvetbench_github.source_code.utils.storage import ReportStorage, _slug
 
 logger = logging.getLogger("SkillEvalServer")
 
@@ -148,7 +150,7 @@ def _get_or_create_llm(api_type: str, model: str, api_key: str) -> "LLMClient":
     For hf_local this means the model weights are loaded into GPU memory exactly
     once — not once per skill evaluation job.
     """
-    from skillvetbench_github.source_code.llm_client import LLMClient
+    from skillvetbench_github.source_code.utils.llm_client import LLMClient
     cache_key = f"{api_type}::{model or 'default'}"
     if cache_key not in _llm_cache:
         logger.info(f"Creating new LLMClient for {cache_key} ...")
@@ -273,8 +275,9 @@ def api_leaderboard_csv():
 @app.post("/api/evaluate-all")
 async def api_evaluate_all(body: dict, background_tasks: BackgroundTasks):
     """
-    Queue all top-100 skills (sorted by stars from clawhub_skills_meta.json)
+    Queue the top-N skills (sorted by stars from clawhub_skills_meta.json)
     for evaluation with the selected model and backend.
+    N is provided by the caller via the 'top_n' field (default: 100).
     Skips any skill already evaluated with the same model.
     The hf_local model is loaded once and reused across all jobs (via _llm_cache).
     """
@@ -284,8 +287,9 @@ async def api_evaluate_all(body: dict, background_tasks: BackgroundTasks):
     api_type = body.get("api_type", llm_config.get("api_type", "anthropic"))
     api_key  = (body.get("api_key") or body.get("hf_token")
                 or llm_config.get("api_key", ""))
+    top_n    = max(1, int(body.get("top_n", 100)))
 
-    skills = list_slugs_from_meta()
+    skills = list_slugs_from_meta(top_n=top_n)
     if not skills:
         raise HTTPException(400, "No skills found in clawhub_skills_meta.json")
 
@@ -324,11 +328,12 @@ async def api_evaluate_all(body: dict, background_tasks: BackgroundTasks):
         queued_jobs.append(job_id)
 
     logger.info(
-        f"[Batch {batch_id}] Queued {len(queued_jobs)} jobs, "
-        f"skipped {len(skipped)} already-evaluated"
+        f"[Batch {batch_id}] top_n={top_n}  queued={len(queued_jobs)}  "
+        f"skipped={len(skipped)} (already-evaluated)"
     )
     return {
         "batch_id":     batch_id,
+        "top_n":        top_n,
         "queued":       len(queued_jobs),
         "skipped":      len(skipped),
         "job_ids":      queued_jobs,
@@ -421,7 +426,7 @@ def api_skill_files():
     logger.info("skills_dir: " + (str(skills_dir) if skills_dir else "None"))
 
     # ── Case 1: skills directory exists and has .md files → use directory ─
-    if skills_dir !="remote" and skills_dir.exists():
+    if skills_dir != "clawhub" and skills_dir.exists():
         files = sorted(skills_dir.glob("**/*.md"))
         if files:
             result = []
@@ -574,7 +579,7 @@ async def api_clawhub_official(slug: str):
 @app.get("/api/sars-metrics")
 def api_sars_metrics():
     """Serve SARS dimension definitions for the popup feature."""
-    from skillvetbench_github.source_code.sars import SARS_DIMENSIONS
+    from skillvetbench_github.source_code.utils.sars import SARS_DIMENSIONS
     return {
         k: {
             "name":        v["name"],
@@ -664,7 +669,7 @@ async def _run_evaluation(
 
 def _do_evaluate_content(content: str, filename: str, model: str, api_type: str, api_key: str):
     """Evaluate skill content passed as a string (no file on disk needed)."""
-    from skillvetbench_github.source_code.evaluator import SkillEvaluator
+    from skillvetbench_github.source_code.utils.evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -698,7 +703,7 @@ def _do_evaluate_content(content: str, filename: str, model: str, api_type: str,
 
 
 def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
-    from skillvetbench_github.source_code.evaluator import SkillEvaluator
+    from skillvetbench_github.source_code.utils.evaluator import SkillEvaluator
 
     ENV_MAP = {
         "anthropic": "ANTHROPIC_API_KEY",
@@ -728,7 +733,7 @@ def _do_evaluate(path: Path, model: str, api_type: str, api_key: str):
 
 
 def _default_model(api_type: str) -> str:
-    from skillvetbench_github.source_code.llm_client import LLMClient
+    from skillvetbench_github.source_code.utils.llm_client import LLMClient
     return LLMClient.DEFAULTS.get(api_type, api_type)
 
 
@@ -737,7 +742,7 @@ def _default_model(api_type: str) -> str:
 # Load HTML templates from templates.html
 # ─────────────────────────────────────────────────────────────────────────────
 
-_TEMPLATES_FILE = PROJECT_DIR / "templates.html"
+_TEMPLATES_FILE = REPO_ROOT / "source_code" / "UI" / "templates.html"
 _SEPARATOR      = "<!-- ==================== DETAIL_PAGE ==================== -->"
 
 def _load_templates():
@@ -785,7 +790,7 @@ def main():
     parser.add_argument("--host",        default="0.0.0.0")
     parser.add_argument("--port",  "-p", default=8000, type=int)
     parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
-    parser.add_argument("--skills-dir",  default="remote",   metavar="DIR")
+    parser.add_argument("--skills-dir",  default="clawhub",  metavar="DIR")
     parser.add_argument("--api",         default="hf_local",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])
     parser.add_argument("--model",  default=None)
