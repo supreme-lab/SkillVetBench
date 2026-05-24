@@ -27,12 +27,19 @@ cd skillvetbench_github
 pip install -r requirements.txt
 
 # 2. Set your API key (choose one)
-export ANTHROPIC_API_KEY=sk-ant-...      # Anthropic Claude (recommended)
+# export ANTHROPIC_API_KEY=sk-ant-...      # Anthropic Claude
 # export OPENAI_API_KEY=sk-...           # OpenAI GPT-4o
-# export HF_TOKEN=hf_...                 # HuggingFace (for API or local inference)
+export HF_TOKEN=hf_...                 # HuggingFace (for API or local inference - free)
 ```
 
----
+## 🔍 Skill info Scrapping
+If you want to scrap all skills currently available on clawhub.ai, run the script below:
+
+```bash
+python source_code/clawhub/clawhub_scrapper.py
+```
+After successful execution, `data/clawhub_skills_meta.json` will be created.
+And this file will be used to fetch other information like - VirusTotal result, ClawScan result by using slug id and the owner id during the `run_eval.sh` execution.
 
 ## 🚀 Running Experiments
 
@@ -285,16 +292,16 @@ After running evaluations, use these scripts to analyze and visualize the result
 **How to run:**
 ```bash
 # Basic — uses default paths (reports/, clawhub_enriched.json)
-python eval/evaluation_analysis.py
+python source_code/eval/evaluation_analysis.py
 
 # Custom paths
-python eval/evaluation_analysis.py \
+python source_code/eval/evaluation_analysis.py \
   --csv path/to/leaderboard.csv \
   --enriched path/to/clawhub_enriched.json \
   --out results/
 
 # Save without displaying
-python eval/evaluation_analysis.py --no-show
+python source_code/eval/evaluation_analysis.py --no-show
 ```
 
 **Output:** PNG figures saved to `results/` (default) or `--out` directory
