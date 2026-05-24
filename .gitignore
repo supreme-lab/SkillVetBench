@@ -4,3 +4,4 @@ run_commands.txt
 .DS_Store
 byungkyu/
 logs/server.log.*
+data/clawhub_skills_meta_original.json
