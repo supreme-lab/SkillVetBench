@@ -3,3 +3,4 @@ venv/
 run_commands.txt
 .DS_Store
 byungkyu/
+logs/server.log.*
