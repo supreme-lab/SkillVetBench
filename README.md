@@ -461,21 +461,6 @@ Contributions welcome! Areas we'd love help with:
 
 ---
 
-## Citation
-
-If you use SkillVetBench in your research, please cite:
-
-```bibtex
-@software{skillvetbench2024,
-  title={SkillVetBench: Dual-Metric Security Evaluation Framework for Agentic AI Skills},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/skillvetbench_github}
-}
-```
-
----
-
 ## License
 
 [MIT License](LICENSE) — See LICENSE file for details.
