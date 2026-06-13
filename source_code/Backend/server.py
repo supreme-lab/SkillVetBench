@@ -789,7 +789,7 @@ def main():
     parser = argparse.ArgumentParser(description="Skill Security Evaluator — Web Server")
     parser.add_argument("--host",        default="0.0.0.0")
     parser.add_argument("--port",  "-p", default=8000, type=int)
-    parser.add_argument("--reports-dir", default="reports",  metavar="DIR")
+    parser.add_argument("--reports-dir", default=str(REPO_ROOT / "reports"),  metavar="DIR")
     parser.add_argument("--skills-dir",  default="clawhub",  metavar="DIR")
     parser.add_argument("--api",         default="hf_local",
                         choices=["anthropic","openai","hf_local","hf_api","ollama"])

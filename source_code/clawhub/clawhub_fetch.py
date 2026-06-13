@@ -75,7 +75,9 @@ def load_skills_meta(meta_path: Optional[str] = None) -> dict:
     candidates = []
     if meta_path:
         candidates.append(Path(meta_path))
-    candidates.append(Path(__file__).resolve().parent / "data/clawhub_skills_meta.json")
+    _here = Path(__file__).resolve().parent          # source_code/clawhub
+    candidates.append(_here / "data/clawhub_skills_meta.json")
+    candidates.append(_here.parent.parent / "data/clawhub_skills_meta.json")  # skillvetbench_github/data/
     candidates.append(Path("data/clawhub_skills_meta.json"))
 
     for p in candidates:
