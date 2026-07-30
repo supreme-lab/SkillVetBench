@@ -6,11 +6,17 @@ Unified LLM client supporting every major backend.
 OPEN-SOURCE (HuggingFace)
   api_type="hf_local"   — load model weights locally via `transformers`
   api_type="hf_api"     — HuggingFace Inference API (serverless or dedicated endpoint)
+  api_type="hf_router"  — HuggingFace router (https://router.huggingface.co/v1),
+                          an OpenAI-compatible endpoint that forwards to whichever
+                          provider is named in the model string, e.g.
+                          "moonshotai/Kimi-K3:together". Auth via HF_TOKEN.
 
 FRONTIER (API)
   api_type="anthropic"  — Anthropic Claude
   api_type="openai"     — OpenAI GPT / any OpenAI-compatible endpoint
                           (Together AI, Groq, Fireworks, LM Studio, vLLM, etc.)
+  api_type="openrouter" — OpenRouter (routes to Anthropic/OpenAI/Meta/etc. models
+                          via one API key, base_url=https://openrouter.ai/api/v1)
   api_type="ollama"     — Local Ollama server (also open-source)
 
 Quick-start examples
@@ -37,6 +43,11 @@ Quick-start examples
   # OpenAI
   client = LLMClient(api_type="openai", api_key="sk-...")
 
+  # OpenRouter (any model on openrouter.ai, one API key)
+  client = LLMClient(api_type="openrouter",
+                     api_key="sk-or-v1-...",
+                     model="anthropic/claude-sonnet-4-6")
+
   # Together AI (OpenAI-compatible)
   client = LLMClient(api_type="openai",
                      api_key="...",
@@ -51,6 +62,10 @@ Quick-start examples
 
   # Ollama (local)
   client = LLMClient(api_type="ollama", model="llama3.1:8b")
+
+  # HuggingFace router — one HF_TOKEN, routes to the provider named in the
+  # model string (here: Together AI hosting Kimi-K3)
+  client = LLMClient(api_type="hf_router", model="moonshotai/Kimi-K3:together")
 """
 
 import json
@@ -95,6 +110,14 @@ RECOMMENDED_MODELS = {
         ("meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",  "Via Together AI  base_url=https://api.together.xyz/v1"),
         ("mistralai/Mistral-7B-Instruct-v0.3",               "Via Together AI"),
     ],
+    "openrouter": [
+        ("anthropic/claude-sonnet-4-6",  "Balanced speed/quality via OpenRouter"),
+        ("openai/gpt-4o",                "OpenAI flagship via OpenRouter"),
+        ("openai/gpt-4o-mini",           "Fast and affordable via OpenRouter"),
+        ("meta-llama/llama-3.1-70b-instruct", "Strong open-source via OpenRouter"),
+        ("google/gemini-2.0-flash-001",  "Fast Google model via OpenRouter"),
+        ("deepseek/deepseek-chat",       "Cheap strong reasoning via OpenRouter"),
+    ],
     "ollama": [
         ("llama3.1:8b",   "Default — well-rounded"),
         ("llama3.1:70b",  "Higher quality"),
@@ -102,6 +125,10 @@ RECOMMENDED_MODELS = {
         ("mixtral:8x7b",  "Strong reasoning"),
         ("qwen2.5:7b",    "Good structured output"),
         ("phi3.5:mini",   "Lightweight"),
+    ],
+    "hf_router": [
+        ("moonshotai/Kimi-K3:together",   "Kimi K3 via Together AI, routed through HF"),
+        ("deepseek-ai/DeepSeek-V3:novita", "DeepSeek V3 via Novita, routed through HF"),
     ],
 }
 
@@ -116,7 +143,9 @@ def list_recommended_models():
         "hf_api":    "HuggingFace API     --api hf_api     (hosted inference)",
         "anthropic": "Anthropic Claude    --api anthropic  (frontier)",
         "openai":    "OpenAI / Compatible --api openai     (frontier + Together/Groq)",
+        "openrouter":"OpenRouter          --api openrouter (routes to many providers)",
         "ollama":    "Ollama local        --api ollama     (local server)",
+        "hf_router": "HF Router           --api hf_router  (HF-hosted routing to Together/Novita/etc.)",
     }
     for key, entries in RECOMMENDED_MODELS.items():
         print(f"\n  [{labels[key]}]")
@@ -131,12 +160,20 @@ class LLMClient:
     """Unified interface for all LLM backends."""
 
     DEFAULTS = {
-        "anthropic": "claude-sonnet-4-6",
-        "openai":    "gpt-4o-mini",
-        "ollama":    "llama3.1:8b",
-        "hf_local":  "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        "hf_api":    "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "anthropic":  "claude-sonnet-4-6",
+        "openai":     "gpt-4o-mini",
+        "openrouter": "anthropic/claude-sonnet-4-6",
+        "ollama":     "llama3.1:8b",
+        "hf_local":   "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "hf_api":     "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "hf_router":  "moonshotai/Kimi-K3:together",
     }
+
+    OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+    HF_ROUTER_BASE_URL  = "https://router.huggingface.co/v1"
+    OLLAMA_TIMEOUT = 600  # seconds — local generation (large max_tokens, reasoning
+                          # models, cold model-load) is often much slower than a
+                          # hosted API, so this needs more headroom than 180s.
 
     def __init__(
         self,
@@ -151,6 +188,12 @@ class LLMClient:
         load_in_4bit: bool          = False,  # 4-bit quantization (bitsandbytes)
         load_in_8bit: bool          = False,  # 8-bit quantization (bitsandbytes)
         hf_cache_dir: Optional[str] = None,   # custom HF model cache path
+        trust_remote_code: bool = False,      # execute custom modeling code
+                                               # shipped in the HF repo — some
+                                               # models (e.g. Kimi-K2.6) require
+                                               # this to load at all. Off by
+                                               # default: it runs arbitrary
+                                               # code from the model repo.
     ):
         self.api_type     = api_type.lower()
         self.api_key      = api_key
@@ -162,9 +205,14 @@ class LLMClient:
         self.load_in_4bit = load_in_4bit
         self.load_in_8bit = load_in_8bit
         self.hf_cache_dir = hf_cache_dir
+        self.trust_remote_code = trust_remote_code
 
         # Lazy-loaded transformers pipeline (hf_local only)
         self._hf_pipeline = None
+        # Lazy-loaded AutoModel/AutoProcessor pair for hf_local repos whose
+        # custom code isn't pipeline()-compatible (e.g. AutoModel-only repos).
+        self._hf_manual  = None
+        self._hf_mode    = None   # "pipeline" | "manual"
 
         valid = set(self.DEFAULTS.keys())
         if self.api_type not in valid:
@@ -174,18 +222,49 @@ class LLMClient:
             )
 
         if self.api_type == "ollama" and not self.base_url:
-            self.base_url = "http://localhost:11434"
+            self.base_url = self._resolve_ollama_base_url()
+
+        if self.api_type == "openrouter" and not self.base_url:
+            self.base_url = self.OPENROUTER_BASE_URL
+
+        if self.api_type == "hf_router" and not self.base_url:
+            self.base_url = self.HF_ROUTER_BASE_URL
 
         self._resolve_api_key()
+
+    # ── Ollama host resolution ────────────────────────────────────────────────
+
+    @staticmethod
+    def _resolve_ollama_base_url() -> str:
+        """
+        Resolve the local Ollama server address.
+
+        Honours the OLLAMA_HOST env var (the same variable `ollama serve` /
+        the `ollama` CLI use), so a non-default `ollama serve` port/host is
+        picked up automatically. Falls back to the standard localhost:11434.
+        """
+        host = os.getenv("OLLAMA_HOST", "").strip()
+        if not host:
+            return "http://localhost:11434"
+
+        if "://" not in host:
+            host = f"http://{host}"
+
+        # 0.0.0.0 means "listen on all interfaces" — not a valid client target
+        # on every platform, so rewrite it to a connectable loopback address.
+        host = host.replace("://0.0.0.0:", "://127.0.0.1:").replace("://0.0.0.0", "://127.0.0.1")
+        return host
 
     # ── API key resolution ───────────────────────────────────────────────────
 
     def _resolve_api_key(self):
         ENV_MAP = {
-            "anthropic": "ANTHROPIC_API_KEY",
-            "openai":    "OPENAI_API_KEY",
-            "hf_api":    "HF_TOKEN",
-            "hf_local":  "HF_TOKEN",       # needed for gated models (Llama etc.)
+            "anthropic":  "ANTHROPIC_API_KEY",
+            "openai":     "OPENAI_API_KEY",
+            "openrouter": "OPENROUTER_API_KEY",
+            "hf_api":     "HF_TOKEN",
+            "hf_local":   "HF_TOKEN",       # needed for gated models (Llama etc.)
+            "hf_router":  "HF_TOKEN",
         }
         if self.api_type in ENV_MAP and not self.api_key:
             self.api_key = os.getenv(ENV_MAP[self.api_type], "")
@@ -202,11 +281,23 @@ class LLMClient:
                 "  Option 1: export OPENAI_API_KEY=sk-...\n"
                 "  Option 2: python main.py ... --key sk-..."
             )
+        if self.api_type == "openrouter" and not self.api_key:
+            raise ValueError(
+                "OpenRouter API key missing.\n"
+                "  Option 1: export OPENROUTER_API_KEY=sk-or-v1-...\n"
+                "  Option 2: python main.py ... --key sk-or-v1-..."
+            )
         if self.api_type == "hf_api" and not self.api_key:
             logger.warning(
                 "HF_TOKEN not set. Public models work without a token, but "
                 "gated models (Llama 3, Mistral, etc.) require authentication.\n"
                 "  export HF_TOKEN=hf_...   or   python main.py ... --key hf_..."
+            )
+        if self.api_type == "hf_router" and not self.api_key:
+            raise ValueError(
+                "HF_TOKEN missing — required by the HuggingFace router.\n"
+                "  Option 1: export HF_TOKEN=hf_...\n"
+                "  Option 2: python main.py ... --key hf_..."
             )
 
     # ── Public interface ─────────────────────────────────────────────────────
@@ -214,11 +305,13 @@ class LLMClient:
     def complete(self, system_prompt: str, user_message: str) -> str:
         """Send a system + user turn, return the assistant response as a string."""
         return {
-            "anthropic": self._anthropic,
-            "openai":    self._openai_compat,
-            "ollama":    self._ollama,
-            "hf_local":  self._hf_local,
-            "hf_api":    self._hf_api,
+            "anthropic":  self._anthropic,
+            "openai":     self._openai_compat,
+            "openrouter": self._openrouter,
+            "ollama":     self._ollama,
+            "hf_local":   self._hf_local,
+            "hf_api":     self._hf_api,
+            "hf_router":  self._hf_router,
         }[self.api_type](system_prompt, user_message)
 
     # ── Anthropic ────────────────────────────────────────────────────────────
@@ -259,6 +352,66 @@ class LLMClient:
         )
         return resp.choices[0].message.content.strip()
 
+    # ── OpenRouter ───────────────────────────────────────────────────────────
+
+    def _openrouter(self, system: str, user: str) -> str:
+        """
+        OpenRouter — OpenAI-compatible endpoint that routes to many providers
+        (Anthropic, OpenAI, Meta, Google, DeepSeek, etc.) via one API key.
+        Model names are provider-prefixed, e.g. "anthropic/claude-sonnet-4-6".
+        """
+        try:
+            import openai
+        except ImportError:
+            raise ImportError("pip install openai")
+        client = openai.OpenAI(
+            api_key  = self.api_key,
+            base_url = self.base_url or self.OPENROUTER_BASE_URL,
+            default_headers = {
+                "HTTP-Referer": "https://github.com/supreme-lab/SkillVetBench",
+                "X-Title":      "SkillVetBench",
+            },
+        )
+        resp = client.chat.completions.create(
+            model       = self.model,
+            max_tokens  = self.max_tokens,
+            temperature = self.temperature,
+            messages    = [
+                {"role": "system", "content": system},
+                {"role": "user",   "content": user},
+            ],
+        )
+        return resp.choices[0].message.content.strip()
+
+    # ── HuggingFace router ───────────────────────────────────────────────────
+
+    def _hf_router(self, system: str, user: str) -> str:
+        """
+        HuggingFace router — an OpenAI-compatible endpoint at
+        https://router.huggingface.co/v1 that forwards to whichever inference
+        provider is named after the colon in the model string, e.g.
+        "moonshotai/Kimi-K3:together" -> served by Together AI. One HF_TOKEN
+        covers every provider the router supports.
+        """
+        try:
+            import openai
+        except ImportError:
+            raise ImportError("pip install openai")
+        client = openai.OpenAI(
+            api_key  = self.api_key,
+            base_url = self.base_url or self.HF_ROUTER_BASE_URL,
+        )
+        resp = client.chat.completions.create(
+            model       = self.model,
+            max_tokens  = self.max_tokens,
+            temperature = self.temperature,
+            messages    = [
+                {"role": "system", "content": [{"type": "text", "text": system}]},
+                {"role": "user",   "content": [{"type": "text", "text": user}]},
+            ],
+        )
+        return resp.choices[0].message.content.strip()
+
     # ── Ollama ───────────────────────────────────────────────────────────────
 
     def _ollama(self, system: str, user: str) -> str:
@@ -266,7 +419,18 @@ class LLMClient:
         url     = f"{self.base_url.rstrip('/')}/api/chat"
         payload = json.dumps({
             "model": self.model, "stream": False,
-            "options": {"temperature": self.temperature, "num_predict": self.max_tokens},
+            # Keep the model resident for the whole batch run — without this,
+            # Ollama's default eviction window is short enough that gaps
+            # between skills trigger a full reload (~20-30s) before every call.
+            "keep_alive": "30m",
+            "options": {
+                "temperature": self.temperature,
+                "num_predict": self.max_tokens,
+                # Skill-evaluation prompts run well under 10K tokens; capping
+                # num_ctx avoids paying for the model's full 131K-token default
+                # KV-cache allocation (which otherwise slows down every load).
+                "num_ctx": 32768,
+            },
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user",   "content": user},
@@ -277,8 +441,34 @@ class LLMClient:
             headers={"Content-Type": "application/json"}, method="POST"
         )
         try:
-            with urllib.request.urlopen(req, timeout=180) as resp:
+            with urllib.request.urlopen(req, timeout=self.OLLAMA_TIMEOUT) as resp:
                 return json.loads(resp.read())["message"]["content"].strip()
+        except urllib.error.HTTPError as e:
+            # Server is reachable but returned an error (bad model, load failure,
+            # context overflow, etc.) — surface Ollama's own message, not a
+            # generic "unreachable" one. HTTPError is a URLError subclass, so
+            # it must be caught before the broader except below.
+            body = e.read().decode("utf-8", errors="replace")
+            try:
+                detail = json.loads(body).get("error", body)
+            except (json.JSONDecodeError, AttributeError):
+                detail = body
+            raise RuntimeError(
+                f"Ollama returned HTTP {e.code} for model '{self.model}' at {self.base_url}.\n"
+                f"Error: {detail}"
+            )
+        except TimeoutError:
+            # NOTE: TimeoutError and urllib.error.URLError are sibling OSError
+            # subclasses — neither catches the other — so this needs its own
+            # clause or a slow response surfaces as a bare, contextless
+            # "timed out" instead of this actionable message.
+            raise TimeoutError(
+                f"Ollama request timed out after {self.OLLAMA_TIMEOUT}s for model "
+                f"'{self.model}' at {self.base_url}.\n"
+                f"The model may still be loading (large local models can take a "
+                f"minute+ on first request) or generation is slow for this "
+                f"hardware — try again, use a smaller model, or lower --max-tokens."
+            )
         except urllib.error.URLError as e:
             raise ConnectionError(
                 f"Cannot reach Ollama at {self.base_url}.\n"
@@ -296,9 +486,22 @@ class LLMClient:
             pip install transformers torch accelerate
             pip install bitsandbytes   # for 4-bit / 8-bit quantization
         """
-        if self._hf_pipeline is None:
-            self._hf_pipeline = self._build_hf_pipeline()
+        if self._hf_mode is None:
+            # Decide the loading strategy ONCE, from lightweight config
+            # metadata only (no weight download) — deciding wrong here would
+            # mean downloading multi-hundred-GB weights twice.
+            self._hf_mode = "manual" if self._needs_manual_hf_loading() else "pipeline"
 
+        if self._hf_mode == "pipeline":
+            if self._hf_pipeline is None:
+                self._hf_pipeline = self._build_hf_pipeline()
+            return self._generate_hf_pipeline(system, user)
+
+        if self._hf_manual is None:
+            self._hf_manual = self._build_hf_manual()
+        return self._generate_hf_manual(system, user)
+
+    def _generate_hf_pipeline(self, system: str, user: str) -> str:
         messages = [
             {"role": "system", "content": system},
             {"role": "user",   "content": user},
@@ -321,6 +524,120 @@ class LLMClient:
             return str(result).strip()
         except Exception as e:
             raise RuntimeError(f"HF local inference error: {e}")
+
+    def _needs_manual_hf_loading(self) -> bool:
+        """
+        Some trust_remote_code repos register only an `AutoModel` entry (often
+        multimodal/base-class repos) with no `AutoModelForCausalLM` mapping —
+        `pipeline("text-generation", ...)` can't load those at all. Detect
+        this from the repo's config.json only (auto_map), never from weights,
+        so a wrong guess never costs a duplicate download of a huge model.
+        """
+        if not self.trust_remote_code:
+            return False  # only custom (auto_map-based) repos need this check
+        try:
+            from transformers import AutoConfig
+            config = AutoConfig.from_pretrained(
+                self.model, trust_remote_code=True, token=self.api_key or None,
+            )
+        except Exception as e:
+            logger.debug(f"  Could not pre-check config for '{self.model}': {e}")
+            return False  # fall back to the normal pipeline path and let it error clearly
+
+        auto_map = getattr(config, "auto_map", None) or {}
+        has_causal_lm = "AutoModelForCausalLM" in auto_map
+        has_base_model = "AutoModel" in auto_map
+        if has_base_model and not has_causal_lm:
+            logger.info(
+                f"  '{self.model}' declares AutoModel (not AutoModelForCausalLM) "
+                f"in its custom code — using the AutoModel/AutoProcessor path."
+            )
+            return True
+        return False
+
+    def _build_hf_manual(self):
+        """
+        Load via AutoProcessor + AutoModel for repos whose custom code isn't
+        pipeline()-compatible (see _needs_manual_hf_loading). Mirrors the
+        device/quantization strategy in _build_hf_pipeline.
+        """
+        try:
+            from transformers import AutoModel, AutoProcessor
+            import torch
+        except ImportError:
+            raise ImportError(
+                "Install GPU dependencies first:\n"
+                "  pip install transformers torch accelerate\n"
+                "  pip install bitsandbytes   # for 4-bit/8-bit quantization"
+            )
+
+        logger.info(f"  Loading (AutoModel/AutoProcessor): {self.model}")
+
+        device, n_gpus, total_vram_gb = self._detect_device(torch)
+        if device == "cuda" and not self.load_in_4bit and not self.load_in_8bit:
+            self._check_vram_and_warn(total_vram_gb)
+
+        quant_config = None
+        if self.load_in_4bit or self.load_in_8bit:
+            quant_config = self._build_quant_config(torch)
+
+        model_kwargs = {}
+        if device in ("cuda", "mps"):
+            model_kwargs["torch_dtype"] = torch.float16
+        elif device == "cpu":
+            model_kwargs["torch_dtype"] = torch.float32
+        if quant_config:
+            model_kwargs["quantization_config"] = quant_config
+        if device == "cuda":
+            model_kwargs["device_map"] = "auto"
+        if self.hf_cache_dir:
+            model_kwargs["cache_dir"] = self.hf_cache_dir
+
+        if self.trust_remote_code:
+            logger.warning(
+                f"  ⚠  trust_remote_code=True — executing custom Python code "
+                f"shipped in the '{self.model}' HF repo. Only enable this for "
+                f"models you trust."
+            )
+
+        try:
+            processor = AutoProcessor.from_pretrained(
+                self.model, trust_remote_code=self.trust_remote_code,
+                token=self.api_key or None,
+            )
+            model = AutoModel.from_pretrained(
+                self.model, trust_remote_code=self.trust_remote_code,
+                token=self.api_key or None, **model_kwargs,
+            )
+            logger.info(f"  Model ready on {device.upper()}")
+            return processor, model
+        except Exception as e:
+            raise self._build_load_error(str(e), device)
+
+    def _generate_hf_manual(self, system: str, user: str) -> str:
+        processor, model = self._hf_manual
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user",   "content": user},
+        ]
+        try:
+            inputs = processor.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                tokenize=True,
+                return_dict=True,
+                return_tensors="pt",
+            ).to(model.device)
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=self.max_tokens,
+                temperature=self.temperature,
+                do_sample=self.temperature > 0,
+            )
+            new_tokens = outputs[0][inputs["input_ids"].shape[-1]:]
+            return processor.decode(new_tokens, skip_special_tokens=True).strip()
+        except Exception as e:
+            raise RuntimeError(f"HF local (manual AutoModel) inference error: {e}")
 
     def _build_hf_pipeline(self):
         """
@@ -383,6 +700,13 @@ class LLMClient:
 
         logger.info(f"  model_kwargs: {list(model_kwargs.keys())}")
 
+        if self.trust_remote_code:
+            logger.warning(
+                f"  ⚠  trust_remote_code=True — executing custom Python code "
+                f"shipped in the '{self.model}' HF repo. Only enable this for "
+                f"models you trust."
+            )
+
         try:
             pipe = pipeline(
                 "text-generation",
@@ -390,6 +714,7 @@ class LLMClient:
                 model_kwargs = model_kwargs,
                 token        = self.api_key or None,
                 device       = pipe_device,
+                trust_remote_code = self.trust_remote_code,
             )
             # Log actual memory used after loading
             if device == "cuda":
@@ -486,12 +811,38 @@ class LLMClient:
 
     def _build_load_error(self, err: str, device: str) -> RuntimeError:
         """Return a RuntimeError with actionable hints based on the error message."""
-        if "401" in err or "gated" in err.lower() or "terms" in err.lower():
+        if "trust_remote_code" in err.lower():
+            hint = (
+                f"\n\n  🔓 This repo ships custom modeling code that transformers "
+                f"refuses to run without explicit consent.\n"
+                f"  Only proceed if you trust the publisher — this executes "
+                f"arbitrary Python from https://hf.co/{self.model}\n"
+                f"  Re-run with: --trust-remote-code"
+            )
+        elif (
+            "401 client error" in err.lower()
+            or "gated repo" in err.lower()
+            or "unauthorized" in err.lower()
+            or "you must be authenticated" in err.lower()
+            or ("access to model" in err.lower() and "restricted" in err.lower())
+        ):
+            # NOTE: matching on a bare "401" substring is unsafe — it can
+            # false-positive on unrelated text (commit hashes, sizes, line
+            # numbers, ports, etc. routinely contain "401"). Match specific
+            # phrasing HF's actual gated/auth errors use instead.
             hint = (
                 f"\n\n  ✋ Access denied — this is a gated model.\n"
                 f"  1. Accept the licence at: https://huggingface.co/{self.model}\n"
                 f"  2. Create a token:         https://huggingface.co/settings/tokens\n"
                 f"  3. Re-run with:            --key hf_YOUR_TOKEN"
+            )
+        elif "quantized with" in err.lower() and "but you are passing" in err.lower():
+            hint = (
+                f"\n\n  ⚙️  This model ships pre-quantized weights with their own "
+                f"baked-in quantization scheme, which conflicts with "
+                f"--quantize 4bit/8bit (bitsandbytes).\n"
+                f"  Re-run with: --quantize none  (loads the model's native "
+                f"quantization as-is, no bitsandbytes config applied)"
             )
         elif "out of memory" in err.lower() or "cuda out" in err.lower():
             hint = (

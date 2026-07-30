@@ -1,0 +1,6 @@
+variant,top_tfidf_terms
+run a,"instructions, look, skill, risk, memory, agent, injection, data, content, external"
+run b,"payoff, grep, skill, memory, injection, agent, none, state, low, high"
+run c,"consequence, indicators, instructions, skill, assessment, memory, agent, injection, data, external"
+run d,"matters, ask, skill, memory, why, agent, injection, data, high, low"
+run e,"failure, control, targets, condition, detection, instructions, memory, agent, injection, skill"

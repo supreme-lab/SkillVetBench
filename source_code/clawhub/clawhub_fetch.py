@@ -725,28 +725,47 @@ def list_slugs_from_meta(top_n: int = 100) -> list:
     return result[:top_n]
 
 
-def fetch_skill_from_zip(slug: str, timeout: int = 30) -> Optional[str]:
+def fetch_skill_from_zip(
+    slug: str, owner_handle: Optional[str] = None, timeout: int = 30
+) -> Optional[str]:
     """
     Download the skill zip from the ClawHub download API and extract
     SKILL.md entirely in memory — nothing is written to disk.
 
-    API: GET https://wry-manatee-359.convex.site/api/v1/download?slug={slug}
+    API: GET https://wry-manatee-359.convex.site/api/v1/download?slug={slug}&ownerHandle={owner}
+
+    ClawHub now requires disambiguating slugs shared by multiple publishers
+    via the `ownerHandle` query param — omitting it returns HTTP 409
+    ("Ambiguous skill slug ... Multiple publishers use this slug.").
+    If owner_handle isn't passed explicitly, it's looked up from
+    clawhub_skills_meta.json.
 
     Returns the SKILL.md content as a string, or None on failure.
     """
     import io
     import zipfile
 
-    url = f"{DOWNLOAD_API}?slug={slug}"
-    logger.info(f"Downloading skill zip: {url}")
+    if not owner_handle:
+        info = lookup_skill(slug)
+        owner_handle = info.get("owner_handle") if info else None
+
+    params = {"slug": slug}
+    if owner_handle:
+        params["ownerHandle"] = owner_handle
+
+    logger.info(f"Downloading skill zip: slug={slug} ownerHandle={owner_handle or '(unknown)'}")
 
     try:
         resp = requests.get(
-            url,
+            DOWNLOAD_API,
+            params=params,
             timeout=timeout,
             headers={"Accept": "application/zip, application/octet-stream, */*"},
             stream=True,
         )
+        if resp.status_code == 409:
+            logger.error(f"  Ambiguous slug '{slug}': {resp.text.strip()}")
+            return None
         resp.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"  Download failed HTTP {resp.status_code}: {e}")

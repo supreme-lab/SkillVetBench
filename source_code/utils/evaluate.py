@@ -32,6 +32,7 @@ Log output format (example)
 """
 
 import argparse
+import importlib
 import logging
 import os
 import sys
@@ -39,6 +40,7 @@ import time
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from typing import Optional
 
 # ── Repo-root path setup ──────────────────────────────────────────────────────
 UTILS_DIR = Path(__file__).resolve().parent            # …/source_code/utils
@@ -115,6 +117,20 @@ class _TimedLLMClient(LLMClient):
 # Helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _load_prompt_module(prompt_module: str):
+    """
+    Import a prompts_cvss4_0*.py module by short name (e.g. "prompts_cvss4_0",
+    "prompts_cvss4_0_b") and return (SKILL_SECURITY_EVAL_SYSTEM_PROMPT,
+    build_evaluation_prompt) from it. Lets the same evaluation pipeline run
+    under differently-worded system prompts for inter-prompt variance /
+    error-bar analysis.
+    """
+    mod = importlib.import_module(
+        f"skillvetbench_github.source_code.utils.{prompt_module}"
+    )
+    return mod.SKILL_SECURITY_EVAL_SYSTEM_PROMPT, mod.build_evaluation_prompt
+
+
 def _fmt_duration(seconds: float) -> str:
     if seconds < 60:
         return f"{seconds:.1f}s"
@@ -174,15 +190,30 @@ def run_batch(
     max_tokens:   int,
     skip_existing: bool,
     top_n:        int = 0,
+    base_url:     str = "",
+    trust_remote_code: bool = False,
+    prompt_module: str = "prompts_cvss4_0",
+    downloaded_skills_dir: Optional[Path] = None,
 ) -> int:
     """
     Evaluate skills from a local directory or ClawHub (skills_dir == 'clawhub').
     top_n > 0 limits the number of skills evaluated.
+    prompt_module selects which prompts_cvss4_0*.py system prompt / user-message
+    builder to use (see prompts_cvss4_0_b/c/d/e.py for paraphrased variants).
+    downloaded_skills_dir (ClawHub only): local cache of raw SKILL.md content
+    keyed by filename. A skill already present there is read from disk instead
+    of re-downloaded — lets multiple prompt-variant runs against the same
+    top-N skills reuse one download instead of hitting ClawHub every time.
     Returns 0 on full success, 1 if any skill failed.
     """
     from skillvetbench_github.source_code.utils.storage import _slug
 
+    system_prompt, build_prompt_fn = _load_prompt_module(prompt_module)
+
     is_clawhub  = str(skills_dir) == "clawhub"
+    dl_cache_dir = Path(downloaded_skills_dir) if downloaded_skills_dir else Path("downloaded_skills")
+    if is_clawhub:
+        dl_cache_dir.mkdir(parents=True, exist_ok=True)
     storage    = ReportStorage(str(reports_dir))
     model_name = model or "default"
 
@@ -239,8 +270,13 @@ def run_batch(
     logger.info(f"[Config]  Reports dir  : {reports_dir.resolve()}")
     logger.info(f"[Config]  LLM backend  : {api_type}")
     logger.info(f"[Config]  Model        : {model_name}")
+    if base_url:
+        logger.info(f"[Config]  Base URL     : {base_url}")
     logger.info(f"[Config]  Max tokens   : {max_tokens}")
     logger.info(f"[Config]  Top-N limit  : {top_n if top_n > 0 else 'all'}")
+    logger.info(f"[Config]  Prompt module: {prompt_module}")
+    if is_clawhub:
+        logger.info(f"[Config]  Skill cache  : {dl_cache_dir.resolve()}")
     logger.info(f"[Config]  Skills total : {total}")
     logger.info(f"[Config]  Started at   : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info(SEP)
@@ -250,12 +286,14 @@ def run_batch(
         api_type     = api_type,
         api_key      = api_key or "",
         model        = model or None,
+        base_url     = base_url or None,
         device       = device,
         load_in_4bit = load_in_4bit,
         load_in_8bit = load_in_8bit,
         max_tokens   = max_tokens,
+        trust_remote_code = trust_remote_code,
     )
-    evaluator = SkillEvaluator(llm)
+    evaluator = SkillEvaluator(llm, system_prompt=system_prompt, build_prompt_fn=build_prompt_fn)
 
     # ── Evaluate each skill ───────────────────────────────────────────────
     succeeded    = 0
@@ -269,6 +307,7 @@ def run_batch(
         if is_clawhub:
             slug     = item["slug"]
             filename = item["filename"]
+            owner    = item.get("owner_handle")
         else:
             skill_path = item
             filename   = skill_path.name
@@ -290,11 +329,20 @@ def run_batch(
 
         try:
             if is_clawhub:
-                logger.info(f"{label}   Downloading '{slug}' from ClawHub ...")
-                content = fetch_skill_from_zip(slug)
-                if not content:
-                    raise ValueError(f"Could not download SKILL.md for slug '{slug}'")
-                logger.info(f"{label}   Downloaded {len(content):,} chars")
+                cached_path = dl_cache_dir / filename
+                if cached_path.exists():
+                    content = cached_path.read_text(encoding="utf-8", errors="replace")
+                    logger.info(
+                        f"{label}   Using cached download ({len(content):,} chars): {cached_path}"
+                    )
+                else:
+                    logger.info(f"{label}   Downloading '{slug}' from ClawHub ...")
+                    content = fetch_skill_from_zip(slug, owner_handle=owner)
+                    if not content:
+                        raise ValueError(f"Could not download SKILL.md for slug '{slug}'")
+                    logger.info(f"{label}   Downloaded {len(content):,} chars")
+                    cached_path.write_text(content, encoding="utf-8")
+                    logger.info(f"{label}   Cached to {cached_path}")
                 report = evaluator.evaluate_content(content, filename)
             else:
                 logger.info(f"{label}   Input  : {skill_path.resolve()}")
@@ -369,6 +417,7 @@ def main() -> None:
             "Examples:\n"
             "  python source_code/utils/evaluate.py --api anthropic --model claude-sonnet-4-6\n"
             "  python source_code/utils/evaluate.py --api openai --model gpt-4o --skills-dir my_skills/\n"
+            "  python source_code/utils/evaluate.py --api openrouter --model anthropic/claude-sonnet-4-6\n"
             "  python source_code/utils/evaluate.py --api hf_local --device cuda --quantize 4bit\n"
             "  python source_code/utils/evaluate.py --top-n 50 --skip-existing --verbose\n"
         ),
@@ -384,6 +433,15 @@ def main() -> None:
         metavar="DIR", help="Directory to save JSON evaluation reports",
     )
     parser.add_argument(
+        "--downloaded-skills-dir", default="downloaded_skills",
+        metavar="DIR",
+        help="Local cache directory for skill files downloaded from ClawHub "
+             "(ignored when --skills-dir is a local directory). A skill already "
+             "cached here is read from disk instead of re-downloaded — reuse the "
+             "same directory across multiple prompt-variant runs against the "
+             "same top-N skills so only the first run hits the network.",
+    )
+    parser.add_argument(
         "--log-file", default="logs/eval.log",
         metavar="FILE", help="Rotating log file path",
     )
@@ -391,7 +449,7 @@ def main() -> None:
     # LLM backend
     parser.add_argument(
         "--api", default="anthropic",
-        choices=["anthropic", "openai", "hf_local", "hf_api", "ollama"],
+        choices=["anthropic", "openai", "openrouter", "hf_local", "hf_api", "hf_router", "ollama"],
         help="LLM backend",
     )
     parser.add_argument(
@@ -401,7 +459,14 @@ def main() -> None:
     parser.add_argument(
         "--key", default=None,
         metavar="KEY",
-        help="API key — falls back to ANTHROPIC_API_KEY / OPENAI_API_KEY / HF_TOKEN env vars",
+        help="API key — falls back to ANTHROPIC_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / HF_TOKEN env vars",
+    )
+    parser.add_argument(
+        "--base-url", default=None,
+        metavar="URL",
+        help="Override endpoint URL — for ollama, defaults to $OLLAMA_HOST or "
+             "http://localhost:11434; for openai, points at an OpenAI-compatible "
+             "endpoint (Together/Groq/vLLM/etc.)",
     )
 
     # Local inference options
@@ -412,6 +477,13 @@ def main() -> None:
     parser.add_argument(
         "--quantize", default="4bit", choices=["4bit", "8bit", "none"],
         help="Weight quantization (hf_local only)",
+    )
+    parser.add_argument(
+        "--trust-remote-code", action="store_true",
+        help="Allow executing custom modeling code shipped in the HF repo "
+             "(hf_local only). Required by some models (e.g. Kimi-K2.6). "
+             "SECURITY: only enable for repos/publishers you trust — this "
+             "runs arbitrary Python from the model repo.",
     )
 
     # Generation options
@@ -424,6 +496,17 @@ def main() -> None:
     parser.add_argument(
         "--top-n", default=0, type=int, metavar="N",
         help="Evaluate only the first N skill files (alphabetical order); 0 = evaluate all",
+    )
+
+    # Prompt variant (for inter-prompt variance / error-bar runs)
+    parser.add_argument(
+        "--prompt-module", default="prompts_cvss4_0",
+        metavar="MODULE",
+        help="Which prompts_cvss4_0*.py module to load the system prompt and "
+             "user-message builder from, e.g. prompts_cvss4_0, prompts_cvss4_0_b, "
+             "prompts_cvss4_0_c, prompts_cvss4_0_d, prompts_cvss4_0_e. All variants "
+             "perform the identical evaluation task with the same JSON output "
+             "contract — only the prompt wording/style differs.",
     )
 
     # Behaviour flags
@@ -457,22 +540,24 @@ def main() -> None:
 
     # API key resolution
     ENV_MAP = {
-        "anthropic": "ANTHROPIC_API_KEY",
-        "openai":    "OPENAI_API_KEY",
-        "hf_api":    "HF_TOKEN",
-        "hf_local":  "HF_TOKEN",
-        "ollama":    "",
+        "anthropic":  "ANTHROPIC_API_KEY",
+        "openai":     "OPENAI_API_KEY",
+        "openrouter": "OPENROUTER_API_KEY",
+        "hf_api":     "HF_TOKEN",
+        "hf_local":   "HF_TOKEN",
+        "hf_router":  "HF_TOKEN",
+        "ollama":     "",
     }
     env_var = ENV_MAP.get(args.api, "")
     api_key = args.key or (os.getenv(env_var, "") if env_var else "")
 
-    if not api_key and args.api in ("anthropic", "openai"):
+    if not api_key and args.api in ("anthropic", "openai", "openrouter"):
         logger.error(
             f"No API key found for backend '{args.api}'. "
             f"Set the {env_var} environment variable or pass --key YOUR_KEY."
         )
         sys.exit(1)
-    if not api_key and args.api in ("hf_api", "hf_local"):
+    if not api_key and args.api in ("hf_api", "hf_local", "hf_router"):
         logger.error(
             "No HuggingFace token. Set HF_TOKEN=hf_... or pass --key hf_..."
         )
@@ -490,6 +575,10 @@ def main() -> None:
         max_tokens   = args.max_tokens,
         skip_existing = args.skip_existing,
         top_n        = max(0, args.top_n),
+        base_url     = args.base_url or "",
+        trust_remote_code = args.trust_remote_code,
+        prompt_module = args.prompt_module,
+        downloaded_skills_dir = Path(args.downloaded_skills_dir).expanduser().resolve(),
     )
     sys.exit(exit_code)
 

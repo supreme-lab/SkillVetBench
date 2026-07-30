@@ -1,0 +1,6 @@
+variant,persona,words,sentences,vocab,type_token_ratio
+run a,baseline (original wording),1873,120,712,0.3801388147357181
+run b,"variant B: ""Red-Team Lead"" persona: terse, imperative, checklist-driven",1682,122,712,0.4233055885850178
+run c,"variant C: ""Principal AppSec Architect"" persona: formal, methodical, numbered audit-report tone",1942,121,763,0.3928939237899073
+run d,"variant D: ""Incident-Response Analyst"" persona: narrative, scenario-driven, framed as an investigation rather than a checklist",1949,123,760,0.3899435608004105
+run e,"variant E: ""Autonomous Compliance Auditor"" persona: dry, rigid, compliance-checklist tone — as if a strict automated audit gate were speaking",1755,111,706,0.4022792022792023

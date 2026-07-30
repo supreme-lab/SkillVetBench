@@ -1,0 +1,29 @@
+model,score,metric,value
+cryptidbleh_gemma4-claude-sonnet-4.6,cvss_base_score,"ICC(2,1)",0.2611489785875615
+cryptidbleh_gemma4-claude-sonnet-4.6,cvss_base_score,CV (mean within-skill),0.581763626275413
+cryptidbleh_gemma4-claude-sonnet-4.6,cvss_base_score,SEM,2.8142363323429014
+cryptidbleh_gemma4-claude-sonnet-4.6,cvss_base_score,% within tolerance,0.07142857142857142
+cryptidbleh_gemma4-claude-sonnet-4.6,cvss_base_score,Friedman p,0.06199481619765026
+cryptidbleh_gemma4-claude-sonnet-4.6,sars_score,"ICC(2,1)",0.5173332490261234
+cryptidbleh_gemma4-claude-sonnet-4.6,sars_score,CV (mean within-skill),0.3746309737007361
+cryptidbleh_gemma4-claude-sonnet-4.6,sars_score,SEM,1.7352063701582903
+cryptidbleh_gemma4-claude-sonnet-4.6,sars_score,% within tolerance,0.0
+cryptidbleh_gemma4-claude-sonnet-4.6,sars_score,Friedman p,0.5196731180338015
+gemma4_latest,cvss_base_score,"ICC(2,1)",0.4844885277646322
+gemma4_latest,cvss_base_score,CV (mean within-skill),0.37306434836612795
+gemma4_latest,cvss_base_score,SEM,2.1298444485329746
+gemma4_latest,cvss_base_score,% within tolerance,0.25
+gemma4_latest,cvss_base_score,Friedman p,0.28793539504156307
+gemma4_latest,sars_score,"ICC(2,1)",0.7527673842067514
+gemma4_latest,sars_score,CV (mean within-skill),0.22231122086038477
+gemma4_latest,sars_score,SEM,1.317942544611484
+gemma4_latest,sars_score,% within tolerance,0.25
+gemma4_latest,sars_score,Friedman p,0.42839671674196533
+qwen3.5_latest,cvss_base_score,"ICC(2,1)",
+qwen3.5_latest,cvss_base_score,CV,
+qwen3.5_latest,cvss_base_score,SEM,
+qwen3.5_latest,cvss_base_score,% within tolerance,
+qwen3.5_latest,sars_score,"ICC(2,1)",
+qwen3.5_latest,sars_score,CV,
+qwen3.5_latest,sars_score,SEM,
+qwen3.5_latest,sars_score,% within tolerance,

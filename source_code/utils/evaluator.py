@@ -14,7 +14,7 @@ from typing import Optional
 from .cvss3_5 import CVSSv3, cvss_from_dict
 from .cvss4_0 import CVSSv4, cvss4_from_dict, severity_label
 # from prompts_cvss3_5 import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
-from .prompts_cvss4_0 import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
+from .prompts_cvss4_0_a import SKILL_SECURITY_EVAL_SYSTEM_PROMPT, build_evaluation_prompt
 from .llm_client import LLMClient
 from .sars import SARSScore, sars_from_dict, SARS_DIMENSIONS
 from .prompts_clawhub import CLAWHUB_EVAL_SYSTEM_PROMPT, build_clawhub_prompt
@@ -108,8 +108,13 @@ class SkillReport:
 
 class SkillEvaluator:
 
-    def __init__(self, llm: LLMClient):
+    def __init__(self, llm: LLMClient, system_prompt: str = None, build_prompt_fn=None):
         self.llm = llm
+        # Allow the CVSS/SARS system prompt and user-message builder to be swapped
+        # for a differently-worded variant (see prompts_cvss4_0_b/c/d/e.py) while
+        # keeping the exact same evaluation task and JSON contract.
+        self.system_prompt = system_prompt or SKILL_SECURITY_EVAL_SYSTEM_PROMPT
+        self.build_prompt_fn = build_prompt_fn or build_evaluation_prompt
 
     # ── Evaluate a single file ───────────────────────────────────────
 
@@ -127,8 +132,8 @@ class SkillEvaluator:
         logger.info(f"  Calling LLM for '{filename}' ...")
         try:
             raw = self.llm.complete(
-                system_prompt = SKILL_SECURITY_EVAL_SYSTEM_PROMPT,
-                user_message  = build_evaluation_prompt(content, filename),
+                system_prompt = self.system_prompt,
+                user_message  = self.build_prompt_fn(content, filename),
             )
             logger.info(f"  LLM responded: {len(raw)} chars")
         except Exception as e:
